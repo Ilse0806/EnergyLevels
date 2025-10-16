@@ -24,7 +24,6 @@ fun ButtonPrimary(
     ) {
         Text(
             text = text,
-            modifier = modifier,
             style = Typography.bodyMedium,
         )
     }
