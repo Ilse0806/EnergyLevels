@@ -28,7 +28,7 @@ val Typography = Typography(
         fontFamily = FontFamily(Font(R.font.gabarito_t)),
         fontWeight = FontWeight.Medium,
         fontSize = 24.sp,
-        lineHeight = 100.sp,
+        lineHeight = 28.sp,
     ),
 //    Paragraph
     bodyLarge = TextStyle(
@@ -47,6 +47,13 @@ val Typography = Typography(
 //    Caption
     labelSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.funnel_sans_italic)),
+        fontWeight = FontWeight.Light,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+    ),
+//    Navigation text
+    labelMedium = TextStyle(
+        fontFamily = FontFamily(Font(R.font.funnel_sans_t, FontWeight.Light), Font(R.font.funnel_sans_b, FontWeight.Bold)),
         fontWeight = FontWeight.Light,
         fontSize = 12.sp,
         lineHeight = 16.sp,

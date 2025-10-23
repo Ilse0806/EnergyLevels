@@ -1,6 +1,5 @@
 package com.example.microhabits.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,24 +8,28 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.example.microhabits.archive.Pink40
-import com.example.microhabits.archive.Pink80
-import com.example.microhabits.archive.Purple40
-import com.example.microhabits.archive.Purple80
-import com.example.microhabits.archive.PurpleGrey40
-import com.example.microhabits.archive.PurpleGrey80
+import com.example.microhabits.ui.theme.Color as C
+
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = C.LightTheme,
+    secondary =  C.DarkTheme.copy(alpha=0.5f),
+    tertiary = C.Indigo,
+    surface = C.LightTheme,
+    background = C.DarkTheme,
+    onSurface = C.CoralRed
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary =  C.Indigo,
+    secondary = C.LightTheme.copy(alpha=0.5f),
+    tertiary = Color.White,
+    surface = C.Indigo,
+    background = C.LightTheme,
+    onSurface = C.Indigo
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -58,6 +61,6 @@ fun MicroHabitsTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

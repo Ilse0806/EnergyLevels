@@ -1,55 +1,76 @@
 package com.example.microhabits
 
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButtonDefaults.borderStroke
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.microhabits.api.DatabaseService
-import com.example.microhabits.components.ButtonPrimary
-import com.example.microhabits.ui.theme.Button as ButtonC
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
-import org.json.JSONArray
-import org.json.JSONObject
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import com.example.microhabits.ui.theme.Color as C
+import kotlinx.serialization.Serializable
 
-var user by mutableStateOf("")
-var userId: Int = 0
-val currentBehaviors = mutableStateListOf<Map<String, Any?>>()
+
+// Loads of custom objects mainly for navigation
+@Serializable
+object Home
+@Serializable
+data class Profile(val user: String)
+@Serializable
+object Progress
+@Serializable
+object CreateGoal
+@Serializable
+data class DisplayGoal(val goal: String)
+@Serializable
+data class DisplayBehavior(val behavior: String)
+
+data class BottomNavItem(
+    val destination: () -> Any,
+    val routeName: String,
+    val title: String,
+    val icon: ImageVector
+)
+
+var navBarHeight = mutableStateOf(0)
+
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -57,187 +78,108 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        DatabaseService.getRow("user", mapOf("id" to "1", "fetch_one" to true), this,
-            { response ->
-                checkResponse(this, response)
-                Log.d("API_SUCCESS", response.toString()) },
-            { error -> Log.e("API_ERROR", error.toString())}
-        )
-
         setContent {
-            val context = LocalContext.current
-            MicroHabitsTheme {
-                Scaffold(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
-                    Column (
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-                    ) {
-                        Greeting(
-                            name = user,
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                        BehaviorsDisplayed(context, currentBehaviors)
-                        NextButton("Create new behavior", context)
+            MicroHabitsTheme(dynamicColor = false){
+                val navController = rememberNavController()
+
+                NavHost(navController, startDestination = Home) {
+                    composable<Home> { HomeScreen(navController) }
+                    composable<Progress> { ProgressScreen(navController) }
+                    composable<CreateGoal> { CreateGoalScreen(navController) }
+                    composable<Profile> { backStackEntry ->
+                        val user: Profile = backStackEntry.toRoute()
+                        ProfileScreen(navController, user)
+                    }
+                    composable<DisplayGoal> { backStackEntry ->
+                        val goal: DisplayGoal = backStackEntry.toRoute()
+                        DisplayGoalScreen(navController, goal)
+                    }
+                    composable<DisplayBehavior> { backStackEntry ->
+                        val behavior: DisplayBehavior = backStackEntry.toRoute()
+                        DisplayBehaviorScreen(navController, behavior)
+
                     }
                 }
             }
+
         }
     }
-}
-
-fun checkResponse(context: Context, results: JSONObject) {
-    user = results["first_name"].toString()
-    userId = results["id"] as Int
-
-    connectBehaviors(context, userId)
-}
-
-fun connectBehaviors(context: Context, id: Int) {
-    DatabaseService.getRow("user_behavior", mapOf("user_id" to id, "fetch_one" to false), context,
-        { response ->
-            saveBehavior(context, response["rows"] as JSONArray)
-            Log.d("API_SUCCESS", response.toString()) },
-        { error -> Log.e("API_ERROR", error.toString())}
-    )
-}
-
-fun saveBehavior(context: Context, results: JSONArray) {
-    for (i in 0 until results.length()) {
-        var behavior = results.get(i) as JSONObject
-        DatabaseService.getRow("behavior", mapOf("id" to behavior["behavior_id"], "fetch_one" to true), context,
-            { response ->
-                behavior = response
-                val map = behavior.keys().asSequence().associateWith { key ->
-                    behavior.opt(key)
-                }
-                currentBehaviors.add(map)
-                println(currentBehaviors)
-                Log.d("API_SUCCESS", response.toString()) },
-            { error -> Log.e("API_ERROR", error.toString())}
-        )
-    }
-}
-
-fun buttonClicked(context: Context, intent: Intent) {
-    context.startActivity(intent)
-}
-
-fun behaviorDetails(context: Context, intent: Intent, id: Int, fullBehavior: Map<String, Any?>) {
-    intent.putExtra("behavior_id", id)
-    intent.putExtra("behavior", JSONObject(fullBehavior).toString())
-    context.startActivity(intent)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val dateTime = LocalDateTime.now()
-    val hour = dateTime.format(DateTimeFormatter.ofPattern("HH"))
+fun Navigation(navController: NavController) {
+    val bottomNavItems = listOf(
+        BottomNavItem({ Home }, "com.example.microhabits.Home", "Home", Icons.Default.Home),
+        BottomNavItem({ Progress }, "com.example.microhabits.Progress", "Progress", Icons.Filled.DateRange),
+        BottomNavItem({ CreateGoal }, "com.example.microhabits.CreateGoal", "Create goal", Icons.Default.AddCircle),
+        BottomNavItem({ Profile(user.toString()) }, "com.example.microhabits.Profile", "Profile", Icons.Default.Person),
+    )
 
-    val greeting = if (hour.toInt() in 7..11) {
-        "Good morning"
-    } else if (hour.toInt() in 12..17) {
-        "Good afternoon"
-    } else if (hour.toInt() in 18..23) {
-        "Good evening"
-    } else if (hour.toInt() in 0..6) {
-        "Good night"
-    } else {
-        "Good day"
-    }
-
-    Column(
-        modifier = Modifier.padding(top = 16.dp)
-    ) {
-        Text(
-            text = "$greeting $name",
-            style = Typography.titleSmall,
-        )
-        Text(
-            text = "How are you behaviors going?",
-            style = Typography.bodyMedium
-        )
-    }
-}
-
-@Composable
-fun NextButton(text: String, context: Context) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        ButtonPrimary(
-            text,
-            ButtonC.IndigoPrimary,
-            C.Mauve,
-            { buttonClicked(context, Intent(context, CreateGoal::class.java)) },
-            Modifier.align(Alignment.CenterHorizontally)
-        )
-    }
-}
-
-@Composable
-fun BehaviorsDisplayed(context: Context, behaviors: MutableList<Map<String, Any?>>, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(top = 16.dp, bottom = 16.dp)
-    ) {
-        for (behavior in behaviors) {
-            Button(
-                modifier = Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 4.dp),
-                shape = RoundedCornerShape(8.dp),
-                onClick = { behaviorDetails(context, Intent(context, DisplayBehavior::class.java), behavior["id"] as Int, behavior) },
-                colors = ButtonC.GoldenAmberPrimary,
-                border = borderStroke(C.GoldenAmber),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f).padding(end = 8.dp)
-                    ) {
-                        Text(
-                            text = behavior["name"].toString(),
-                            style = Typography.bodyLarge,
-                        )
-                        Text(
-                            text = behavior["description"].toString(),
-                            style = Typography.labelSmall,
-                        )
-                    }
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "Fav",
-                        tint = C.Indigo,
-                    )
-                }
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+            .onGloballyPositioned{ coordinates ->
+                navBarHeight.value = coordinates.size.height
             }
+    ) {
+        val navBackStackEntry = navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry.value?.destination?.route
+
+        bottomNavItems.forEach { item ->
+            val selected = currentRoute == item.routeName
+
+            NavigationBarItem(
+                icon = {
+                    if (selected)
+                        Icon(item.icon, contentDescription = item.title, modifier = Modifier.size(26.dp))
+                    else
+                        Icon(item.icon, contentDescription = item.title) },
+                label = {
+                    if (selected)
+                        Text(item.title, fontWeight = FontWeight.Bold, style = Typography.labelMedium)
+                    else
+                        Text(item.title, style = Typography.labelMedium) },
+                selected = selected,
+                colors = NavigationBarItemColors(
+                    selectedIconColor = MaterialTheme.colorScheme.tertiary,
+                    unselectedIconColor = MaterialTheme.colorScheme.secondary,
+                    selectedTextColor = MaterialTheme.colorScheme.tertiary,
+                    unselectedTextColor = MaterialTheme.colorScheme.secondary,
+                    selectedIndicatorColor = Color.Transparent,
+                    disabledIconColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
+                    disabledTextColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
+                ),
+                onClick = {
+                    navController.navigate(item.destination()) {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
         }
     }
-}
 
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    val context = LocalContext.current
-    MicroHabitsTheme {
-        Scaffold(modifier = Modifier
-            .fillMaxSize()
-            .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
-            Column (
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+    MicroHabitsTheme(dynamicColor = false) {
+        Scaffold(
+            bottomBar = { Navigation(rememberNavController()) },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
+            Column(
+                modifier = Modifier.padding(innerPadding)
             ) {
-                Greeting(
-                    name = user,
-                    modifier = Modifier.padding(innerPadding)
-                )
-//                val behaviors = listOf(mapOf("name" to "Test", "id" to 1), mapOf("name" to "Retry", "description" to "Just trying some new things for today! Just trying some new things for today!", "id" to 2))
-                BehaviorsDisplayed(context, currentBehaviors)
-                NextButton("Create new behavior", context)
+                Text("hi")
             }
+            GoalsDisplay(rememberNavController())
         }
     }
 }

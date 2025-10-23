@@ -125,3 +125,39 @@ fun ArchivedStyles(modifier: Modifier = Modifier) {
         )
     }
 }
+
+//            Button(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 4.dp, bottom = 4.dp),
+//                shape = RoundedCornerShape(8.dp),
+//                onClick = { behaviorDetails(context, Intent(context, DisplayBehavior::class.java), behavior["id"] as Int, behavior) },
+//                colors = ButtonC.GoldenAmberPrimary,
+//                border = borderStroke(C.GoldenAmber),
+//            ) {
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Column(
+//                        modifier = Modifier
+//                            .weight(1f)
+//                            .padding(end = 8.dp)
+//                    ) {
+//                        Text(
+//                            text = behavior["name"].toString(),
+//                            style = Typography.bodyLarge,
+//                        )
+//                        Text(
+//                            text = behavior["description"].toString(),
+//                            style = Typography.labelSmall,
+//                        )
+//                    }
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+//                        contentDescription = "Fav",
+//                        tint = C.Indigo,
+//                    )
+//                }
+//            }
