@@ -7,9 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -61,6 +63,8 @@ object CreateGoal
 data class DisplayGoal(val goal: String)
 @Serializable
 data class DisplayBehavior(val behavior: String)
+@Serializable
+data class CreateBehavior(val goal: String)
 
 data class BottomNavItem(
     val destination: () -> Any,
@@ -70,7 +74,6 @@ data class BottomNavItem(
 )
 
 var navBarHeight = mutableStateOf(0)
-
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -97,7 +100,10 @@ class MainActivity : ComponentActivity() {
                     composable<DisplayBehavior> { backStackEntry ->
                         val behavior: DisplayBehavior = backStackEntry.toRoute()
                         DisplayBehaviorScreen(navController, behavior)
-
+                    }
+                    composable<CreateBehavior> { backStackEntry ->
+                        val newGoal: CreateBehavior = backStackEntry.toRoute()
+                        CreateBehaviorScreen(navController, newGoal)
                     }
                 }
             }
@@ -164,13 +170,18 @@ fun Navigation(navController: NavController) {
 
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MicroHabitsTheme(dynamicColor = false) {
         Scaffold(
-            bottomBar = { Navigation(rememberNavController()) },
+            bottomBar = {
+                if (!WindowInsets.isImeVisible) {
+                    Navigation(rememberNavController())
+                }
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->

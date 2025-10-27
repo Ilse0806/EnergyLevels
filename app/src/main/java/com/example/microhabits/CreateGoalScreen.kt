@@ -8,11 +8,13 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
@@ -46,20 +48,34 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.api.DatabaseService
+import com.example.microhabits.components.ContinueButton
+import com.example.microhabits.components.ReturnButton
 import com.example.microhabits.helpers.crop
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.getTextFieldColor
 import org.json.JSONObject
+import kotlin.toString
+import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
+var validGoal = mutableStateOf(false)
+var categoryValue = mutableStateOf("")
+var goal = mutableStateOf("")
+var existingCategories = mutableStateOf(JSONObject())
+
+
+@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateGoalScreen (navController: NavController) {
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
     Scaffold(
         bottomBar = {
-            Navigation(navController)
+            if (!WindowInsets.isImeVisible) {
+                Navigation(navController)
+            }
         },
         modifier = Modifier
             .fillMaxSize()
@@ -67,7 +83,11 @@ fun CreateGoalScreen (navController: NavController) {
         Column (
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp)
+                .verticalScroll(scrollState)
         ) {
+            ReturnButton(ButtonC.CoralRedPrimary, C.CoralRed, {
+                navController.navigate(route = Home)
+            })
             Text(
                 text = "Creating a new goal",
                 style = Typography.titleLarge
@@ -76,19 +96,36 @@ fun CreateGoalScreen (navController: NavController) {
                 text = "What do you want to achieve?",
                 style = Typography.titleMedium
             )
-            GoalCreator(context)
+            GoalCreator(context, {
+                valid -> validGoal.value = valid
+            })
+            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, validGoal.value, {
+                val allCats = existingCategories.value.keys().asSequence().toList()
+                for (key in allCats) {
+                    val category = existingCategories.value.getString(key)
+                    if (categoryValue.value != category) {
+                        DatabaseService.updateRow("category", mapOf("name" to categoryValue.value), context,
+                            { savedCategory ->
+                                Log.d("API_SUCCESS", savedCategory.toString())
+                            },
+                            { error -> Log.e("API_ERROR", error.toString()) }
+                        )
+                        break
+                    }
+                }
+
+                val newGoalString = goal
+//                val newGoalString = JSONObject("new goal")
+//                navController.navigate(route = CreateBehavior("newGoalString"))
+            })
         }
     }
 }
 
 @Composable
-fun GoalCreator(context: Context, modifier: Modifier = Modifier) {
+fun GoalCreator(context: Context, onFormValidChanged: (Boolean) -> Unit, modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedValue by remember { mutableStateOf("") }
-    var goal by remember { mutableStateOf("") }
     var fieldSize by remember { mutableStateOf(Size.Zero)}
-
-    var items by remember { mutableStateOf(JSONObject()) }
 
     LaunchedEffect(Unit){
         DatabaseService.fetchTable(
@@ -101,35 +138,42 @@ fun GoalCreator(context: Context, modifier: Modifier = Modifier) {
                     val name = category.getString("name")
                     newItems.put(id, name)
                 }
-                items = newItems
+                existingCategories.value = newItems
+                println(existingCategories)
                 Log.d("API_SUCCESS_CATEGORIES", categories.toString())
             },
             { error -> Log.e("API_ERROR", error.toString()) }
         )
     }
 
-    val keys = items.keys().asSequence().toList()
+    LaunchedEffect(goal.value, categoryValue.value) {
+        val isValid = goal.value.isNotBlank() && categoryValue.value.isNotBlank()
+        println("worked")
+        onFormValidChanged(isValid)
+    }
+
+    val keys = existingCategories.value.keys().asSequence().toList()
     val verticalScroll = rememberScrollState()
 
     Column(
         modifier = modifier.padding(top = 48.dp, bottom = 48.dp)
     ) {
         OutlinedTextField(
-            value = goal,
+            value = goal.value,
             label = { Text("Your goal") },
             placeholder = { Text("Eat more fruit...") },
             onValueChange = { newText ->
-                goal = newText
+                goal.value = newText
             },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = getTextFieldColor(Color.White, C.LightBlue, Color.White),
-            textStyle = Typography.labelMedium
+            textStyle = Typography.bodyMedium
         )
 
         OutlinedTextField(
-            value = selectedValue,
-            onValueChange = { selectedValue = it },
+            value = categoryValue.value,
+            onValueChange = { categoryValue.value = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
@@ -142,6 +186,7 @@ fun GoalCreator(context: Context, modifier: Modifier = Modifier) {
                     Modifier.clickable { expanded = !expanded })
             },
             colors = getTextFieldColor(Color.White, C.LightBlue, Color.White),
+            textStyle = Typography.bodyMedium
         )
 
         DropdownMenu(
@@ -162,20 +207,20 @@ fun GoalCreator(context: Context, modifier: Modifier = Modifier) {
                 color = C.LightBlue)
         ) {
             keys.forEachIndexed { index, key ->
-                val value = items.getString(key)
+                val value = existingCategories.value.getString(key)
                 DropdownMenuItem(
                     text = {
                         Text(
                             text = value,
-                            color = (if (selectedValue == value) Color.White else Color.Black)
+                            color = (if (categoryValue.value == value) Color.White else Color.Black)
                         )
                     },
                     onClick = {
-                        selectedValue = value
+                        categoryValue.value = value
                         expanded = false
                     },
                     modifier = Modifier
-                        .background(if (selectedValue == value) C.LightBlue else Color.White)
+                        .background(if (categoryValue.value == value) C.LightBlue else Color.White)
                 )
             }
         }
@@ -186,20 +231,29 @@ fun GoalCreator(context: Context, modifier: Modifier = Modifier) {
 // TODO(): Continue to connect behaviors to this new goal
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun CreateGoalPreview() {
+    val navController = rememberNavController()
     val context = LocalContext.current
     MicroHabitsTheme(dynamicColor = false) {
         Scaffold(
-            bottomBar = { Navigation(rememberNavController()) },
+            bottomBar = {
+                if (!WindowInsets.isImeVisible) {
+                    Navigation(navController)
+                }
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
             Column(
                 modifier = Modifier.padding(innerPadding)
             ) {
+                ReturnButton(ButtonC.CoralRedPrimary, C.CoralRed,{
+                    navController.navigate(route = Home)
+                })
                 Text(
                     text = "Creating a new goal",
                     style = Typography.titleLarge
@@ -208,7 +262,11 @@ fun CreateGoalPreview() {
                     text = "What do you want to achieve?",
                     style = Typography.titleMedium
                 )
-                GoalCreator(context)
+//                GoalCreator(context)
+                ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, validGoal.value, {
+                    val newGoalString = JSONObject("new goal").toString()
+                    navController.navigate(route = CreateBehavior(newGoalString))
+                })
             }
         }
     }

@@ -7,11 +7,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
@@ -46,6 +48,7 @@ val connectedBehaviors = mutableStateListOf<Map<String, Any?>>()
 val detailsBehaviors = mutableStateListOf<Map<String, Any?>>()
 val combinedBehaviors = mutableStateListOf<Map<String, Any?>>()
 
+@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DisplayGoalScreen(navController: NavController, goalMap: DisplayGoal) {
@@ -118,7 +121,9 @@ fun DisplayGoalScreen(navController: NavController, goalMap: DisplayGoal) {
     val scrollState = rememberScrollState()
     Scaffold(
         bottomBar = {
-            Navigation(navController)
+            if (!WindowInsets.isImeVisible) {
+                Navigation(navController)
+            }
         },
         modifier = Modifier
             .fillMaxSize()
@@ -202,13 +207,18 @@ fun BehaviorsDisplayed(navController: NavController, behaviors: MutableList<Map<
 }
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun DisplayGoalPreview() {
     MicroHabitsTheme(dynamicColor = false) {
         Scaffold(
-            bottomBar = { Navigation(rememberNavController()) },
+            bottomBar = {
+                if (!WindowInsets.isImeVisible) {
+                    Navigation(rememberNavController())
+                }
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->

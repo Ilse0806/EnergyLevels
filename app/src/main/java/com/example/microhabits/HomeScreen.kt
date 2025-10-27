@@ -8,11 +8,13 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -66,6 +68,7 @@ val allBehaviors = mutableStateListOf<Map<String, Any?>>()
 val todayBehaviors = mutableStateListOf<Map<String, Any?>>()
 val userGoals = mutableStateListOf<Map<String, Any?>>()
 
+@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -91,7 +94,9 @@ fun HomeScreen(navController: NavController) {
 
     Scaffold(
         bottomBar = {
-            Navigation(navController)
+            if (!WindowInsets.isImeVisible) {
+                Navigation(navController)
+            }
         },
         modifier = Modifier
             .fillMaxSize()
@@ -277,19 +282,20 @@ fun NewGoalButton(text: String, onClick: () -> Unit) {
         ButtonC.CoralRedPrimary,
         C.LightBlue,
         { onClick() },
-        Modifier
+        modifier = Modifier
             .height(150.dp)
             .width(150.dp)
             .border(2.dp, C.CoralRed, RoundedCornerShape(8.dp)),
-        RoundedCornerShape(8.dp),
-    ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Create new goal",
-            tint = Color.White,
-            modifier = Modifier.size(32.dp)
-        )
-    }
+        shape = RoundedCornerShape(8.dp),
+        content = {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Create new goal",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+    )
 }
 
 @Composable

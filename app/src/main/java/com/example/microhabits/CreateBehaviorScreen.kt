@@ -19,14 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import org.json.JSONObject
 
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ProfileScreen (navController: NavController, profile: Profile) {
-    val profileObject = JSONObject(profile.user)
-
+fun CreateBehaviorScreen (navController: NavController, newGoal: CreateBehavior) {
     val scrollState = rememberScrollState()
     Scaffold(
         bottomBar = {
@@ -42,7 +39,7 @@ fun ProfileScreen (navController: NavController, profile: Profile) {
                 .padding(start = 16.dp, end = 16.dp)
                 .verticalScroll(scrollState)
         ) {
-            Text("Create Goal")
+            Text("New behavior")
             Box(Modifier.padding(innerPadding))
         }
     }

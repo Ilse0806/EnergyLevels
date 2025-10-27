@@ -14,14 +14,16 @@ fun ButtonPrimary(
     buttonColor: ButtonColors,
     color: Color,
     onClickAction: () -> Unit,
+    content: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = ButtonDefaults.shape,
-    content: @Composable () -> Unit
-) {
+    enabled: Boolean = true,
+    ) {
     Button (
         onClick = onClickAction,
         colors = buttonColor,
         modifier = modifier.focusDashBorder(color),
+        enabled = enabled,
         shape = shape
     ) {
         content()
