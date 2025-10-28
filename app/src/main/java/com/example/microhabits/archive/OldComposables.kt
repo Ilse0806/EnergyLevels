@@ -1,5 +1,7 @@
 package com.example.microhabits.archive
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.microhabits.ui.theme.Typography
+import org.json.JSONObject
 
 @Composable
 fun ArchivedSixColumnGrid(name: String, modifier: Modifier = Modifier) {
@@ -161,3 +164,13 @@ fun ArchivedStyles(modifier: Modifier = Modifier) {
 //                    )
 //                }
 //            }
+
+fun buttonClicked(context: Context, intent: Intent) {
+    context.startActivity(intent)
+}
+
+fun behaviorDetails(context: Context, intent: Intent, id: Int, fullBehavior: Map<String, Any?>) {
+    intent.putExtra("behavior_id", id)
+    intent.putExtra("behavior", JSONObject(fullBehavior).toString())
+    context.startActivity(intent)
+}

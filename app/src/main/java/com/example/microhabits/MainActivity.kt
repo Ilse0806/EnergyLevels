@@ -29,13 +29,16 @@ import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,12 +48,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.microhabits.models.HomeViewModel
+import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import kotlinx.serialization.Serializable
+import org.json.JSONObject
 
 
-// Loads of custom objects mainly for navigation
+// All objects for navigation + global variables are initialized here:
 @Serializable
 object Home
 @Serializable
@@ -73,7 +79,7 @@ data class BottomNavItem(
     val icon: ImageVector
 )
 
-var navBarHeight = mutableStateOf(0)
+var navBarHeight = mutableIntStateOf(0)
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -119,7 +125,7 @@ fun Navigation(navController: NavController) {
         BottomNavItem({ Home }, "com.example.microhabits.Home", "Home", Icons.Default.Home),
         BottomNavItem({ Progress }, "com.example.microhabits.Progress", "Progress", Icons.Filled.DateRange),
         BottomNavItem({ CreateGoal }, "com.example.microhabits.CreateGoal", "Create goal", Icons.Default.AddCircle),
-        BottomNavItem({ Profile(user.toString()) }, "com.example.microhabits.Profile", "Profile", Icons.Default.Person),
+        BottomNavItem({ Profile(VariableModel.user.toString()) }, "com.example.microhabits.Profile", "Profile", Icons.Default.Person),
     )
 
     NavigationBar(
@@ -127,7 +133,7 @@ fun Navigation(navController: NavController) {
         modifier = Modifier
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .onGloballyPositioned{ coordinates ->
-                navBarHeight.value = coordinates.size.height
+                navBarHeight.intValue = coordinates.size.height
             }
     ) {
         val navBackStackEntry = navController.currentBackStackEntryAsState()
