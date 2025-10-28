@@ -2,7 +2,6 @@ package com.example.microhabits
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -47,23 +46,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.microhabits.api.DatabaseService
 import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
 import com.example.microhabits.helpers.crop
+import com.example.microhabits.models.CreateGoalModel.loadCategory
+import com.example.microhabits.models.CreateGoalModel.saveCategory
+import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.getTextFieldColor
 import org.json.JSONObject
-import kotlin.toString
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
-
-var validGoal = mutableStateOf(false)
-var categoryValue = mutableStateOf("")
-var goal = mutableStateOf("")
-var existingCategories = mutableStateOf(JSONObject())
-
 
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -97,27 +91,15 @@ fun CreateGoalScreen (navController: NavController) {
                 style = Typography.titleMedium
             )
             GoalCreator(context, {
-                valid -> validGoal.value = valid
+                valid -> VariableModel.validGoal.value = valid
             })
-            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, validGoal.value, {
-                val allCats = existingCategories.value.keys().asSequence().toList()
-                for (key in allCats) {
-                    val category = existingCategories.value.getString(key)
-                    if (categoryValue.value != category) {
-                        DatabaseService.updateRow("category", mapOf("name" to categoryValue.value), context,
-                            { savedCategory ->
-                                Log.d("API_SUCCESS", savedCategory.toString())
-                            },
-                            { error -> Log.e("API_ERROR", error.toString()) }
-                        )
-                        break
-                    }
-                }
+            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.validGoal.value,
+                { saveCategory(context) }
 
-                val newGoalString = goal
+//                val newGoalString = VariableModel.goal
 //                val newGoalString = JSONObject("new goal")
 //                navController.navigate(route = CreateBehavior("newGoalString"))
-            })
+            )
         }
     }
 }
@@ -127,43 +109,26 @@ fun GoalCreator(context: Context, onFormValidChanged: (Boolean) -> Unit, modifie
     var expanded by remember { mutableStateOf(false) }
     var fieldSize by remember { mutableStateOf(Size.Zero)}
 
-    LaunchedEffect(Unit){
-        DatabaseService.fetchTable(
-            "category", context,
-            { categories ->
-                val newItems = JSONObject()
-                for (i in 0 until categories.length()) {
-                    val category = categories.getJSONObject(i)
-                    val id = category.getString("id")
-                    val name = category.getString("name")
-                    newItems.put(id, name)
-                }
-                existingCategories.value = newItems
-                println(existingCategories)
-                Log.d("API_SUCCESS_CATEGORIES", categories.toString())
-            },
-            { error -> Log.e("API_ERROR", error.toString()) }
-        )
-    }
+    LaunchedEffect(Unit){ loadCategory(context) }
 
-    LaunchedEffect(goal.value, categoryValue.value) {
-        val isValid = goal.value.isNotBlank() && categoryValue.value.isNotBlank()
+    LaunchedEffect(VariableModel.goal.value, VariableModel.categoryValue.value) {
+        val isValid = VariableModel.goal.value.isNotBlank() && VariableModel.categoryValue.value.isNotBlank()
         println("worked")
         onFormValidChanged(isValid)
     }
 
-    val keys = existingCategories.value.keys().asSequence().toList()
+    val keys = VariableModel.existingCategories.value.keys().asSequence().toList()
     val verticalScroll = rememberScrollState()
 
     Column(
         modifier = modifier.padding(top = 48.dp, bottom = 48.dp)
     ) {
         OutlinedTextField(
-            value = goal.value,
+            value = VariableModel.goal.value,
             label = { Text("Your goal") },
             placeholder = { Text("Eat more fruit...") },
             onValueChange = { newText ->
-                goal.value = newText
+                VariableModel.goal.value = newText
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -172,8 +137,8 @@ fun GoalCreator(context: Context, onFormValidChanged: (Boolean) -> Unit, modifie
         )
 
         OutlinedTextField(
-            value = categoryValue.value,
-            onValueChange = { categoryValue.value = it },
+            value = VariableModel.categoryValue.value,
+            onValueChange = { VariableModel.categoryValue.value = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
@@ -207,20 +172,20 @@ fun GoalCreator(context: Context, onFormValidChanged: (Boolean) -> Unit, modifie
                 color = C.LightBlue)
         ) {
             keys.forEachIndexed { index, key ->
-                val value = existingCategories.value.getString(key)
+                val value = VariableModel.existingCategories.value.getString(key)
                 DropdownMenuItem(
                     text = {
                         Text(
                             text = value,
-                            color = (if (categoryValue.value == value) Color.White else Color.Black)
+                            color = (if (VariableModel.categoryValue.value == value) Color.White else Color.Black)
                         )
                     },
                     onClick = {
-                        categoryValue.value = value
+                        VariableModel.categoryValue.value = value
                         expanded = false
                     },
                     modifier = Modifier
-                        .background(if (categoryValue.value == value) C.LightBlue else Color.White)
+                        .background(if (VariableModel.categoryValue.value == value) C.LightBlue else Color.White)
                 )
             }
         }
@@ -263,7 +228,7 @@ fun CreateGoalPreview() {
                     style = Typography.titleMedium
                 )
 //                GoalCreator(context)
-                ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, validGoal.value, {
+                ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.validGoal.value, {
                     val newGoalString = JSONObject("new goal").toString()
                     navController.navigate(route = CreateBehavior(newGoalString))
                 })

@@ -18,4 +18,9 @@ object VariableModel {
     val connectedBehaviors = mutableStateListOf<Map<String, Any?>>()
     val detailsBehaviors = mutableStateListOf<Map<String, Any?>>()
     val combinedBehaviors = mutableStateListOf<Map<String, Any?>>()
+
+    var validGoal = mutableStateOf(false)
+    var categoryValue = mutableStateOf("")
+    var goal = mutableStateOf("")
+    var existingCategories = mutableStateOf(JSONObject())
 }
