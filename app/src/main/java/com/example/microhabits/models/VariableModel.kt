@@ -14,4 +14,8 @@ object VariableModel {
     val allBehaviors = mutableStateListOf<Map<String, Any?>>()
     val todayBehaviors = mutableStateListOf<Map<String, Any?>>()
     val userGoals = mutableStateListOf<Map<String, Any?>>()
+
+    val connectedBehaviors = mutableStateListOf<Map<String, Any?>>()
+    val detailsBehaviors = mutableStateListOf<Map<String, Any?>>()
+    val combinedBehaviors = mutableStateListOf<Map<String, Any?>>()
 }

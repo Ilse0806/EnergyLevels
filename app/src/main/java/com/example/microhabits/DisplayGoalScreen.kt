@@ -1,7 +1,6 @@
 package com.example.microhabits
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +26,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButtonDefaults.borderStroke
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,17 +34,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.microhabits.api.DatabaseService
 import com.example.microhabits.components.InformationDetails
+import com.example.microhabits.models.DisplayGoalModel
+import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import org.json.JSONObject
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
-val connectedBehaviors = mutableStateListOf<Map<String, Any?>>()
-val detailsBehaviors = mutableStateListOf<Map<String, Any?>>()
-val combinedBehaviors = mutableStateListOf<Map<String, Any?>>()
 
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -56,67 +52,11 @@ fun DisplayGoalScreen(navController: NavController, goalMap: DisplayGoal) {
     val goalId = goal.getInt("id")
     val context = LocalContext.current
 
-    connectedBehaviors.clear()
-    detailsBehaviors.clear()
-    combinedBehaviors.clear()
+    VariableModel.connectedBehaviors.clear()
+    VariableModel.detailsBehaviors.clear()
+    VariableModel.combinedBehaviors.clear()
 
-    val behaviors = mutableListOf<Int>()
-    DatabaseService.getRow(
-        "user_behavior", mapOf("goal_id" to goalId, "fetch_one" to false), context,
-        { detailsBehaviorResponse ->
-            val rows = detailsBehaviorResponse.getJSONArray("rows")
-            for (i in 0 until rows.length()) {
-                val behaviorId = rows.getJSONObject(i)["behavior_id"] as Int
-                behaviors.add(behaviorId)
-
-                val behavior = rows.getJSONObject(i)
-                val map = behavior.keys().asSequence().associateWith { key ->
-                    behavior.opt(key)
-                }
-                val exists = detailsBehaviors.any { it["id"] == map["id"] }
-
-                if (!exists) {
-                    detailsBehaviors.add(map)
-                }
-            }
-
-            DatabaseService.getRow(
-                "behavior", mapOf("id" to behaviors, "fetch_one" to false), context,
-                { fullBehaviorResponse ->
-                    val allBehaviors = fullBehaviorResponse.getJSONArray("rows")
-                    for (i in 0 until allBehaviors.length()) {
-                        val r = allBehaviors.get(i) as JSONObject
-                        val map = r.keys().asSequence().associateWith { key ->
-                            r.opt(key)
-                        }
-
-                        val exists = connectedBehaviors.any { it["id"] == map["id"] }
-                        if (!exists) {
-                            connectedBehaviors.add(map)
-                        }
-                    }
-
-                    val habitsById = connectedBehaviors.associateBy { it["id"] as Int }
-                    detailsBehaviors.forEach { behavior ->
-                        val habitId = behavior["behavior_id"] as Int
-                        val habit = habitsById[habitId]
-                        habit?.let {
-                            val combined = mutableMapOf<String, Any?>()
-                            combined.putAll(habit)
-                            combined.putAll(behavior)
-                            combinedBehaviors.add(combined)
-                        }
-                    }
-
-                    Log.d("GOALS GOTTEN in display goal", fullBehaviorResponse.toString())
-                },
-                { error -> Log.e("API_ERROR", error.toString()) }
-            )
-
-            Log.d("API_SUCCESS", detailsBehaviorResponse.toString())
-        },
-        { error -> Log.e("API_ERROR", error.toString()) }
-    )
+    DisplayGoalModel.loadGoals(context, goalId)
 
     val scrollState = rememberScrollState()
     Scaffold(
@@ -135,12 +75,13 @@ fun DisplayGoalScreen(navController: NavController, goalMap: DisplayGoal) {
         ) {
             Intro(goal)
             InformationDetails(goal)
-            BehaviorsDisplayed(navController, combinedBehaviors)
+            BehaviorsDisplayed(navController, VariableModel.combinedBehaviors)
             Box(Modifier.padding(innerPadding))
         }
     }
 }
 
+// Move this to a different file later if it's also used for the behaviorDetails
 @Composable
 fun Intro(goal: JSONObject) {
     Box(
