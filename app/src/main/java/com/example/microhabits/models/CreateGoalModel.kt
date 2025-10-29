@@ -32,18 +32,24 @@ object CreateGoalModel {
 
     fun saveCategory(context: Context) {
         val allCats = VariableModel.existingCategories.value.keys().asSequence().toList()
-        for (key in allCats) {
-            val category = VariableModel.existingCategories.value.getString(key)
-            if (VariableModel.categoryValue.value != category) {
-                DatabaseService.updateRow(
-                    "category", mapOf("name" to VariableModel.categoryValue.value), context,
-                    { savedCategory ->
-                        Log.d("API_SUCCESS", savedCategory.toString())
-                    },
-                    { error -> Log.e("API_ERROR", error.toString()) }
-                )
-                break
-            }
+
+        val existingId = allCats.find { key ->
+            VariableModel.existingCategories.value.getString(key) == VariableModel.categoryValue.value
+        }
+
+        if (existingId == null) {
+            DatabaseService.updateRow(
+                "category", mapOf("name" to VariableModel.categoryValue.value), context,
+                { savedCategory ->
+                    VariableModel.goalCategory.value.put("id", savedCategory.get("id"))
+                    VariableModel.goalCategory.value.put("name", VariableModel.categoryValue.value)
+                    Log.d("API_SUCCESS", savedCategory.toString())
+                },
+                { error -> Log.e("API_ERROR", error.toString()) }
+            )
+        } else {
+            VariableModel.goalCategory.value.put("id", existingId.toInt())
+            VariableModel.goalCategory.value.put("name", VariableModel.categoryValue.value)
         }
     }
 }

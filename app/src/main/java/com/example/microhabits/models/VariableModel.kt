@@ -24,5 +24,6 @@ object VariableModel {
     var validGoal = mutableStateOf(false)
     var categoryValue = mutableStateOf("")
     var goal = mutableStateOf("")
+    var goalCategory = mutableStateOf(JSONObject())
     var existingCategories = mutableStateOf(JSONObject())
 }
