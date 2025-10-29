@@ -8,6 +8,8 @@ import androidx.compose.runtime.setValue
 import org.json.JSONObject
 
 object VariableModel {
+    var navBarHeight = mutableIntStateOf(0)
+
     var user by mutableStateOf<JSONObject?>(null)
     var userName by mutableStateOf("")
     var userId by mutableIntStateOf(0)

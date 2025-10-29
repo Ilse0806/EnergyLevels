@@ -1,4 +1,4 @@
-package com.example.microhabits
+package com.example.microhabits.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -37,6 +37,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.microhabits.CreateGoal
+import com.example.microhabits.DisplayGoal
+import com.example.microhabits.Navigation
 import com.example.microhabits.components.ButtonPrimary
 import com.example.microhabits.helpers.TodayBehaviorsDisplayed
 import com.example.microhabits.models.HomeViewModel

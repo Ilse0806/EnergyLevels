@@ -29,7 +29,6 @@ import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -45,12 +44,20 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.microhabits.models.VariableModel
+import com.example.microhabits.screens.CreateBehaviorScreen
+import com.example.microhabits.screens.CreateGoalScreen
+import com.example.microhabits.screens.DisplayBehaviorScreen
+import com.example.microhabits.screens.DisplayGoalScreen
+import com.example.microhabits.screens.GoalsDisplay
+import com.example.microhabits.screens.HomeScreen
+import com.example.microhabits.screens.ProfileScreen
+import com.example.microhabits.screens.ProgressScreen
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import kotlinx.serialization.Serializable
 
 
-// All objects for navigation + global variables are initialized here:
+// All objects for navigation
 @Serializable
 object Home
 @Serializable
@@ -72,8 +79,6 @@ data class BottomNavItem(
     val title: String,
     val icon: ImageVector
 )
-
-var navBarHeight = mutableIntStateOf(0)
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -127,7 +132,7 @@ fun Navigation(navController: NavController) {
         modifier = Modifier
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .onGloballyPositioned{ coordinates ->
-                navBarHeight.intValue = coordinates.size.height
+                VariableModel.navBarHeight.intValue = coordinates.size.height
             }
     ) {
         val navBackStackEntry = navController.currentBackStackEntryAsState()

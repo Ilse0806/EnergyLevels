@@ -1,4 +1,4 @@
-package com.example.microhabits
+package com.example.microhabits.screens
 
 import android.content.Context
 import android.os.Build
@@ -46,6 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.microhabits.CreateBehavior
+import com.example.microhabits.Home
+import com.example.microhabits.Navigation
 import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
 import com.example.microhabits.helpers.crop
@@ -94,11 +97,10 @@ fun CreateGoalScreen (navController: NavController) {
                 valid -> VariableModel.validGoal.value = valid
             })
             ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.validGoal.value,
-                { saveCategory(context) }
-
-//                val newGoalString = VariableModel.goal
-//                val newGoalString = JSONObject("new goal")
-//                navController.navigate(route = CreateBehavior("newGoalString"))
+                {
+                    saveCategory(context)
+                    navController.navigate(route = CreateBehavior(VariableModel.goal.toString()))
+                }
             )
         }
     }
@@ -113,7 +115,6 @@ fun GoalCreator(context: Context, onFormValidChanged: (Boolean) -> Unit, modifie
 
     LaunchedEffect(VariableModel.goal.value, VariableModel.categoryValue.value) {
         val isValid = VariableModel.goal.value.isNotBlank() && VariableModel.categoryValue.value.isNotBlank()
-        println("worked")
         onFormValidChanged(isValid)
     }
 

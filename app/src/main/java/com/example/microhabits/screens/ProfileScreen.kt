@@ -1,4 +1,4 @@
-package com.example.microhabits
+package com.example.microhabits.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.microhabits.Navigation
+import com.example.microhabits.Profile
 import org.json.JSONObject
 
 @OptIn(ExperimentalLayoutApi::class)

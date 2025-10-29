@@ -1,4 +1,4 @@
-package com.example.microhabits
+package com.example.microhabits.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -19,11 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.microhabits.Navigation
 
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CreateBehaviorScreen (navController: NavController, newGoal: CreateBehavior) {
+fun ProgressScreen (navController: NavController) {
     val scrollState = rememberScrollState()
     Scaffold(
         bottomBar = {
@@ -39,7 +40,7 @@ fun CreateBehaviorScreen (navController: NavController, newGoal: CreateBehavior)
                 .padding(start = 16.dp, end = 16.dp)
                 .verticalScroll(scrollState)
         ) {
-            Text("New behavior")
+            Text("Create Goal")
             Box(Modifier.padding(innerPadding))
         }
     }
