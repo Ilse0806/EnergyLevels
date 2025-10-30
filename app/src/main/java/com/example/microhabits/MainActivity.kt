@@ -48,6 +48,7 @@ import com.example.microhabits.screens.CreateBehaviorScreen
 import com.example.microhabits.screens.CreateGoalScreen
 import com.example.microhabits.screens.DisplayBehaviorScreen
 import com.example.microhabits.screens.DisplayGoalScreen
+import com.example.microhabits.screens.FocusMapScreen
 import com.example.microhabits.screens.GoalsDisplay
 import com.example.microhabits.screens.HomeScreen
 import com.example.microhabits.screens.ProfileScreen
@@ -71,7 +72,9 @@ data class DisplayGoal(val goal: String)
 @Serializable
 data class DisplayBehavior(val behavior: String)
 @Serializable
-data class CreateBehavior(val goal: String)
+object CreateBehavior
+@Serializable
+object FocusMap
 
 data class BottomNavItem(
     val destination: () -> Any,
@@ -106,10 +109,8 @@ class MainActivity : ComponentActivity() {
                         val behavior: DisplayBehavior = backStackEntry.toRoute()
                         DisplayBehaviorScreen(navController, behavior)
                     }
-                    composable<CreateBehavior> { backStackEntry ->
-                        val newGoal: CreateBehavior = backStackEntry.toRoute()
-                        CreateBehaviorScreen(navController, newGoal)
-                    }
+                    composable<CreateBehavior> { CreateBehaviorScreen(navController) }
+                    composable<FocusMap> { FocusMapScreen(navController) }
                 }
             }
 

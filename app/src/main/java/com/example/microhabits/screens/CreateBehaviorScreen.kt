@@ -97,12 +97,12 @@ fun CreateBehaviorScreen (navController: NavController) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 48.dp)
             )
-            Text("New behavior")
             ExistingBehaviors()
             PersonalizedBehaviors()
             SelectedBehaviors()
             ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.selectedBehaviors.value.length() >= 5,
                 {
+                    navController.navigate(route = FocusMap)
                 }
             )
             Box(Modifier.padding(innerPadding))
