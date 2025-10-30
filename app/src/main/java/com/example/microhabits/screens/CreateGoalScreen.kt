@@ -99,7 +99,7 @@ fun CreateGoalScreen (navController: NavController) {
             ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.validGoal.value,
                 {
                     saveCategory(context)
-                    navController.navigate(route = CreateBehavior(VariableModel.goal.toString()))
+                    navController.navigate(route = CreateBehavior)
                 }
             )
         }
@@ -231,7 +231,7 @@ fun CreateGoalPreview() {
 //                GoalCreator(context)
                 ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.validGoal.value, {
                     val newGoalString = JSONObject("new goal").toString()
-                    navController.navigate(route = CreateBehavior(newGoalString))
+                    navController.navigate(route = CreateBehavior)
                 })
             }
         }

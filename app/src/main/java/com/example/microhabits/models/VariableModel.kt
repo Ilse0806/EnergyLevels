@@ -26,4 +26,7 @@ object VariableModel {
     var goal = mutableStateOf("")
     var goalCategory = mutableStateOf(JSONObject())
     var existingCategories = mutableStateOf(JSONObject())
+
+    var selectedBehaviors = mutableStateOf(JSONObject())
+    var personalizedBehaviors = mutableStateOf(JSONObject())
 }
