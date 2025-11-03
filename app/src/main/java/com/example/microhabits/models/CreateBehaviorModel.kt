@@ -27,6 +27,8 @@ object CreateBehaviorModel {
 //            Add value to use in front-end
             val behavior = categories.getJSONObject(i)
             behavior.put("isAdded", false)
+            behavior.put("impactSliderValue", 1f)
+            behavior.put("feasibilitySliderValue", 1f)
             newExampleObject.put(i.toString(), behavior)
         }
         exampleBehaviors.value = newExampleObject

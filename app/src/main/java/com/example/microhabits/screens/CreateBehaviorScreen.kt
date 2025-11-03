@@ -95,7 +95,7 @@ fun CreateBehaviorScreen (navController: NavController) {
                 text = "Connect your goal to a new behavior",
                 style = Typography.titleLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 48.dp)
+                modifier = Modifier.padding(top = 16.dp)
             )
             ExistingBehaviors()
             PersonalizedBehaviors()
@@ -113,12 +113,12 @@ fun CreateBehaviorScreen (navController: NavController) {
 @Composable
 fun ExistingBehaviors(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
+        modifier = modifier.padding(top = 48.dp)
     ) {
         if (exampleBehaviors.value.length() > 0) {
             Text(
                 text = "Example behaviors",
-                style = Typography.labelSmall
+                style = Typography.labelSmall,
             )
             exampleBehaviors.value.keys().forEach { key ->
                 val cat = exampleBehaviors.value.getJSONObject(key)
@@ -194,6 +194,8 @@ fun PersonalizedBehaviors(modifier: Modifier = Modifier) {
                         val jsonObject = JSONObject().apply {
                             put("name", text)
                             put("isAdded", true)
+                            put("impactSliderValue", 1f)
+                            put("feasibilitySliderValue", 1f)
                         }
                         val add = JSONObject(VariableModel.selectedBehaviors.value.toString()).apply {
                             put("0$i", jsonObject)

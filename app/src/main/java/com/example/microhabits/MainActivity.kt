@@ -6,14 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.isImeVisible
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -35,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -49,7 +39,6 @@ import com.example.microhabits.screens.CreateGoalScreen
 import com.example.microhabits.screens.DisplayBehaviorScreen
 import com.example.microhabits.screens.DisplayGoalScreen
 import com.example.microhabits.screens.FocusMapScreen
-import com.example.microhabits.screens.GoalsDisplay
 import com.example.microhabits.screens.HomeScreen
 import com.example.microhabits.screens.ProfileScreen
 import com.example.microhabits.screens.ProgressScreen
@@ -174,29 +163,4 @@ fun Navigation(navController: NavController) {
         }
     }
 
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MicroHabitsTheme(dynamicColor = false) {
-        Scaffold(
-            bottomBar = {
-                if (!WindowInsets.isImeVisible) {
-                    Navigation(rememberNavController())
-                }
-            },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
-            Column(
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                Text("hi")
-            }
-            GoalsDisplay(rememberNavController())
-        }
-    }
 }
