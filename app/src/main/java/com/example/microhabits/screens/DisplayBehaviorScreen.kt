@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.microhabits.DisplayBehavior
 import com.example.microhabits.Navigation
-import com.example.microhabits.components.InformationDetails
+import com.example.microhabits.components.GoalDetails
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import org.json.JSONObject
@@ -85,7 +85,7 @@ fun BehaviorDetailsShown(fullBehavior: JSONObject) {
             }
         }
 
-        InformationDetails(fullBehavior)
+        GoalDetails(fullBehavior)
     }
 }
 

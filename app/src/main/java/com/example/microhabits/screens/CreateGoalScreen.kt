@@ -51,6 +51,7 @@ import com.example.microhabits.Home
 import com.example.microhabits.Navigation
 import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
+import com.example.microhabits.components.SingleDropdown
 import com.example.microhabits.helpers.crop
 import com.example.microhabits.models.CreateGoalModel.loadCategory
 import com.example.microhabits.models.CreateGoalModel.saveCategory
@@ -119,7 +120,6 @@ fun GoalCreator(context: Context, onFormValidChanged: (Boolean) -> Unit, modifie
     }
 
     val keys = VariableModel.existingCategories.value.keys().asSequence().toList()
-    val verticalScroll = rememberScrollState()
 
     Column(
         modifier = modifier.padding(top = 48.dp, bottom = 48.dp)
@@ -155,41 +155,17 @@ fun GoalCreator(context: Context, onFormValidChanged: (Boolean) -> Unit, modifie
             textStyle = Typography.bodyMedium
         )
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            shape = RoundedCornerShape(8.dp),
-            modifier = Modifier
-                .width(with(LocalDensity.current) { fieldSize.width.toDp() })
-                .crop(vertical = 8.dp)
-                .verticalScroll(verticalScroll)
-                .heightIn(max = 200.dp),
-            containerColor = Color.Transparent,
-            offset = DpOffset(0.dp, 4.dp),
-            tonalElevation = 0.dp,
-            shadowElevation = 0.dp,
-            border = BorderStroke(
-                width = 1.dp,
-                color = C.LightBlue)
-        ) {
-            keys.forEachIndexed { index, key ->
-                val value = VariableModel.existingCategories.value.getString(key)
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = value,
-                            color = (if (VariableModel.categoryValue.value == value) Color.White else Color.Black)
-                        )
-                    },
-                    onClick = {
-                        VariableModel.categoryValue.value = value
-                        expanded = false
-                    },
-                    modifier = Modifier
-                        .background(if (VariableModel.categoryValue.value == value) C.LightBlue else Color.White)
-                )
-            }
+        val values = keys.map { key ->
+            VariableModel.existingCategories.value.getString(key)
         }
+
+        SingleDropdown(
+            values,
+            expanded,
+            VariableModel.categoryValue.value,
+            fieldSize,
+            { newSelection -> VariableModel.categoryValue.value = newSelection },
+            { newVal -> expanded = newVal })
     }
 }
 

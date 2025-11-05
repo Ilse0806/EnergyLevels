@@ -37,7 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.DisplayBehavior
 import com.example.microhabits.DisplayGoal
 import com.example.microhabits.Navigation
-import com.example.microhabits.components.InformationDetails
+import com.example.microhabits.components.GoalDetails
 import com.example.microhabits.models.DisplayGoalModel
 import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
@@ -77,7 +77,7 @@ fun DisplayGoalScreen(navController: NavController, goalMap: DisplayGoal) {
                 .verticalScroll(scrollState)
         ) {
             Intro(goal)
-            InformationDetails(goal)
+            GoalDetails(goal)
             BehaviorsDisplayed(navController, VariableModel.combinedBehaviors)
             Box(Modifier.padding(innerPadding))
         }
@@ -171,7 +171,7 @@ fun DisplayGoalPreview() {
                     .padding(start = 16.dp, end = 16.dp)
             ) {
                 Intro(JSONObject("""{"deadline":null,"description":"Get healthier by training","id":1,"name":"Get healthier"}"""))
-                InformationDetails(JSONObject("""{"deadline":null,"description":"Get healthier by training","id":1,"name":"Get healthier"}"""))
+                GoalDetails(JSONObject("""{"deadline":null,"description":"Get healthier by training","id":1,"name":"Get healthier"}"""))
             }
         }
     }
