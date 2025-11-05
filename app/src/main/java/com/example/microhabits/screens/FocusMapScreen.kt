@@ -2,6 +2,8 @@ package com.example.microhabits.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -38,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +51,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.CreateGoal
 import com.example.microhabits.FocusMap
 import com.example.microhabits.Navigation
+import com.example.microhabits.SelectBehavior
 import com.example.microhabits.components.ButtonSecondary
 import com.example.microhabits.components.CollapseContent
 import com.example.microhabits.components.ContinueButton
@@ -96,7 +100,7 @@ fun FocusMapScreen(navController: NavController) {
             ScaleBehaviors()
             ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, true,
                 {
-                    navController.navigate(route = "")
+                    navController.navigate(route = SelectBehavior)
                 }
             )
             Box(Modifier.padding(innerPadding))
@@ -114,6 +118,10 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
         var impactSliderValue by remember { mutableFloatStateOf(data.getInt("impactSliderValue").toFloat()) }
         var feasibilitySliderValue by remember { mutableFloatStateOf(data.getInt("feasibilitySliderValue").toFloat()) }
 
+        val rotation by animateFloatAsState(
+            targetValue = if (expanded) 180f else 0f,
+            animationSpec = tween(durationMillis = 300)
+        )
         Column (
             modifier = modifier.padding(bottom = 16.dp)
         ) {
@@ -142,10 +150,11 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                         color = C.Indigo,
                         content = {
                             Icon(
-                                imageVector = Icons.Default.ArrowDropDown,
+                                imageVector = Icons.Default.KeyboardArrowDown,
                                 contentDescription = "Collapse",
                                 modifier = Modifier
                                     .size(24.dp)
+                                    .rotate(rotation)
                             )
                         },
                         contentPadding = PaddingValues(0.dp)
@@ -324,7 +333,7 @@ fun PreviewFocusMap() {
                 modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
             )
             ScaleBehaviors()
-            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.selectedBehaviors.value.length() > 5,
+            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, true,
                 {
                     navController.navigate(route = FocusMap)
                 }

@@ -1,5 +1,6 @@
 package com.example.microhabits.components
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -18,13 +19,15 @@ fun ButtonPrimary(
     modifier: Modifier = Modifier,
     shape: Shape = ButtonDefaults.shape,
     enabled: Boolean = true,
+    contentPadding : PaddingValues = ButtonDefaults.ContentPadding
     ) {
     Button (
         onClick = onClickAction,
         colors = buttonColor,
         modifier = modifier.focusDashBorder(color),
         enabled = enabled,
-        shape = shape
+        shape = shape,
+        contentPadding = contentPadding
     ) {
         content()
     }
