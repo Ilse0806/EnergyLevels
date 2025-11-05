@@ -100,7 +100,7 @@ fun CreateBehaviorScreen (navController: NavController) {
             ExistingBehaviors()
             PersonalizedBehaviors()
             SelectedBehaviors()
-            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.selectedBehaviors.value.length() >= 5,
+            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.selectedBehaviors.value.length() >= 2,
                 {
                     navController.navigate(route = FocusMap)
                 }

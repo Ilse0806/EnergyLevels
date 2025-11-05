@@ -42,6 +42,7 @@ import com.example.microhabits.screens.FocusMapScreen
 import com.example.microhabits.screens.HomeScreen
 import com.example.microhabits.screens.ProfileScreen
 import com.example.microhabits.screens.ProgressScreen
+import com.example.microhabits.screens.SelectBehaviorScreen
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import kotlinx.serialization.Serializable
@@ -64,6 +65,8 @@ data class DisplayBehavior(val behavior: String)
 object CreateBehavior
 @Serializable
 object FocusMap
+@Serializable
+object SelectBehavior
 
 data class BottomNavItem(
     val destination: () -> Any,
@@ -100,6 +103,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<CreateBehavior> { CreateBehaviorScreen(navController) }
                     composable<FocusMap> { FocusMapScreen(navController) }
+                    composable<SelectBehavior> { SelectBehaviorScreen(navController) }
                 }
             }
 

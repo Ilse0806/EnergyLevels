@@ -29,4 +29,5 @@ object VariableModel {
 
     var selectedBehaviors = mutableStateOf(JSONObject())
     var personalizedBehaviors = mutableStateOf(JSONObject())
+    var goldenBehaviors = mutableStateOf(JSONObject())
 }
