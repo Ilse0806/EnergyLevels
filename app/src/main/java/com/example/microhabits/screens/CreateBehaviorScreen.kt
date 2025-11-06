@@ -253,7 +253,7 @@ fun PersonalizedBehaviors(modifier: Modifier = Modifier) {
                         decorationBox = { innerTextField ->
                             innerTextField()
                         },
-                     )
+                    )
                     AddedBox(isAdded, ::onAdd, Color.White, C.GoldenAmber, isError = isError)
                 }
             }

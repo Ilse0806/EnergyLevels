@@ -38,6 +38,7 @@ fun Checkbox (
     text: String,
     modifier: Modifier = Modifier,
     isCheckbox: Boolean = true,
+    extraContent: @Composable () -> Unit = { }
 ) {
     Surface(
         color = if (checked) backgroundColor else Color.White,
@@ -68,6 +69,7 @@ fun Checkbox (
             if (!isCheckbox) {
                 AddedBox(checked, onCheckedChange, borderColor, backgroundColor)
             }
+            extraContent()
         }
     }
 }
