@@ -85,7 +85,9 @@ fun HomeScreen(navController: NavController) {
             Greeting(
                 name = VariableModel.userName
             )
-            TodayBehaviorsDisplayed(VariableModel.todayBehaviors)
+            TodayBehaviorsDisplayed(VariableModel.todayBehaviors) { bool, index ->
+                VariableModel.todayBehaviors[index].completedToday = bool
+            }
             if (!VariableModel.userGoals.isEmpty()) {
                 GoalsDisplay(navController)
             }

@@ -24,13 +24,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.microhabits.DisplayBehavior
 import com.example.microhabits.Navigation
-import com.example.microhabits.components.GoalDetails
+import com.example.microhabits.components.BehaviorDetails
+import com.example.microhabits.helpers.toUserBehaviorWithBehavior
+import com.example.microhabits.models.UserBehaviorWithBehavior
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import org.json.JSONObject
@@ -40,8 +41,7 @@ import org.json.JSONObject
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DisplayBehaviorScreen (navController: NavController, receivedBehaviors: DisplayBehavior) {
-    val receivedBehaviorsObject = JSONObject(receivedBehaviors.behavior)
-    val context = LocalContext.current
+    val behavior = JSONObject(receivedBehaviors.behavior).toUserBehaviorWithBehavior()
 
     val scrollState = rememberScrollState()
     Scaffold(
@@ -58,13 +58,13 @@ fun DisplayBehaviorScreen (navController: NavController, receivedBehaviors: Disp
                 .padding(start = 16.dp, end = 16.dp)
                 .verticalScroll(scrollState)
         ) {
-            BehaviorDetailsShown(receivedBehaviorsObject)
+            BehaviorDetailsShown(behavior)
         }
     }
 }
 
 @Composable
-fun BehaviorDetailsShown(fullBehavior: JSONObject) {
+fun BehaviorDetailsShown(fullBehavior: UserBehaviorWithBehavior) {
     Column {
         Column(
             modifier = Modifier
@@ -74,18 +74,18 @@ fun BehaviorDetailsShown(fullBehavior: JSONObject) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = fullBehavior.get("name").toString(),
+                text = fullBehavior.behavior.name,
                 style = Typography.titleMedium,
             )
-            if (fullBehavior.get("description").toString().isEmpty()) {
+            if (fullBehavior.behavior.description.isEmpty()) {
                 Text(
-                    text = fullBehavior.get("description").toString(),
+                    text = fullBehavior.behavior.description,
                     style = Typography.bodyMedium,
                 )
             }
         }
 
-        GoalDetails(fullBehavior)
+        BehaviorDetails(fullBehavior)
     }
 }
 

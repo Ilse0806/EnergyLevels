@@ -42,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,7 +57,6 @@ import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
 import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.Typography
-import org.json.JSONObject
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
@@ -67,7 +65,6 @@ import com.example.microhabits.ui.theme.Color as C
 @Composable
 fun FocusMapScreen(navController: NavController) {
     val scrollState = rememberScrollState()
-    val context = LocalContext.current
 
     Scaffold(
         bottomBar = {
@@ -110,13 +107,10 @@ fun FocusMapScreen(navController: NavController) {
 
 @Composable
 fun ScaleBehaviors(modifier: Modifier = Modifier) {
-    val allBehaviors = VariableModel.selectedBehaviors.value
-
-    allBehaviors.keys().asSequence().withIndex().forEach { (index, behavior) ->
-        val data = allBehaviors.get(behavior) as JSONObject
+    VariableModel.selectedBehaviors.forEachIndexed { index, fullBehavior ->
         var expanded by remember { mutableStateOf(index == 0)}
-        var impactSliderValue by remember { mutableFloatStateOf(data.getInt("impactSliderValue").toFloat()) }
-        var feasibilitySliderValue by remember { mutableFloatStateOf(data.getInt("feasibilitySliderValue").toFloat()) }
+        var impactSliderValue by remember { mutableFloatStateOf(fullBehavior.userBehavior.impactSliderValue) }
+        var feasibilitySliderValue by remember { mutableFloatStateOf(fullBehavior.userBehavior.feasibilitySliderValue) }
 
         val rotation by animateFloatAsState(
             targetValue = if (expanded) 180f else 0f,
@@ -139,7 +133,7 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = data.getString("name"),
+                        text = fullBehavior.behavior.name,
                         style = Typography.bodyLarge,
                     )
                     ButtonSecondary(
@@ -187,7 +181,7 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                                     impactSliderValue,
                                     { newValue ->
                                         impactSliderValue = newValue
-                                        data.put("impactSliderValue", newValue)
+                                        fullBehavior.userBehavior.impactSliderValue = newValue
                                     },
                                     C.Red,
                                     C.Indigo,
@@ -236,7 +230,7 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                                     feasibilitySliderValue,
                                     { newValue ->
                                         feasibilitySliderValue = newValue
-                                        data.put("feasibilitySliderValue", newValue)
+                                        fullBehavior.userBehavior.feasibilitySliderValue = newValue
                                     },
                                     C.Indigo,
                                     C.Red,

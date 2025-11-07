@@ -37,6 +37,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.example.microhabits.models.UserBehaviorWithBehavior
+import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.getSwitchColors
 import org.json.JSONObject
@@ -63,15 +65,20 @@ fun GoalDetails(goal: JSONObject, modifier: Modifier = Modifier, color: Color = 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun BehaviorDetails(behavior: JSONObject, modifier: Modifier = Modifier, color: Color = C.LightBlue) {
+fun BehaviorDetails(
+    fullBehavior: UserBehaviorWithBehavior,
+    modifier: Modifier = Modifier,
+    color: Color = C.LightBlue,
+    buttonColor: ButtonColors = ButtonC.LightBluePrimary
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Description(behavior.getString("description"), Modifier.padding(vertical = 0.dp), color)
-        NotificationSelector(C.LightBlue, ButtonC.LightBluePrimary)
-        AnchorActionInput(C.LightBlue, Modifier.padding(vertical = 24.dp))
-        FrequencyInput(C.LightBlue, ButtonC.LightBluePrimary)
+        Description(fullBehavior.behavior.description, Modifier.padding(vertical = 0.dp), color)
+        NotificationSelector(fullBehavior, color, buttonColor)
+        AnchorActionInput(color, Modifier.padding(vertical = 24.dp))
+        FrequencyInput(color, buttonColor)
     }
 }
 
@@ -100,7 +107,9 @@ fun Description(description: String, modifier: Modifier = Modifier, color: Color
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NotificationSelector(color: Color, buttonColor: ButtonColors, notificationOn: Boolean = true) {
+fun NotificationSelector(fullBehavior: UserBehaviorWithBehavior, color: Color, buttonColor: ButtonColors, notificationOn: Boolean = true) {
+    println(fullBehavior)
+    println(VariableModel.selectedBehaviors)
     var checked by remember { mutableStateOf(notificationOn) }
     Row (
         modifier = Modifier
@@ -117,6 +126,13 @@ fun NotificationSelector(color: Color, buttonColor: ButtonColors, notificationOn
             checked = checked,
             onCheckedChange = {
                 checked = it
+                if (checked) {
+                    val new = VariableModel.chosenBehaviors.value + fullBehavior
+                    VariableModel.chosenBehaviors.value = new
+                } else {
+                    val old = VariableModel.chosenBehaviors.value - fullBehavior
+                    VariableModel.chosenBehaviors.value = old
+                }
             },
             colors = getSwitchColors(color)
         )

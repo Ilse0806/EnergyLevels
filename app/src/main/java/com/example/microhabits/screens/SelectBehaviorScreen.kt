@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -54,9 +53,12 @@ import com.example.microhabits.components.Checkbox
 import com.example.microhabits.components.CollapseContent
 import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
+import com.example.microhabits.models.BehaviorModel.calculateGoldenBehavior
+import com.example.microhabits.models.BehaviorModel.saveChangesBehavior
+import com.example.microhabits.models.BehaviorModel.sortItems
+import com.example.microhabits.models.UserBehaviorWithBehavior
 import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.Typography
-import org.json.JSONObject
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
@@ -65,14 +67,13 @@ import com.example.microhabits.ui.theme.Color as C
 @Composable
 fun SelectBehaviorScreen(navController: NavController) {
     val scrollState = rememberScrollState()
-    val context = LocalContext.current
 
     LaunchedEffect(Unit){
         calculateGoldenBehavior()
     }
 
-    val goldenItems = sortItems(VariableModel.goldenBehaviors.value)
-    val remainingItems = sortItems(VariableModel.selectedBehaviors.value) - goldenItems
+    val goldenItems = sortItems(VariableModel.goldenBehaviors)
+    val remainingItems = sortItems(VariableModel.selectedBehaviors) - goldenItems
 
     Scaffold(
         bottomBar = {
@@ -94,6 +95,7 @@ fun SelectBehaviorScreen(navController: NavController) {
             AvailableBehaviors(goldenItems, remainingItems)
             ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, true,
                 {
+                    saveChangesBehavior()
                     navController.navigate(route = SelectBehavior)
                 }
             )
@@ -102,38 +104,11 @@ fun SelectBehaviorScreen(navController: NavController) {
     }
 }
 
-fun calculateGoldenBehavior() {
-    VariableModel.selectedBehaviors.value.keys().asSequence().withIndex().forEach { (index, behavior) ->
-        val data = VariableModel.selectedBehaviors.value.get(behavior) as JSONObject
-        val impactValue = data.getInt("impactSliderValue")
-        val feasibilityValue = data.getInt("feasibilitySliderValue")
-
-        if (impactValue > 5 && feasibilityValue > 5) {
-            val newObject = JSONObject(VariableModel.goldenBehaviors.value.toString()).apply {
-                put(behavior, data)
-            }
-            VariableModel.goldenBehaviors.value = newObject
-        }
-    }
-}
-
-fun sortItems(allItems: JSONObject): List<JSONObject> {
-    val items = allItems.keys().asSequence()
-        .map { key -> allItems.getJSONObject(key) }
-        .toList()
-    val sortedItems = items.sortedWith(
-        compareBy<JSONObject>(
-            { it.getInt("feasibilitySliderValue") },
-            { it.getInt("impactSliderValue") }
-        )
-    )
-
-    return sortedItems
-}
-
 @Composable
-fun AvailableBehaviors(goldenBehaviors: List<JSONObject>, remainingBehaviors: List<JSONObject>, modifier: Modifier = Modifier) {
+fun AvailableBehaviors(goldenBehaviors: List<UserBehaviorWithBehavior>, remainingBehaviors: List<UserBehaviorWithBehavior>, modifier: Modifier = Modifier) {
     if (goldenBehaviors.isNotEmpty()) {
+        println("Golden Behaviors: $goldenBehaviors")
+
         Column {
             Text(
                 "These are your golden behaviors:",
@@ -145,6 +120,7 @@ fun AvailableBehaviors(goldenBehaviors: List<JSONObject>, remainingBehaviors: Li
         }
     }
     if (remainingBehaviors.isNotEmpty()) {
+        println("Remaining: $remainingBehaviors")
         Column {
             Text(
                 "These are your remaining behaviors:",
@@ -158,7 +134,7 @@ fun AvailableBehaviors(goldenBehaviors: List<JSONObject>, remainingBehaviors: Li
 }
 
 @Composable
-fun BehaviorData(behavior: JSONObject, color: Color, colorDetails: Color, checkBox: Boolean = false) {
+fun BehaviorData(fullBehavior: UserBehaviorWithBehavior, color: Color, colorDetails: Color, checkBox: Boolean = false) {
     var expanded by remember { mutableStateOf(true)}
     var isChecked by remember { mutableStateOf(false) }
 
@@ -204,7 +180,7 @@ fun BehaviorData(behavior: JSONObject, color: Color, colorDetails: Color, checkB
                     C.Indigo,
                     isChecked,
                     ::onCheckBehavior,
-                    behavior["name"] as String,
+                    fullBehavior.behavior.name,
                     extraContent = {
                         Spacer(Modifier.weight(1f))
                         Icon(
@@ -224,7 +200,7 @@ fun BehaviorData(behavior: JSONObject, color: Color, colorDetails: Color, checkB
                 )
             } else {
                 Text(
-                    text = behavior.getString("name"),
+                    text = fullBehavior.behavior.name,
                     style = Typography.bodyMedium.copy(
                         color = Color.White
                     ),
@@ -261,7 +237,7 @@ fun BehaviorData(behavior: JSONObject, color: Color, colorDetails: Color, checkB
                     )
             ) {
                 BehaviorDetails(
-                    behavior,
+                    fullBehavior,
                     Modifier.padding(12.dp),
                     colorDetails
                 )
@@ -292,7 +268,7 @@ fun PreviewSelectBehavior() {
             ReturnButton(ButtonC.CoralRedPrimary, C.CoralRed,{
                 navController.navigate(route = CreateGoal)
             })
-            AvailableBehaviors(listOf(JSONObject()), listOf(JSONObject()))
+//            AvailableBehaviors(listOf(JSONObject()), listOf(JSONObject()))
 
             ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, true,
                 {

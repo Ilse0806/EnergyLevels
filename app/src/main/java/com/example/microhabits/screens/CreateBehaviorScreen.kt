@@ -56,11 +56,16 @@ import com.example.microhabits.components.ButtonPrimary
 import com.example.microhabits.components.Checkbox
 import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
+import com.example.microhabits.models.Behavior
 import com.example.microhabits.models.CreateBehaviorModel.exampleBehaviors
 import com.example.microhabits.models.CreateBehaviorModel.loadBehaviorsForCategory
+import com.example.microhabits.models.UserBehavior
+import com.example.microhabits.models.UserBehaviorWithBehavior
 import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.Typography
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.LocalTime
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
@@ -71,7 +76,7 @@ fun CreateBehaviorScreen (navController: NavController) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
 
-    if (VariableModel.selectedBehaviors.value.length() == 0){
+    if (VariableModel.selectedBehaviors.isEmpty()){
         loadBehaviorsForCategory(VariableModel.goalCategory.value.get("id") as Int, context)
     }
     Scaffold(
@@ -100,7 +105,7 @@ fun CreateBehaviorScreen (navController: NavController) {
             ExistingBehaviors()
             PersonalizedBehaviors()
             SelectedBehaviors()
-            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.selectedBehaviors.value.length() >= 2,
+            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.selectedBehaviors.size >= 2,
                 {
                     navController.navigate(route = FocusMap)
                 }
@@ -115,40 +120,42 @@ fun ExistingBehaviors(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(top = 48.dp)
     ) {
-        if (exampleBehaviors.value.length() > 0) {
+        if (exampleBehaviors.isNotEmpty()) {
             Text(
                 text = "Example behaviors",
                 style = Typography.labelSmall,
             )
-            exampleBehaviors.value.keys().forEach { key ->
-                val cat = exampleBehaviors.value.getJSONObject(key)
-                var isAdded by remember { mutableStateOf(cat.getBoolean("isAdded")) }
+            exampleBehaviors.forEachIndexed { index, key ->
+                val cat = exampleBehaviors[index]
+                var isAdded by remember { mutableStateOf(cat.userBehavior.isAdded) }
 
                 fun onAdd(newAdd: Boolean) {
                     isAdded = newAdd
-                    cat.put("isAdded", isAdded)
+                    cat.userBehavior.isAdded = isAdded
                     if (isAdded) {
-                        val add = JSONObject(VariableModel.selectedBehaviors.value.toString()).apply {
-                            put(key, cat)
+                        val newList = VariableModel.selectedBehaviors.apply {
+                            add(cat)
                         }
-                        VariableModel.selectedBehaviors.value = add
+                        VariableModel.selectedBehaviors = newList
                     } else {
-                        val remove = JSONObject(VariableModel.selectedBehaviors.value.toString())
-                        remove.remove(key)
-                        VariableModel.selectedBehaviors.value = remove
+                        val newList = VariableModel.selectedBehaviors.apply {
+                            remove(cat)
+                        }
+                        VariableModel.selectedBehaviors = newList
                     }
                 }
                 Spacer(modifier = Modifier.padding(top = 8.dp))
-                Checkbox(Color.White, C.GoldenAmber, isAdded, ::onAdd, cat.getString("name"), isCheckbox = false)
+                Checkbox(Color.White, C.GoldenAmber, isAdded, ::onAdd, cat.behavior.name, isCheckbox = false)
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalizedBehaviors(modifier: Modifier = Modifier) {
-    val existing = VariableModel.personalizedBehaviors.value.length()
+    val existing = VariableModel.personalizedBehaviors.size
     var amountOfInputs by remember { mutableIntStateOf(
         if (existing > 0) {
             0
@@ -158,18 +165,9 @@ fun PersonalizedBehaviors(modifier: Modifier = Modifier) {
         }
     ) }
 
-    val allExistingItems = remember {
-        val list = mutableListOf<String>()
-        val json = VariableModel.personalizedBehaviors.value
-        if (json.length() > 0) {
-            json.keys().forEach { key ->
-                val obj = json.getJSONObject(key)
-                list.add(obj.getString("name"))
-            }
-        }
-        list
+    val allExistingItems = remember(VariableModel.personalizedBehaviors) {
+        VariableModel.personalizedBehaviors.map { it.behavior.name }
     }
-
     var total by remember { mutableIntStateOf(amountOfInputs + existing) }
 
     Column(
@@ -186,34 +184,53 @@ fun PersonalizedBehaviors(modifier: Modifier = Modifier) {
             var text by remember(i) { mutableStateOf(allExistingItems.getOrNull(i)?: "") }
             var isAdded by remember(i) { mutableStateOf(allExistingItems.getOrNull(i) != null) }
             var isError by remember(i) { mutableStateOf(false) }
+            var newBehavior by remember { mutableStateOf(UserBehaviorWithBehavior(
+                i,
+                UserBehavior(
+                    id = null,
+                    goldenBehavior = false,
+                    oldBehavior = false,
+                    progress = null,
+                    timeS = 1,
+                    notification = true,
+                    completedToday = false,
+                    notificationFrequency = null,
+                    notificationInterval = null,
+                    notificationDay = LocalDate.now().dayOfWeek,
+                    notificationTimeOfDay = LocalTime.of(10, 0),
+                    startDate = LocalDate.now(),
+                    behaviorId = null,
+                    userId = VariableModel.userId,
+                    goalId = null,
+                    isAdded = isAdded
+                ),
+                Behavior(
+                    id = null,
+                    name = text,
+                    description = "",
+                    measuredIn = null,
+                    categoryId = VariableModel.goalCategory.value.get("id") as Int,
+                )
+            )) }
 
+            @RequiresApi(Build.VERSION_CODES.O)
             fun onAdd(newAdd: Boolean) {
                 if (text.isNotBlank()) {
                     isAdded = newAdd
+                    newBehavior.behavior.name = text
+                    newBehavior.userBehavior.isAdded = isAdded
                     if (isAdded) {
-                        val jsonObject = JSONObject().apply {
-                            put("name", text)
-                            put("isAdded", true)
-                            put("impactSliderValue", 1f)
-                            put("feasibilitySliderValue", 1f)
+                        val add = VariableModel.selectedBehaviors.apply {
+                            add(newBehavior)
                         }
-                        val add = JSONObject(VariableModel.selectedBehaviors.value.toString()).apply {
-                            put("0$i", jsonObject)
+                        VariableModel.selectedBehaviors = add
+                        val addPersonal = VariableModel.personalizedBehaviors.apply {
+                            add(newBehavior)
                         }
-                        VariableModel.selectedBehaviors.value = add
-                        val addPersonal = JSONObject(VariableModel.personalizedBehaviors.value.toString()).apply {
-                            put("0$i", jsonObject)
-                        }
-                        VariableModel.personalizedBehaviors.value = addPersonal
-                        println(VariableModel.personalizedBehaviors.value)
+                        VariableModel.personalizedBehaviors = addPersonal
                     } else {
-                        val remove = JSONObject(VariableModel.selectedBehaviors.value.toString())
-                        remove.remove("0$i")
-                        VariableModel.selectedBehaviors.value = remove
-                        val removePersonal = JSONObject(VariableModel.personalizedBehaviors.value.toString())
-                        val inner = removePersonal.getJSONObject("0$i").put("isAdded", false)
-                        VariableModel.personalizedBehaviors.value = inner
-                        println(VariableModel.personalizedBehaviors.value)
+                        VariableModel.selectedBehaviors.removeAll { it.id == newBehavior.id }
+                        VariableModel.personalizedBehaviors.removeAll { it.id == newBehavior.id }
                     }
                 } else {
                     isError = true
@@ -302,8 +319,7 @@ fun SelectedBehaviors(modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .border(1.dp, Color.White, RoundedCornerShape(8.dp))
     ) {
-        VariableModel.selectedBehaviors.value.keys().asSequence().forEach { id ->
-            val behaviorObject = VariableModel.selectedBehaviors.value.getJSONObject(id)
+        VariableModel.selectedBehaviors.forEach { fullBehavior ->
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
@@ -313,7 +329,7 @@ fun SelectedBehaviors(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = behaviorObject.getString("name"),
+                    text = fullBehavior.behavior.name,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
@@ -328,10 +344,7 @@ fun SelectedBehaviors(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .clickable {
-                            val remove =
-                                JSONObject(VariableModel.selectedBehaviors.value.toString())
-                            remove.remove(id)
-                            VariableModel.selectedBehaviors.value = remove
+                            VariableModel.selectedBehaviors.remove(fullBehavior)
                         }
                 )
             }
@@ -371,7 +384,7 @@ fun CreateBehaviorPreview() {
             ExistingBehaviors()
             PersonalizedBehaviors()
             SelectedBehaviors()
-            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.selectedBehaviors.value.length() > 5,
+            ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.selectedBehaviors.size > 5,
                 {
 //                    saveCategory(context)
                     navController.navigate(route = FocusMap)

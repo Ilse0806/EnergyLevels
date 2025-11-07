@@ -1,20 +1,26 @@
 package com.example.microhabits.models
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.microhabits.api.DatabaseService
+import com.example.microhabits.helpers.toBehavior
+import com.example.microhabits.helpers.toUserBehavior
 import org.json.JSONObject
 
+@RequiresApi(Build.VERSION_CODES.O)
 object DisplayGoalModel {
-    private val behaviors = mutableListOf<Int>()
+    private val behaviorIds = mutableListOf<Int>()
 
     fun loadGoals(context: Context, goalId: Int) {
         DatabaseService.getRow(
             "user_behavior", mapOf("goal_id" to goalId, "fetch_one" to false), context,
             { detailsBehaviorResponse ->
                 saveUserBehaviors(detailsBehaviorResponse)
+
                 DatabaseService.getRow(
-                    "behavior", mapOf("id" to behaviors, "fetch_one" to false), context,
+                    "behavior", mapOf("id" to behaviorIds, "fetch_one" to false), context,
                     { fullBehaviorResponse ->
                         saveBehaviorsAccordingly(fullBehaviorResponse)
                         Log.d("GET_BEHAVIOR_SUCCESSFUL", fullBehaviorResponse.toString())
@@ -31,17 +37,16 @@ object DisplayGoalModel {
     private fun saveUserBehaviors (response: JSONObject) {
         val rows = response.getJSONArray("rows")
         for (i in 0 until rows.length()) {
-            val behaviorId = rows.getJSONObject(i)["behavior_id"] as Int
-            behaviors.add(behaviorId)
+            val behaviorJson = rows.getJSONObject(i)
+            val behaviorId = behaviorJson["behavior_id"] as Int
+            behaviorIds.add(behaviorId)
 
-            val behavior = rows.getJSONObject(i)
-            val map = behavior.keys().asSequence().associateWith { key ->
-                behavior.opt(key)
-            }
-            val exists = VariableModel.detailsBehaviors.any { it["id"] == map["id"] }
+            val userBehavior = behaviorJson.toUserBehavior()
+
+            val exists = VariableModel.detailsBehaviors.any { it.id == userBehavior.id }
 
             if (!exists) {
-                VariableModel.detailsBehaviors.add(map)
+                VariableModel.detailsBehaviors.add(userBehavior)
             }
         }
     }
@@ -49,25 +54,20 @@ object DisplayGoalModel {
     private fun saveBehaviorsAccordingly(response: JSONObject) {
         val allBehaviors = response.getJSONArray("rows")
         for (i in 0 until allBehaviors.length()) {
-            val r = allBehaviors.get(i) as JSONObject
-            val map = r.keys().asSequence().associateWith { key ->
-                r.opt(key)
-            }
+            val behaviorJson = allBehaviors.get(i) as JSONObject
+            val behavior = behaviorJson.toBehavior()
 
-            val exists = VariableModel.connectedBehaviors.any { it["id"] == map["id"] }
+            val exists = VariableModel.connectedBehaviors.any { it.id == behavior.id }
             if (!exists) {
-                VariableModel.connectedBehaviors.add(map)
+                VariableModel.connectedBehaviors.add(behavior)
             }
         }
 
-        val habitsById = VariableModel.connectedBehaviors.associateBy { it["id"] as Int }
-        VariableModel.detailsBehaviors.forEach { behavior ->
-            val habitId = behavior["behavior_id"] as Int
-            val habit = habitsById[habitId]
-            habit?.let {
-                val combined = mutableMapOf<String, Any?>()
-                combined.putAll(habit)
-                combined.putAll(behavior)
+        val habitsById = VariableModel.connectedBehaviors.associateBy { it.id }
+        VariableModel.detailsBehaviors.forEach { userBehavior ->
+            val behavior = habitsById[userBehavior.behaviorId]
+            behavior?.let {
+                val combined = UserBehaviorWithBehavior(null, userBehavior, it)
                 VariableModel.combinedBehaviors.add(combined)
             }
         }

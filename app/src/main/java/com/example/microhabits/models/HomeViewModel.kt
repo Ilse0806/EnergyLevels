@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.microhabits.api.DatabaseService
 import com.example.microhabits.helpers.checkNotification
+import com.example.microhabits.helpers.toBehavior
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -58,13 +59,15 @@ object HomeViewModel {
                     if (!exists) {
                         VariableModel.allBehaviors.add(map)
                         if (today) {
-                            VariableModel.todayBehaviors.add(map)
+                            VariableModel.todayBehaviors.add(behavior.toBehavior(completedToday == 1))
                         }
                     }
                     Log.d("GET_BEHAVIOR_SUCCESSFUL", response.toString()) },
                 { error -> Log.e("GET_BEHAVIOR_ERROR", error.toString())}
             )
         }
+        val vari = VariableModel.todayBehaviors
+        println("allBehaviors: $vari")
     }
 
     fun saveGoals(context: Context) {

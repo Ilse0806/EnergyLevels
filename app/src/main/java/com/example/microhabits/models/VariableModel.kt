@@ -14,12 +14,12 @@ object VariableModel {
     var userName by mutableStateOf("")
     var userId by mutableIntStateOf(0)
     val allBehaviors = mutableStateListOf<Map<String, Any?>>()
-    val todayBehaviors = mutableStateListOf<Map<String, Any?>>()
+    val todayBehaviors = mutableStateListOf<Behavior>()
     val userGoals = mutableStateListOf<Map<String, Any?>>()
 
-    val connectedBehaviors = mutableStateListOf<Map<String, Any?>>()
-    val detailsBehaviors = mutableStateListOf<Map<String, Any?>>()
-    val combinedBehaviors = mutableStateListOf<Map<String, Any?>>()
+    val connectedBehaviors = mutableStateListOf<Behavior>() // behavior
+    val detailsBehaviors = mutableStateListOf<UserBehavior>() // probably user-behavior
+    val combinedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>() // both
 
     var validGoal = mutableStateOf(false)
     var categoryValue = mutableStateOf("")
@@ -27,7 +27,9 @@ object VariableModel {
     var goalCategory = mutableStateOf(JSONObject())
     var existingCategories = mutableStateOf(JSONObject())
 
-    var selectedBehaviors = mutableStateOf(JSONObject())
-    var personalizedBehaviors = mutableStateOf(JSONObject())
-    var goldenBehaviors = mutableStateOf(JSONObject())
+    var selectedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>() // behavior
+    var personalizedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>() // behavior
+    var goldenBehaviors = mutableStateListOf<UserBehaviorWithBehavior>() // behavior
+
+    var chosenBehaviors = mutableStateOf(listOf<UserBehaviorWithBehavior>()) // holds multiple
 }

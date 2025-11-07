@@ -39,6 +39,7 @@ import com.example.microhabits.DisplayGoal
 import com.example.microhabits.Navigation
 import com.example.microhabits.components.GoalDetails
 import com.example.microhabits.models.DisplayGoalModel
+import com.example.microhabits.models.UserBehaviorWithBehavior
 import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
@@ -103,7 +104,7 @@ fun Intro(goal: JSONObject) {
 }
 
 @Composable
-fun BehaviorsDisplayed(navController: NavController, behaviors: MutableList<Map<String, Any?>>, modifier: Modifier = Modifier) {
+fun BehaviorsDisplayed(navController: NavController, behaviors: MutableList<UserBehaviorWithBehavior>, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(top = 16.dp, bottom = 16.dp)
     ) {
@@ -114,7 +115,7 @@ fun BehaviorsDisplayed(navController: NavController, behaviors: MutableList<Map<
                     .padding(top = 4.dp, bottom = 4.dp),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    val behaviorString = JSONObject(behavior).toString()
+                    val behaviorString = behavior.toJson().toString()
                     navController.navigate(route = DisplayBehavior(behaviorString))
                 },
                 colors = ButtonC.GoldenAmberPrimary,
@@ -131,11 +132,11 @@ fun BehaviorsDisplayed(navController: NavController, behaviors: MutableList<Map<
                             .padding(end = 8.dp)
                     ) {
                         Text(
-                            text = behavior["name"].toString(),
+                            text = behavior.behavior.name,
                             style = Typography.bodyLarge,
                         )
                         Text(
-                            text = behavior["description"].toString(),
+                            text = behavior.behavior.description,
                             style = Typography.labelSmall,
                         )
                     }
