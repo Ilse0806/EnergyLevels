@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import com.example.microhabits.api.DatabaseService
 import com.example.microhabits.data.state.VariableModel
@@ -122,10 +121,12 @@ object NewBehaviorService {
         return sortedItems
     }
 
-    fun saveBehaviorAndGoal(newGoal: String, connectedBehaviors: List<UserBehaviorWithBehavior>, context : Context) {
+    fun saveBehaviorAndGoal(newGoal: String, connectedBehaviors: List<UserBehaviorWithBehavior>, context : Context): Int? {
+        var goalId: Int? = null
+        val latch = java.util.concurrent.CountDownLatch(1)
         DatabaseService.updateRow("goal", mapOf("name" to newGoal), context,
             { goalResponse ->
-                val goalId = goalResponse.getInt("id")
+                goalId = goalResponse.getInt("id")
 
                 DatabaseService.updateRow("user_goals", mapOf("user_id" to VariableModel.userId, "goal_id" to goalId), context,
                     { goalConnected ->
@@ -154,15 +155,13 @@ object NewBehaviorService {
                         },
                         { error -> Log.e("API_ERROR", error.toString()) }
                     )
-
                 }
 
-//                TODO(): response = {"id":3,"message":"Row created"}. Get the id from this response, use this to create new behaviors and user_behaviors which are connected to this goal and the correct user.
                 Log.d("API_SUCCESS_GOALS_UPDATED", goalResponse.toString())
             },
             { error -> Log.e("API_ERROR", error.toString()) }
         )
-
-//        TODO(): return goalId
+        latch.await()
+        return goalId
     }
 }

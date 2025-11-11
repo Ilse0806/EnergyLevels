@@ -84,8 +84,8 @@ fun BehaviorDetailsShown(fullBehavior: UserBehaviorWithBehavior) {
                 )
             }
         }
-
-        BehaviorDetails(fullBehavior)
+//        TODO(): juiste parameters toevoegen voor de behaviordetails functie:
+//        BehaviorDetails(fullBehavior)
     }
 }
 

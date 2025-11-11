@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.example.microhabits.models.UserBehaviorWithBehavior
-import com.example.microhabits.models.VariableModel
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.getSwitchColors
 import org.json.JSONObject
@@ -67,23 +66,27 @@ fun GoalDetails(goal: JSONObject, modifier: Modifier = Modifier, color: Color = 
 @Composable
 fun BehaviorDetails(
     fullBehavior: UserBehaviorWithBehavior,
+    descriptionChanged: (String) -> Unit,
+    notificationChanged: (checked: Boolean, interval: String, frequency: String, pattern: String, time: LocalTime) -> Unit,
+    anchorActionChanged: (String) -> Unit,
+    frequencyChanged: (String, Int) -> Unit,
     modifier: Modifier = Modifier,
     color: Color = C.LightBlue,
-    buttonColor: ButtonColors = ButtonC.LightBluePrimary
+    buttonColor: ButtonColors = ButtonC.LightBluePrimary,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Description(fullBehavior.behavior.description, Modifier.padding(vertical = 0.dp), color)
-        NotificationSelector(fullBehavior, color, buttonColor)
-        AnchorActionInput(color, Modifier.padding(vertical = 24.dp))
-        FrequencyInput(color, buttonColor)
+        Description(fullBehavior.behavior.description, Modifier.padding(vertical = 0.dp), color, descriptionChanged)
+        NotificationSelector(fullBehavior, color, buttonColor, fullBehavior.userBehavior.notification, onChange = notificationChanged)
+        AnchorActionInput(color, Modifier.padding(vertical = 24.dp), anchorActionChanged)
+        FrequencyInput(fullBehavior, color, buttonColor, onChange = frequencyChanged)
     }
 }
 
 @Composable
-fun Description(description: String, modifier: Modifier = Modifier, color: Color = C.LightBlue) {
+fun Description(description: String, modifier: Modifier = Modifier, color: Color = C.LightBlue, onChange: (String) -> Unit = {}) {
     var desc by remember { mutableStateOf(description) }
 
     Column(
@@ -91,7 +94,9 @@ fun Description(description: String, modifier: Modifier = Modifier, color: Color
     ) {
         Text(
             text = "Description",
-            style = Typography.bodyMedium,
+            style = Typography.bodyMedium.copy(
+                color = Color.Black
+            ),
         )
         OutlinedInputField(
             value = desc,
@@ -100,6 +105,7 @@ fun Description(description: String, modifier: Modifier = Modifier, color: Color
                 .fillMaxWidth()
                 .height(120.dp)
                 .padding(top = 4.dp, bottom = 12.dp),
+            onChange = onChange
         )
     }
 }
@@ -107,10 +113,21 @@ fun Description(description: String, modifier: Modifier = Modifier, color: Color
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NotificationSelector(fullBehavior: UserBehaviorWithBehavior, color: Color, buttonColor: ButtonColors, notificationOn: Boolean = true) {
-    println(fullBehavior)
-    println(VariableModel.selectedBehaviors)
+fun NotificationSelector(
+    fullBehavior: UserBehaviorWithBehavior,
+    color: Color,
+    buttonColor: ButtonColors,
+    notificationOn: Boolean = true,
+    onChange: (checked: Boolean, interval: String, frequency: String, pattern: String, time: LocalTime) -> Unit
+) {
     var checked by remember { mutableStateOf(notificationOn) }
+
+    var showModal by remember { mutableStateOf(false) }
+    var interval by remember { mutableStateOf(fullBehavior.userBehavior.notificationInterval?.toString() ?: "1") }
+    var frequency by remember { mutableStateOf(fullBehavior.userBehavior.notificationFrequency.value) }
+    var pattern by remember { mutableStateOf(fullBehavior.userBehavior.notificationDay.toString()) }
+    var time by remember { mutableStateOf(fullBehavior.userBehavior.notificationTimeOfDay) }
+
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -120,50 +137,46 @@ fun NotificationSelector(fullBehavior: UserBehaviorWithBehavior, color: Color, b
     ) {
         Text(
             text = "Notifications:",
-            style = Typography.bodyMedium
+            style = Typography.bodyMedium.copy(
+                color = Color.Black
+            )
         )
         Switch(
             checked = checked,
             onCheckedChange = {
                 checked = it
-                if (checked) {
-                    val new = VariableModel.chosenBehaviors.value + fullBehavior
-                    VariableModel.chosenBehaviors.value = new
-                } else {
-                    val old = VariableModel.chosenBehaviors.value - fullBehavior
-                    VariableModel.chosenBehaviors.value = old
-                }
+                onChange(checked, interval, frequency, pattern, time)
             },
             colors = getSwitchColors(color)
         )
     }
     if (checked) {
-        var showModal by remember { mutableStateOf(false) }
-        var interval by remember { mutableStateOf("1") }
-        var frequency by remember { mutableStateOf("day") }
-        var pattern by remember { mutableStateOf("Monday") }
-        var time by remember { mutableStateOf(LocalTime.of(0, 0)) }
-
         Row (
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = "Every",
-                style = Typography.bodyLarge,
+                style = Typography.bodyLarge.copy(
+                    color = Color.Black
+                ),
                 modifier = Modifier.padding(end = 8.dp)
             )
 
             ChoiceDropdown(color, buttonColor,listOf(1, 2, 3, 4, 5, 6), false, interval) { newInterval ->
                 interval = newInterval
+                onChange(checked, interval, frequency, pattern, time)
             }
             ChoiceDropdown(color, buttonColor,listOf("day", "week", "month"), false, frequency) { newFrequency ->
                 frequency = newFrequency
+                onChange(checked, interval, frequency, pattern, time)
             }
 
             Text(
                 text = "at",
-                style = Typography.bodyLarge,
+                style = Typography.bodyLarge.copy(
+                    color = Color.Black
+                ),
                 modifier = Modifier.padding(start = 8.dp, end = 8.dp)
             )
             ButtonPrimary(
@@ -193,15 +206,26 @@ fun NotificationSelector(fullBehavior: UserBehaviorWithBehavior, color: Color, b
             if (frequency != "day") {
                 Text(
                     text = "on",
-                    style = Typography.bodyLarge,
+                    style = Typography.bodyLarge.copy(
+                        color = Color.Black
+                    ),
                     modifier = Modifier.padding(end = 8.dp)
                 )
                 ChoiceDropdown(color, buttonColor,listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"), true, pattern) { newPattern ->
                     pattern = newPattern
+                    onChange(checked, interval, frequency, pattern, time)
                 }
             }
         }
-        TimeInputComposable({showModal = false}, {newTime -> showModal = false; time = newTime}, showModal)
+        TimeInputComposable(
+            onDismiss = {showModal = false},
+            onConfirm = { newTime ->
+                showModal = false
+                time = newTime
+                onChange(checked, interval, frequency, pattern, time)
+            },
+            showModal
+        )
     }
 }
 
@@ -277,21 +301,25 @@ fun ChoiceDropdown(color: Color, buttonColors: ButtonColors, items: List<Any>, m
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnchorActionInput(color: Color, modifier: Modifier = Modifier) {
-    var anchorAction by remember { mutableStateOf("Test") }
+fun AnchorActionInput(color: Color, modifier: Modifier = Modifier, onChange: (String) -> Unit) {
+    var anchorAction by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
     ){
         Text(
             text = "Anchor action",
-            style = Typography.bodyMedium,
+            style = Typography.bodyMedium.copy(
+                color = Color.Black
+            ),
             modifier = Modifier.padding(bottom = 4.dp)
         )
         Text(
             text = "Select or create an anchor action to connect your behavior to so you can do your habit after this anchor action.\n" +
                     "For example: doing it after going to the toilet ",
-            style = Typography.labelSmall,
+            style = Typography.labelSmall.copy(
+                color = Color.Black
+            ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
@@ -300,22 +328,23 @@ fun AnchorActionInput(color: Color, modifier: Modifier = Modifier) {
             color = color,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
+            onChange = onChange
         )
     }
 }
 
 
 @Composable
-fun FrequencyInput(color: Color, buttonColors: ButtonColors, modifier: Modifier = Modifier) {
+fun FrequencyInput(fullBehavior: UserBehaviorWithBehavior, color: Color, buttonColors: ButtonColors, modifier: Modifier = Modifier, onChange: (String, Int) -> Unit) {
     val measureList = listOf("Time", "Amount of times")
     var measureExpanded by remember { mutableStateOf(false) }
-    var measureSelected by remember { mutableStateOf("Measured in") }
+    var measureSelected by remember { mutableStateOf( fullBehavior.behavior.measuredIn.value) }
 
     var enabled by remember { mutableStateOf(false) }
 
     var amountList by remember { mutableStateOf((1..100).toList()) }
     var amountExpanded by remember { mutableStateOf(false) }
-    var amountSelected by remember { mutableIntStateOf(1) }
+    var amountSelected by remember { mutableIntStateOf(fullBehavior.userBehavior.timeS?.toInt()?: 1) }
 
     val timeList = listOf("seconds", "minutes", "hours")
     var timeExpanded by remember { mutableStateOf(false) }
@@ -333,12 +362,16 @@ fun FrequencyInput(color: Color, buttonColors: ButtonColors, modifier: Modifier 
     ) {
         Text(
             text = "Frequency",
-            style = Typography.bodyMedium,
+            style = Typography.bodyMedium.copy(
+                color = Color.Black
+            ),
             modifier = Modifier.padding(bottom = 4.dp)
         )
         Text(
             text = "When you do this behavior, for how long or how many times should do it for. Try to keep this amount small!",
-            style = Typography.labelSmall,
+            style = Typography.labelSmall.copy(
+                color = Color.Black
+            ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Row {
@@ -352,6 +385,7 @@ fun FrequencyInput(color: Color, buttonColors: ButtonColors, modifier: Modifier 
                 measureList,
                 { newValue ->
                     measureSelected = newValue
+                    onChange(measureSelected, amountSelected)
                 },
                 Modifier.weight(1f)
             )
@@ -365,6 +399,7 @@ fun FrequencyInput(color: Color, buttonColors: ButtonColors, modifier: Modifier 
                 amountList,
                 { newValue ->
                     amountSelected = newValue.toInt()
+                    onChange(measureSelected, amountSelected)
                 },
                 Modifier.weight(if (measureSelected == "Time") 1f else 2f)
             )
