@@ -3,6 +3,8 @@ package com.example.microhabits.helpers
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.microhabits.models.Behavior
+import com.example.microhabits.models.MeasuredInResult
+import com.example.microhabits.models.NotificationFrequency
 import com.example.microhabits.models.UserBehavior
 import com.example.microhabits.models.UserBehaviorWithBehavior
 import org.json.JSONObject
@@ -22,7 +24,7 @@ fun JSONObject.toUserBehavior(): UserBehavior {
         feasibilitySliderValue = this.optDouble("impactSliderValue", 1.0).toFloat(),
         notification = this.optBoolean("notification"),
         completedToday = this.optBoolean("completed_today"),
-        notificationFrequency = this.optInt("notification_frequency"),
+        notificationFrequency = NotificationFrequency.fromInput(this.getString("notification_frequency")),
         notificationInterval = this.optInt("notification_interval"),
         notificationDay = try {
             DayOfWeek.valueOf(this.optString("notification_day", "MONDAY"))
@@ -42,7 +44,7 @@ fun JSONObject.toUserBehavior(): UserBehavior {
         behaviorId = this.optInt("behavior_id"),
         userId = this.optInt("user_id"),
         goalId = this.optInt("goal_id"),
-        isAdded = this.optBoolean("isAdded")
+        isAdded = this.optBoolean("isAdded"),
     )
 }
 
@@ -50,8 +52,8 @@ fun JSONObject.toBehavior(completedToday: Boolean = false): Behavior {
     return Behavior(
         id = this.optInt("id"),
         name = this.optString("name"),
-        description = this.optString("description"),
-        measuredIn = this.optString("measured_in"),
+        description = this.optString("description").takeUnless { it == "null" } ?: "",
+        measuredIn = MeasuredInResult.fromInput(this.optString("measured_in")),
         categoryId = this.optInt("category_id"),
         completedToday = completedToday
     )

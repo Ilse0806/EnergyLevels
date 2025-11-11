@@ -6,7 +6,7 @@ class Behavior(
     val id: Int?,
     var name: String,
     var description: String = "",
-    var measuredIn: String?,
+    var measuredIn: MeasuredInResult = MeasuredInResult.AMOUNT_OF_TIMES,
     var categoryId: Int,
     var completedToday: Boolean = false
 ) {
@@ -15,9 +15,24 @@ class Behavior(
             put("id", id)
             put("name", name)
             put("description", description)
-            put("measured_in", measuredIn)
+            put("measured_in", measuredIn.value)
             put("category_id", categoryId)
             put("completed_today", completedToday)
         }
+    }
+
+    fun toMap(): Map<String, Any> {
+        val map = mutableMapOf(
+            "name" to name,
+            "measured_in" to measuredIn.value,
+            "category_id" to categoryId
+        )
+
+        println(measuredIn.value)
+
+        id?.let { map["id"] = it}
+        description.isNotBlank().let { map["description"] = it }
+
+        return map
     }
 }

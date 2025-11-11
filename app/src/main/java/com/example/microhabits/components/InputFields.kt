@@ -27,7 +27,8 @@ fun OutlinedInputField(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     singleLine: Boolean = false,
-    isError: Boolean = false
+    isError: Boolean = false,
+    onChange: (String) -> Unit = {}
 ) {
     var textValue by remember { mutableStateOf(value) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -36,6 +37,7 @@ fun OutlinedInputField(
         value = textValue,
         onValueChange = { newText ->
             textValue = newText
+            onChange(newText)
         },
         modifier = modifier,
         singleLine = singleLine,
