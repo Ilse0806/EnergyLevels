@@ -42,9 +42,9 @@ import com.example.microhabits.DisplayGoal
 import com.example.microhabits.Navigation
 import com.example.microhabits.components.ButtonPrimary
 import com.example.microhabits.helpers.TodayBehaviorsDisplayed
-import com.example.microhabits.models.HomeViewModel
-import com.example.microhabits.models.HomeViewModel.saveGoals
-import com.example.microhabits.models.VariableModel
+import com.example.microhabits.services.HomeService
+import com.example.microhabits.services.HomeService.saveGoals
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import org.json.JSONObject
@@ -59,7 +59,7 @@ import com.example.microhabits.ui.theme.Color as C
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) { HomeViewModel.loadUser(context) }
+    LaunchedEffect(Unit) { HomeService.loadUser(context) }
 
     if (VariableModel.userId != 0) {
         LaunchedEffect(VariableModel.userId) {

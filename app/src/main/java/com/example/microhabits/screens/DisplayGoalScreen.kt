@@ -38,9 +38,9 @@ import com.example.microhabits.DisplayBehavior
 import com.example.microhabits.DisplayGoal
 import com.example.microhabits.Navigation
 import com.example.microhabits.components.GoalDetails
-import com.example.microhabits.models.DisplayGoalModel
+import com.example.microhabits.services.GoalService
 import com.example.microhabits.models.UserBehaviorWithBehavior
-import com.example.microhabits.models.VariableModel
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import org.json.JSONObject
@@ -60,7 +60,7 @@ fun DisplayGoalScreen(navController: NavController, goalMap: DisplayGoal) {
     VariableModel.detailsBehaviors.clear()
     VariableModel.combinedBehaviors.clear()
 
-    DisplayGoalModel.loadGoals(context, goalId)
+    GoalService.loadGoals(context, goalId)
 
     val scrollState = rememberScrollState()
     Scaffold(

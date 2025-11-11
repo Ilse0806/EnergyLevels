@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.microhabits.components.Checkbox
 import com.example.microhabits.models.Behavior
-import com.example.microhabits.models.VariableModel
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.Color as C
 
 @Composable

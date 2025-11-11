@@ -165,12 +165,12 @@ fun ArchivedStyles(modifier: Modifier = Modifier) {
 //                }
 //            }
 
-fun buttonClicked(context: Context, intent: Intent) {
-    context.startActivity(intent)
-}
-
-fun behaviorDetails(context: Context, intent: Intent, id: Int, fullBehavior: Map<String, Any?>) {
-    intent.putExtra("behavior_id", id)
-    intent.putExtra("behavior", JSONObject(fullBehavior).toString())
-    context.startActivity(intent)
-}
+//fun buttonClicked(context: Context, intent: Intent) {
+//    context.startActivity(intent)
+//}
+//
+//fun behaviorDetails(context: Context, intent: Intent, id: Int, fullBehavior: Map<String, Any?>) {
+//    intent.putExtra("behavior_id", id)
+//    intent.putExtra("behavior", JSONObject(fullBehavior).toString())
+//    context.startActivity(intent)
+//}

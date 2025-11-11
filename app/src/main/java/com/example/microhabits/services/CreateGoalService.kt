@@ -1,12 +1,13 @@
-package com.example.microhabits.models
+package com.example.microhabits.services
 
 import android.content.Context
 import android.util.Log
 import com.example.microhabits.api.DatabaseService
+import com.example.microhabits.data.state.VariableModel
 import org.json.JSONArray
 import org.json.JSONObject
 
-object CreateGoalModel {
+object CreateGoalService {
     fun loadCategory (context: Context){
         DatabaseService.fetchTable(
             "category", context,

@@ -1,23 +1,24 @@
-package com.example.microhabits.models
+package com.example.microhabits.services
 
 import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.microhabits.api.DatabaseService
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.helpers.checkNotification
 import com.example.microhabits.helpers.toBehavior
 import org.json.JSONArray
 import org.json.JSONObject
 
 @RequiresApi(Build.VERSION_CODES.O)
-object HomeViewModel {
+object HomeService {
     fun loadUser(context: Context) {
         DatabaseService.getRow(
             "user", mapOf("id" to "1", "fetch_one" to true), context,
-            { response ->
-                checkResponse(context, response)
-                Log.d("GET_USER_SUCCESSFUL", response.toString())
+            { user ->
+                checkResponse(context, user)
+                Log.d("GET_USER_SUCCESSFUL", user.toString())
             },
             { error -> Log.e("GET_USER_ERROR", error.toString()) }
         )
@@ -31,8 +32,8 @@ object HomeViewModel {
         connectBehaviors(context, VariableModel.userId)
     }
 
-    private fun connectBehaviors(context: Context, id: Int) {
-        DatabaseService.getRow("user_behavior", mapOf("user_id" to id, "fetch_one" to false), context,
+    private fun connectBehaviors(context: Context, userId: Int) {
+        DatabaseService.getRow("user_behavior", mapOf("user_id" to userId, "fetch_one" to false), context,
             { response ->
                 saveBehavior(context, response["rows"] as JSONArray)
                 Log.d("GET_USER_BEHAVIOR_SUCCESSFUL", response.toString()) },
@@ -66,8 +67,6 @@ object HomeViewModel {
                 { error -> Log.e("GET_BEHAVIOR_ERROR", error.toString())}
             )
         }
-        val vari = VariableModel.todayBehaviors
-        println("allBehaviors: $vari")
     }
 
     fun saveGoals(context: Context) {

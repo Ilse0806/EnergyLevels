@@ -33,7 +33,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.microhabits.models.VariableModel
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.screens.CreateBehaviorScreen
 import com.example.microhabits.screens.CreateGoalScreen
 import com.example.microhabits.screens.DisplayBehaviorScreen

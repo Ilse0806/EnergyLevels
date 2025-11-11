@@ -1,16 +1,18 @@
-package com.example.microhabits.models
+package com.example.microhabits.services
 
 import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.microhabits.api.DatabaseService
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.helpers.toBehavior
 import com.example.microhabits.helpers.toUserBehavior
+import com.example.microhabits.models.UserBehaviorWithBehavior
 import org.json.JSONObject
 
 @RequiresApi(Build.VERSION_CODES.O)
-object DisplayGoalModel {
+object GoalService {
     private val behaviorIds = mutableListOf<Int>()
 
     fun loadGoals(context: Context, goalId: Int) {

@@ -1,10 +1,13 @@
-package com.example.microhabits.models
+package com.example.microhabits.data.state
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.microhabits.models.Behavior
+import com.example.microhabits.models.UserBehavior
+import com.example.microhabits.models.UserBehaviorWithBehavior
 import org.json.JSONObject
 
 object VariableModel {
@@ -17,9 +20,9 @@ object VariableModel {
     val todayBehaviors = mutableStateListOf<Behavior>()
     val userGoals = mutableStateListOf<Map<String, Any?>>()
 
-    val connectedBehaviors = mutableStateListOf<Behavior>() // behavior
-    val detailsBehaviors = mutableStateListOf<UserBehavior>() // probably user-behavior
-    val combinedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>() // both
+    val connectedBehaviors = mutableStateListOf<Behavior>()
+    val detailsBehaviors = mutableStateListOf<UserBehavior>()
+    val combinedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>()
 
     var validGoal = mutableStateOf(false)
     var categoryValue = mutableStateOf("")
@@ -27,9 +30,9 @@ object VariableModel {
     var goalCategory = mutableStateOf(JSONObject())
     var existingCategories = mutableStateOf(JSONObject())
 
-    var selectedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>() // behavior
-    var personalizedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>() // behavior
-    var goldenBehaviors = mutableStateListOf<UserBehaviorWithBehavior>() // behavior
+    var selectedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>()
+    var personalizedBehaviors = mutableStateListOf<UserBehaviorWithBehavior>()
+    var goldenBehaviors = mutableStateListOf<UserBehaviorWithBehavior>()
 
-    var chosenBehaviors = mutableStateOf(listOf<UserBehaviorWithBehavior>()) // holds multiple
+    var chosenBehaviors = mutableStateOf(listOf<UserBehaviorWithBehavior>())
 }

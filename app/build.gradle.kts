@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.volley)
     implementation(libs.androidx.navigation.compose)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.x")
+    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("androidx.compose.material:material-icons-extended")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

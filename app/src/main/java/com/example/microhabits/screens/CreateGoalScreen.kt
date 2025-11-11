@@ -45,9 +45,9 @@ import com.example.microhabits.Navigation
 import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
 import com.example.microhabits.components.SingleDropdown
-import com.example.microhabits.models.CreateGoalModel.loadCategory
-import com.example.microhabits.models.CreateGoalModel.saveCategory
-import com.example.microhabits.models.VariableModel
+import com.example.microhabits.services.CreateGoalService.loadCategory
+import com.example.microhabits.services.CreateGoalService.saveCategory
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.getTextFieldColor

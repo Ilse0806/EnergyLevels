@@ -57,13 +57,13 @@ import com.example.microhabits.components.Checkbox
 import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
 import com.example.microhabits.models.Behavior
-import com.example.microhabits.models.CreateBehaviorModel.exampleBehaviors
-import com.example.microhabits.models.CreateBehaviorModel.loadBehaviorsForCategory
+import com.example.microhabits.services.NewBehaviorService.exampleBehaviors
+import com.example.microhabits.services.NewBehaviorService.loadBehaviorsForCategory
 import com.example.microhabits.models.UserBehavior
 import com.example.microhabits.models.UserBehaviorWithBehavior
-import com.example.microhabits.models.VariableModel
+import com.example.microhabits.data.state.VariableModel
+import com.example.microhabits.models.NotificationFrequency
 import com.example.microhabits.ui.theme.Typography
-import org.json.JSONObject
 import java.time.LocalDate
 import java.time.LocalTime
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
@@ -194,7 +194,7 @@ fun PersonalizedBehaviors(modifier: Modifier = Modifier) {
                     timeS = 1,
                     notification = true,
                     completedToday = false,
-                    notificationFrequency = null,
+                    notificationFrequency = NotificationFrequency.DAILY,
                     notificationInterval = null,
                     notificationDay = LocalDate.now().dayOfWeek,
                     notificationTimeOfDay = LocalTime.of(10, 0),
@@ -208,7 +208,6 @@ fun PersonalizedBehaviors(modifier: Modifier = Modifier) {
                     id = null,
                     name = text,
                     description = "",
-                    measuredIn = null,
                     categoryId = VariableModel.goalCategory.value.get("id") as Int,
                 )
             )) }

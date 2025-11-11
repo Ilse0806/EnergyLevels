@@ -55,7 +55,7 @@ import com.example.microhabits.components.ButtonSecondary
 import com.example.microhabits.components.CollapseContent
 import com.example.microhabits.components.ContinueButton
 import com.example.microhabits.components.ReturnButton
-import com.example.microhabits.models.VariableModel
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
@@ -134,7 +134,9 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = fullBehavior.behavior.name,
-                        style = Typography.bodyLarge,
+                        style = Typography.bodyLarge.copy(
+                            color = Color.White
+                        ),
                     )
                     ButtonSecondary(
                         onClickAction = {
@@ -170,11 +172,15 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                                 ) {
                                     Text(
                                         text = "Low impact",
-                                        style = Typography.bodyLarge
+                                        style = Typography.bodyLarge.copy(
+                                            color = Color.Black
+                                        )
                                     )
                                     Text(
                                         text = "High impact",
-                                        style = Typography.bodyLarge
+                                        style = Typography.bodyLarge.copy(
+                                            color = Color.Black
+                                        )
                                     )
                                 }
                                 SliderFocusMap(
@@ -194,12 +200,16 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                                     ) {
                                         Text(
                                             text = "This has a low impact on my goal",
-                                            style = Typography.labelSmall,
+                                            style = Typography.labelSmall.copy(
+                                                color = Color.Black
+                                            ),
                                             modifier = Modifier.width(84.dp)
                                         )
                                         Text(
                                             text = "This has a high impact on my goal",
-                                            style = Typography.labelSmall,
+                                            style = Typography.labelSmall.copy(
+                                                color = Color.Black
+                                            ),
                                             textAlign = TextAlign.End,
                                             modifier = Modifier.width(84.dp)
                                         )
@@ -219,11 +229,15 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                                 ) {
                                     Text(
                                         text = "Not likely",
-                                        style = Typography.bodyLarge
+                                        style = Typography.bodyLarge.copy(
+                                            color = Color.Black
+                                        )
                                     )
                                     Text(
                                         text = "Highly likely",
-                                        style = Typography.bodyLarge
+                                        style = Typography.bodyLarge.copy(
+                                            color = Color.Black
+                                        )
                                     )
                                 }
                                 SliderFocusMap(
@@ -243,12 +257,16 @@ fun ScaleBehaviors(modifier: Modifier = Modifier) {
                                     ) {
                                         Text(
                                             text = "It's not likely that I'll do this behavior",
-                                            style = Typography.labelSmall,
+                                            style = Typography.labelSmall.copy(
+                                                color = Color.Black
+                                            ),
                                             modifier = Modifier.width(84.dp)
                                         )
                                         Text(
                                             text = "It's highly likely that I'll do this behavior",
-                                            style = Typography.labelSmall,
+                                            style = Typography.labelSmall.copy(
+                                                color = Color.Black
+                                            ),
                                             textAlign = TextAlign.End,
                                             modifier = Modifier.width(84.dp)
                                         )
