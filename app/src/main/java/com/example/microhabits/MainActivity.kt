@@ -11,8 +11,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Dining
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -38,7 +40,9 @@ import com.example.microhabits.screens.CreateBehaviorScreen
 import com.example.microhabits.screens.CreateGoalScreen
 import com.example.microhabits.screens.DisplayBehaviorScreen
 import com.example.microhabits.screens.DisplayGoalScreen
+import com.example.microhabits.screens.ExerciseScreen
 import com.example.microhabits.screens.FocusMapScreen
+import com.example.microhabits.screens.FoodScreen
 import com.example.microhabits.screens.HomeScreen
 import com.example.microhabits.screens.ProfileScreen
 import com.example.microhabits.screens.ProgressScreen
@@ -55,6 +59,12 @@ object Home
 data class Profile(val user: String)
 @Serializable
 object Progress
+@Serializable
+object Exercise
+@Serializable
+object Food
+
+
 @Serializable
 object CreateGoal
 @Serializable
@@ -86,13 +96,17 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 NavHost(navController, startDestination = Home) {
+//                    Bottom navigation options:
+                    composable<Exercise> { ExerciseScreen(navController) }
+                    composable<Food> { FoodScreen(navController) }
                     composable<Home> { HomeScreen(navController) }
                     composable<Progress> { ProgressScreen(navController) }
-                    composable<CreateGoal> { CreateGoalScreen(navController) }
                     composable<Profile> { backStackEntry ->
                         val user: Profile = backStackEntry.toRoute()
                         ProfileScreen(navController, user)
                     }
+//                    Remaining screens:
+//                    composable<CreateGoal> { CreateGoalScreen(navController) }
                     composable<DisplayGoal> { backStackEntry ->
                         val goal: DisplayGoal = backStackEntry.toRoute()
                         DisplayGoalScreen(navController, goal)
@@ -115,9 +129,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Navigation(navController: NavController) {
     val bottomNavItems = listOf(
+        BottomNavItem({ Exercise }, "com.example.microhabits.Exercise", "Exercise", Icons.Default.SportsGymnastics),
+        BottomNavItem({ Food }, "com.example.microhabits.Food", "Food", Icons.Default.Dining),
         BottomNavItem({ Home }, "com.example.microhabits.Home", "Home", Icons.Default.Home),
         BottomNavItem({ Progress }, "com.example.microhabits.Progress", "Progress", Icons.Filled.DateRange),
-        BottomNavItem({ CreateGoal }, "com.example.microhabits.CreateGoal", "Create goal", Icons.Default.AddCircle),
         BottomNavItem({ Profile(VariableModel.user.toString()) }, "com.example.microhabits.Profile", "Profile", Icons.Default.Person),
     )
 
