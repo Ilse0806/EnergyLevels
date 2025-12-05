@@ -1,4 +1,4 @@
-package com.example.microhabits.components
+package com.example.microhabits.components.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Button

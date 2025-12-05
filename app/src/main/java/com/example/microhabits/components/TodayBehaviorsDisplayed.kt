@@ -1,4 +1,4 @@
-package com.example.microhabits.helpers
+package com.example.microhabits.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.microhabits.components.Checkbox
-import com.example.microhabits.models.Behavior
+import com.example.microhabits.components.buttons.Checkbox
+import com.example.microhabits.models.classes.Behavior
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.Color as C
 

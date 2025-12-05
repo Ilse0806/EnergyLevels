@@ -2,11 +2,11 @@ package com.example.microhabits.helpers
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.microhabits.models.Behavior
-import com.example.microhabits.models.MeasuredInResult
-import com.example.microhabits.models.NotificationFrequency
-import com.example.microhabits.models.UserBehavior
-import com.example.microhabits.models.UserBehaviorWithBehavior
+import com.example.microhabits.models.classes.Behavior
+import com.example.microhabits.models.enums.MeasuredInResult
+import com.example.microhabits.models.enums.NotificationFrequency
+import com.example.microhabits.models.classes.UserBehavior
+import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import org.json.JSONObject
 import java.time.DayOfWeek
 import java.time.LocalDate

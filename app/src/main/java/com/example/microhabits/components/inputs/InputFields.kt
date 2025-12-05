@@ -1,4 +1,4 @@
-package com.example.microhabits.components
+package com.example.microhabits.components.inputs
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.interaction.MutableInteractionSource

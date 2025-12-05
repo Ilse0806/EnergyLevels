@@ -8,7 +8,7 @@ import com.example.microhabits.api.DatabaseService
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.helpers.toBehavior
 import com.example.microhabits.helpers.toUserBehavior
-import com.example.microhabits.models.UserBehaviorWithBehavior
+import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import org.json.JSONObject
 
 @RequiresApi(Build.VERSION_CODES.O)

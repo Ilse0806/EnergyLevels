@@ -1,4 +1,4 @@
-package com.example.microhabits.models
+package com.example.microhabits.models.classes
 
 import org.json.JSONObject
 

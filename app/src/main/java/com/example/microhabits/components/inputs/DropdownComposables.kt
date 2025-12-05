@@ -1,4 +1,4 @@
-package com.example.microhabits.components
+package com.example.microhabits.components.inputs
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.example.microhabits.components.buttons.ButtonPrimary
 import com.example.microhabits.helpers.crop
 import com.example.microhabits.ui.theme.Typography
 

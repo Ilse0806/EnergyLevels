@@ -1,4 +1,4 @@
-package com.example.microhabits.models
+package com.example.microhabits.models.enums
 
 enum class NotificationFrequency(val value: String) {
     DAILY("daily"),

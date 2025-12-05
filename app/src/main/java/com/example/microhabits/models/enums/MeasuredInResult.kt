@@ -1,4 +1,4 @@
-package com.example.microhabits.models
+package com.example.microhabits.models.enums
 
 enum class MeasuredInResult(val value: String) {
     AMOUNT_OF_TIMES("amount of times"),

@@ -42,6 +42,8 @@ import com.example.microhabits.DisplayGoal
 import com.example.microhabits.Navigation
 import com.example.microhabits.components.ButtonPrimary
 import com.example.microhabits.helpers.TodayBehaviorsDisplayed
+import com.example.microhabits.components.buttons.ButtonPrimary
+import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.services.HomeService
 import com.example.microhabits.services.HomeService.saveGoals
 import com.example.microhabits.data.state.VariableModel

@@ -1,5 +1,6 @@
-package com.example.microhabits.models
+package com.example.microhabits.models.classes
 
+import com.example.microhabits.models.enums.MeasuredInResult
 import org.json.JSONObject
 
 class Behavior(

@@ -37,7 +37,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import com.example.microhabits.models.UserBehaviorWithBehavior
+import com.example.microhabits.components.buttons.ButtonPrimary
+import com.example.microhabits.components.inputs.ButtonAndDropdown
+import com.example.microhabits.components.inputs.MultipleDropdown
+import com.example.microhabits.components.inputs.OutlinedInputField
+import com.example.microhabits.components.inputs.SingleDropdown
+import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.getSwitchColors
 import org.json.JSONObject
@@ -292,7 +297,7 @@ fun ChoiceDropdown(color: Color, buttonColors: ButtonColors, items: List<Any>, m
                 selected,
                 { newSelection -> selected = newSelection; onDismiss(newSelection) },
                 { newVal -> expanded = newVal },
-                modifier = Modifier.width(with(LocalDensity.current) {fieldSize.width.toDp()}),
+                modifier = Modifier.width(with(LocalDensity.current) { fieldSize.width.toDp() }),
                 TextAlign.Center
             )
         }

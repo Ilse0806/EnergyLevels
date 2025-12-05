@@ -1,5 +1,6 @@
-package com.example.microhabits.models
+package com.example.microhabits.models.classes
 
+import com.example.microhabits.models.enums.NotificationFrequency
 import org.json.JSONObject
 import java.time.DayOfWeek
 import java.time.LocalDate

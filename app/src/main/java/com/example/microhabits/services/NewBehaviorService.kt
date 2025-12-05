@@ -9,9 +9,9 @@ import com.example.microhabits.api.DatabaseService
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.helpers.toBehavior
 import com.example.microhabits.helpers.toUserBehavior
-import com.example.microhabits.models.NotificationFrequency
-import com.example.microhabits.models.UserBehavior
-import com.example.microhabits.models.UserBehaviorWithBehavior
+import com.example.microhabits.models.enums.NotificationFrequency
+import com.example.microhabits.models.classes.UserBehavior
+import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.LocalTime
@@ -128,7 +128,7 @@ object NewBehaviorService {
             { goalResponse ->
                 goalId = goalResponse.getInt("id")
 
-                DatabaseService.updateRow("user_goals", mapOf("user_id" to VariableModel.userId, "goal_id" to goalId), context,
+                DatabaseService.updateRow("user_goal", mapOf("user_id" to VariableModel.userId, "goal_id" to goalId), context,
                     { goalConnected ->
                         Log.d("API_SUCCESS_GOAL_CONNECTED", goalConnected.toString())
 

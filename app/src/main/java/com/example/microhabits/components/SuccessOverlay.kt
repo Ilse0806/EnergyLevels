@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.Home
 import com.example.microhabits.SelectBehavior
+import com.example.microhabits.components.buttons.ButtonPrimary
 import com.example.microhabits.ui.theme.Typography
 import kotlinx.coroutines.delay
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC

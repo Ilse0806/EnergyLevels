@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.microhabits.models.Behavior
-import com.example.microhabits.models.UserBehavior
-import com.example.microhabits.models.UserBehaviorWithBehavior
+import com.example.microhabits.models.classes.Behavior
+import com.example.microhabits.models.classes.UserBehavior
+import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import org.json.JSONObject
 
 object VariableModel {

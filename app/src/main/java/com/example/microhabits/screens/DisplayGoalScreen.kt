@@ -39,7 +39,7 @@ import com.example.microhabits.DisplayGoal
 import com.example.microhabits.Navigation
 import com.example.microhabits.components.GoalDetails
 import com.example.microhabits.services.GoalService
-import com.example.microhabits.models.UserBehaviorWithBehavior
+import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
