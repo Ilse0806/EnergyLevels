@@ -71,7 +71,7 @@ object HomeService {
 
     fun saveGoals(context: Context) {
         val goalIds = mutableListOf<Int>()
-        DatabaseService.getRow("user_goals", mapOf("user_id" to VariableModel.userId, "fetch_one" to false), context,
+        DatabaseService.getRow("user_goal", mapOf("user_id" to VariableModel.userId, "fetch_one" to false), context,
             { response ->
                 val rows = response.getJSONArray("rows")
                 for (i in 0 until rows.length()) {
@@ -97,8 +97,8 @@ object HomeService {
                         Log.d("GET_GOALS_SUCCESSFUL", goalResponse.toString()) },
                     { error -> Log.e("GET_GOALS_ERROR", error.toString())}
                 )
-                Log.d("GET_USER_GOALS_SUCCESSFUL", response.toString()) },
-            { error -> Log.e("GET_USER_GOALS_ERROR", error.toString())}
+                Log.d("GET_USER_GOAL_SUCCESSFUL", response.toString()) },
+            { error -> Log.e("GET_USER_GOAL_ERROR", error.toString())}
         )
     }
 

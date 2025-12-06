@@ -2,13 +2,12 @@ package com.example.microhabits.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.isImeVisible
@@ -16,14 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,28 +29,31 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.microhabits.CreateGoal
-import com.example.microhabits.DisplayGoal
+import com.example.microhabits.Exercise
+import com.example.microhabits.Food
 import com.example.microhabits.Navigation
-import com.example.microhabits.components.ButtonPrimary
-import com.example.microhabits.helpers.TodayBehaviorsDisplayed
+import com.example.microhabits.components.FavoritesContent
+import com.example.microhabits.components.FoodFavorite
+import com.example.microhabits.components.InPageNavigation
+import com.example.microhabits.components.TodayGoalsDisplayed
 import com.example.microhabits.components.buttons.ButtonPrimary
 import com.example.microhabits.data.state.VariableModel
+import com.example.microhabits.models.classes.NavigationOption
+import com.example.microhabits.services.FavoritesService
 import com.example.microhabits.services.HomeService
 import com.example.microhabits.services.HomeService.saveGoals
-import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
-import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
+
+var hasLoaded = false
 
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -61,11 +61,23 @@ import com.example.microhabits.ui.theme.Color as C
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) { HomeService.loadUser(context) }
+//    if (!hasLoaded.value) {
+//        hasLoaded.value = true
+//        HomeService.loadUser(context)
+//        println("runs")
+//        LaunchedEffect(VariableModel.userId != 0) {
+//            FavoritesService.loadFavorites(context)
+//        }
+//    }
+    if (!hasLoaded) {
+        hasLoaded = true
+        HomeService.loadUser(context)
+    }
 
     if (VariableModel.userId != 0) {
         LaunchedEffect(VariableModel.userId) {
             saveGoals(context)
+            FavoritesService.loadFavorites(context)
         }
     }
     val scrollState = rememberScrollState()
@@ -81,18 +93,47 @@ fun HomeScreen(navController: NavController) {
             .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
         Column (
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp)
+                .fillMaxSize()
                 .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp)
+                .padding(innerPadding)
         ) {
             Greeting(
                 name = VariableModel.userName
             )
-            TodayBehaviorsDisplayed(VariableModel.todayBehaviors) { bool, index ->
-                VariableModel.todayBehaviors[index].completedToday = bool
-            }
-            if (!VariableModel.userGoals.isEmpty()) {
-                GoalsDisplay(navController)
-            }
+            TodayGoalsDisplayed(
+                behaviors = VariableModel.todayBehaviors,
+                modifier = Modifier.padding(vertical = 8.dp),
+                onCheck = { bool, index ->
+                    VariableModel.todayBehaviors[index].completedToday = bool
+                }
+            )
+            InPageNavigation(
+                title = "What do you want to do?",
+                navigationOptions = listOf(
+                    NavigationOption("Exercise", Exercise),
+                    NavigationOption("Food", Food)
+                ),
+                buttonColors = ButtonC.CoralRedSecondary.copy(containerColor = Color.White),
+                textColor = C.CoralRed,
+                navController = navController,
+                modifier = Modifier
+                    .weight(0.5f)
+                    .aspectRatio(1f)
+            )
+            FavoritesContent(
+                title = "Favorite exercises:",
+                items = VariableModel.favoriteExercises.map { item ->
+                    item.toNavigationOption()
+                },
+                buttonColor = ButtonC.RedPrimary,
+                textColor = Color.White,
+                navController = navController,
+                modifier = Modifier
+                    .size(150.dp),
+                iconColor = C.CoralRed
+            )
+            FoodFavorite(navController)
         }
     }
 }
@@ -115,15 +156,14 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         "Good day"
     }
 
-    Column(
-        modifier = modifier.padding(top = 16.dp)
-    ) {
+    Column {
         Text(
             text = "$greeting $name",
             style = Typography.titleLarge,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = "How are you behaviors going today?",
+            text = "How is your day going?",
             style = Typography.bodyMedium
         )
     }
@@ -152,41 +192,6 @@ fun NewGoalButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun GoalsDisplay(navController: NavController, modifier: Modifier = Modifier) {
-    LazyRow {
-        items(VariableModel.userGoals) { userGoal ->
-            Button (
-                modifier = modifier
-                    .width(150.dp)
-                    .height(150.dp),
-                border = BorderStroke(2.dp, C.CoralRed),
-                shape = RoundedCornerShape(8.dp),
-                onClick = {
-                    val userGoalString = JSONObject(userGoal).toString()
-                    navController.navigate(route = DisplayGoal(userGoalString))
-                },
-                colors = ButtonC.CoralRedSecondary.copy(
-                    containerColor = Color.White
-                )
-            ) {
-                Text(
-                    text = userGoal["name"] as String,
-                    style = Typography.titleSmall,
-                    textAlign = TextAlign.Center
-                )
-            }
-            Spacer(Modifier.size(8.dp))
-        }
-        item {
-            NewGoalButton({
-                navController.navigate(route = CreateGoal)
-            })
-        }
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
@@ -199,9 +204,37 @@ fun HomeScreenPreview() {
             Column(
                 modifier = Modifier.padding(innerPadding)
             ) {
-                Text("hi")
+                Greeting(
+                    name = "Bob"
+                )
+                InPageNavigation(
+                    title = "What do you want to do?",
+                    navigationOptions = listOf(
+                        NavigationOption("Exercise", Exercise),
+                        NavigationOption("Food", Food)
+                    ),
+                    buttonColors = ButtonC.CoralRedSecondary.copy(containerColor = Color.White),
+                    textColor = C.CoralRed,
+                    navController = rememberNavController(),
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .aspectRatio(1f)
+                        .padding(vertical = 8.dp)
+                )
+                FavoritesContent(
+                    title = "Favorite exercises:",
+                    items = listOf(
+                        NavigationOption("Go for a walk", Exercise, Icons.AutoMirrored.Filled.DirectionsWalk),
+                        NavigationOption("Go for a walk", Exercise, Icons.AutoMirrored.Filled.DirectionsWalk)
+                    ),
+                    buttonColor = ButtonC.RedPrimary,
+                    textColor = Color.White,
+                    navController = rememberNavController(),
+                    modifier = Modifier
+                        .size(150.dp),
+                    iconColor = C.CoralRed
+                )
             }
-            GoalsDisplay(rememberNavController())
         }
     }
 }

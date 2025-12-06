@@ -18,9 +18,13 @@ import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.Color as C
 
 @Composable
-fun TodayBehaviorsDisplayed(behaviors: MutableList<Behavior>, modifier: Modifier = Modifier, onCheck: (Boolean, Int) -> Unit) {
+fun TodayGoalsDisplayed(
+    behaviors: MutableList<Behavior>,
+    onCheck: (Boolean, Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = modifier.padding(top = 16.dp, bottom = 16.dp)
+        modifier = modifier
     ) {
         for (behavior in behaviors) {
             key(behavior.id) {

@@ -9,7 +9,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Dining
 import androidx.compose.material.icons.filled.Home
@@ -37,9 +36,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.screens.CreateBehaviorScreen
-import com.example.microhabits.screens.CreateGoalScreen
 import com.example.microhabits.screens.DisplayBehaviorScreen
 import com.example.microhabits.screens.DisplayGoalScreen
+import com.example.microhabits.screens.ExerciseDetailsScreen
 import com.example.microhabits.screens.ExerciseScreen
 import com.example.microhabits.screens.FocusMapScreen
 import com.example.microhabits.screens.FoodScreen
@@ -64,6 +63,8 @@ object Exercise
 @Serializable
 object Food
 
+@Serializable
+data class ExerciseDetails(val id: Int)
 
 @Serializable
 object CreateGoal
@@ -106,6 +107,12 @@ class MainActivity : ComponentActivity() {
                         ProfileScreen(navController, user)
                     }
 //                    Remaining screens:
+                    composable<ExerciseDetails> { backstackEntry ->
+                        val exerciseDetails: ExerciseDetails = backstackEntry.toRoute()
+                        ExerciseDetailsScreen(navController, exerciseDetails)
+                    }
+
+
 //                    composable<CreateGoal> { CreateGoalScreen(navController) }
                     composable<DisplayGoal> { backStackEntry ->
                         val goal: DisplayGoal = backStackEntry.toRoute()

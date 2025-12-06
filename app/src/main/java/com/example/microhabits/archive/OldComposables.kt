@@ -1,7 +1,5 @@
 package com.example.microhabits.archive
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.microhabits.ui.theme.Typography
-import org.json.JSONObject
 
 @Composable
 fun ArchivedSixColumnGrid(name: String, modifier: Modifier = Modifier) {
@@ -173,4 +170,40 @@ fun ArchivedStyles(modifier: Modifier = Modifier) {
 //    intent.putExtra("behavior_id", id)
 //    intent.putExtra("behavior", JSONObject(fullBehavior).toString())
 //    context.startActivity(intent)
+//}
+
+//
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Composable
+//fun GoalsDisplay(navController: NavController, modifier: Modifier = Modifier) {
+//    LazyRow {
+//        items(VariableModel.userGoals) { userGoal ->
+//            Button (
+//                modifier = modifier
+//                    .width(150.dp)
+//                    .height(150.dp),
+//                border = BorderStroke(2.dp, C.CoralRed),
+//                shape = RoundedCornerShape(8.dp),
+//                onClick = {
+//                    val userGoalString = JSONObject(userGoal).toString()
+//                    navController.navigate(route = DisplayGoal(userGoalString))
+//                },
+//                colors = ButtonC.CoralRedSecondary.copy(
+//                    containerColor = Color.White
+//                )
+//            ) {
+//                Text(
+//                    text = userGoal["name"] as String,
+//                    style = Typography.titleSmall,
+//                    textAlign = TextAlign.Center
+//                )
+//            }
+//            Spacer(Modifier.size(8.dp))
+//        }
+//        item {
+//            NewGoalButton({
+//                navController.navigate(route = CreateGoal)
+//            })
+//        }
+//    }
 //}

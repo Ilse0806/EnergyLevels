@@ -3,6 +3,9 @@ package com.example.microhabits.helpers
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.microhabits.models.classes.Behavior
+import com.example.microhabits.models.classes.ExerciseProgram
+import com.example.microhabits.models.classes.FoodRecipe
+import com.example.microhabits.models.classes.SingleExercise
 import com.example.microhabits.models.enums.MeasuredInResult
 import com.example.microhabits.models.enums.NotificationFrequency
 import com.example.microhabits.models.classes.UserBehavior
@@ -65,4 +68,42 @@ fun JSONObject.toUserBehaviorWithBehavior(): UserBehaviorWithBehavior {
     val userBehavior = this.getJSONObject("user_behavior").toUserBehavior()
     val behavior = this.getJSONObject("behavior").toBehavior(userBehavior.completedToday)
     return UserBehaviorWithBehavior(id, userBehavior, behavior)
+}
+
+fun JSONObject.toExerciseProgram(singleExercises: List<SingleExercise>): ExerciseProgram {
+    return ExerciseProgram(
+        id = this.optInt("id"),
+        name = this.optString("name"),
+        description = this.optString("description"),
+        time = this.optInt("time"),
+        difficulty = this.optInt("difficulty"),
+        attributes = this.optString("attributes").toList().map { it.toString() },
+        exercises = singleExercises,
+        icon = this.optString("icon"),
+    )
+}
+
+fun JSONObject.toFoodRecipe(): FoodRecipe {
+    return FoodRecipe(
+        id = this.optInt("id"),
+        name = this.optString("name"),
+        description = this.optString("description"),
+        time = this.optInt("time"),
+        difficulty = this.optInt("difficulty"),
+        attributes = this.optString("attributes").toList().map { it.toString() },
+        image = this.optString("image"),
+        ingredients = this.optString("ingredients").toList().map { it.toString().toIngredient() },
+        steps = this.optString("image").toList().map { it.toString() },
+    )
+}
+
+fun JSONObject.toSingleExercise(): SingleExercise {
+    return SingleExercise(
+        id = this.optInt("id"),
+        name = this.optString("name"),
+        description = this.optString("description"),
+        time = this.optInt("time"),
+        image = this.optString("image"),
+        video = this.optString("video")
+    )
 }
