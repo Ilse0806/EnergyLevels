@@ -25,17 +25,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.microhabits.Exercise
-import com.example.microhabits.ExerciseDetails
+import com.example.microhabits.FoodDetails
 import com.example.microhabits.Navigation
 import com.example.microhabits.components.Header
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalLayoutApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDetails) {
+fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
@@ -71,7 +70,20 @@ fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDeta
                 .padding(horizontal = 16.dp)
                 .padding(innerPadding)
         ) {
-
+            Header(
+                title = "Go for a walk",
+                titleStyle = Typography.titleLarge.copy(color = Color.White),
+                image = "https://www.transparentlabs.com/cdn/shop/articles/image1_1_985e1ff8-6709-4f15-a39f-28a5c282e780_1200x1200.jpg?v=1748023325",
+                extraContent = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Time: 45 min")
+                        Text("Difficulty: 45 min")
+                    }
+                }
+            )
         }
     }
 }
@@ -79,7 +91,7 @@ fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDeta
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
-fun ExerciseDetailsPreview() {
+fun FoodDetailsPreview() {
     MicroHabitsTheme(dynamicColor = false) {
         Scaffold(
             bottomBar = { Navigation(rememberNavController()) },
@@ -89,7 +101,20 @@ fun ExerciseDetailsPreview() {
             Column(
                 modifier = Modifier.padding(innerPadding)
             ) {
-
+                Header(
+                    title = "Go for a walk",
+                    titleStyle = Typography.titleLarge.copy(color = Color.White),
+                    image = "https://www.transparentlabs.com/cdn/shop/articles/image1_1_985e1ff8-6709-4f15-a39f-28a5c282e780_1200x1200.jpg?v=1748023325",
+                    extraContent = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Time: 45 min")
+                            Text("Difficulty: 45 min")
+                        }
+                    }
+                )
             }
         }
     }

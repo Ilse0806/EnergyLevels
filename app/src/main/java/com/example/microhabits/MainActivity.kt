@@ -41,6 +41,7 @@ import com.example.microhabits.screens.DisplayGoalScreen
 import com.example.microhabits.screens.ExerciseDetailsScreen
 import com.example.microhabits.screens.ExerciseScreen
 import com.example.microhabits.screens.FocusMapScreen
+import com.example.microhabits.screens.FoodDetailsScreen
 import com.example.microhabits.screens.FoodScreen
 import com.example.microhabits.screens.HomeScreen
 import com.example.microhabits.screens.ProfileScreen
@@ -65,6 +66,8 @@ object Food
 
 @Serializable
 data class ExerciseDetails(val id: Int)
+@Serializable
+data class FoodDetails(val id: Int)
 
 @Serializable
 object CreateGoal
@@ -111,7 +114,10 @@ class MainActivity : ComponentActivity() {
                         val exerciseDetails: ExerciseDetails = backstackEntry.toRoute()
                         ExerciseDetailsScreen(navController, exerciseDetails)
                     }
-
+                    composable<FoodDetails> { backstackEntry ->
+                        val foodDetails: FoodDetails = backstackEntry.toRoute()
+                        FoodDetailsScreen(navController, foodDetails)
+                    }
 
 //                    composable<CreateGoal> { CreateGoalScreen(navController) }
                     composable<DisplayGoal> { backStackEntry ->

@@ -133,7 +133,17 @@ fun HomeScreen(navController: NavController) {
                     .size(150.dp),
                 iconColor = C.CoralRed
             )
-            FoodFavorite(navController)
+            FoodFavorite(
+                items = VariableModel.favoriteFoods.map { item ->
+                    item.toNavigationOption()
+                },
+                buttonColor = ButtonC.GoldenAmberPrimary,
+                textColor = Color.White,
+                navController = navController,
+                modifier = Modifier
+                    .size(150.dp),
+                iconColor = Color.White
+            )
         }
     }
 }
