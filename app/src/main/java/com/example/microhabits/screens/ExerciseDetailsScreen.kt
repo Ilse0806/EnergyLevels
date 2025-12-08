@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,12 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.ExerciseDetails
-import com.example.microhabits.Navigation
-import com.example.microhabits.components.Header
+import com.example.microhabits.components.getters.GetDifficulty
+import com.example.microhabits.components.getters.GetTime
 import com.example.microhabits.components.navigation.Header
 import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
+import com.example.microhabits.ui.theme.Color as C
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalLayoutApi::class)
@@ -50,10 +51,20 @@ fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDeta
                 extraContent = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Time: 45 min")
-                        Text("Difficulty: 45 min")
+                        GetTime(
+                            minutes = 30,
+                            textColor = Color.White,
+                            iconTint = C.Indigo,
+                            hours = 1
+                        )
+                        GetDifficulty(
+                            difficulty = 3,
+                            borderColor = C.Indigo,
+                            textColor = Color.White
+                        )
                     }
                 }
             )
