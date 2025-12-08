@@ -1,9 +1,11 @@
-package com.example.microhabits.components
+package com.example.microhabits.components.navigation
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,8 +13,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,6 +37,7 @@ import com.example.microhabits.ui.theme.Color as C
 fun Header(
     title: String,
     titleStyle: TextStyle,
+    context: Context,
     modifier : Modifier = Modifier,
     headerBackground: Color = C.Red,
     image: String? = null,
@@ -86,7 +86,7 @@ fun Header(
                     .height(116.dp)
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
+                    model = ImageRequest.Builder(context)
                         .data(image)
                         .crossfade(true)
                         .build(),
@@ -109,6 +109,7 @@ fun Header(
                 modifier = Modifier
                     .fillMaxWidth()
             )
+            Spacer(Modifier.padding(bottom = 12.dp))
             extraContent()
         }
     }

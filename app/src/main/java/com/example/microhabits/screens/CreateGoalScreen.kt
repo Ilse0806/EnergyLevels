@@ -41,10 +41,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.CreateBehavior
 import com.example.microhabits.Home
-import com.example.microhabits.Navigation
 import com.example.microhabits.components.buttons.ContinueButton
 import com.example.microhabits.components.buttons.ReturnButton
 import com.example.microhabits.components.inputs.SingleDropdown
+import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.services.CreateGoalService.loadCategory
 import com.example.microhabits.services.CreateGoalService.saveCategory
 import com.example.microhabits.data.state.VariableModel

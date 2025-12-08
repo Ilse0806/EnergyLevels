@@ -25,10 +25,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.microhabits.Exercise
 import com.example.microhabits.ExerciseDetails
 import com.example.microhabits.Navigation
 import com.example.microhabits.components.Header
+import com.example.microhabits.components.navigation.Header
+import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 
@@ -45,6 +46,7 @@ fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDeta
                 title = "Go for a walk",
                 titleStyle = Typography.titleMedium.copy(color = Color.White),
                 image = "https://www.transparentlabs.com/cdn/shop/articles/image1_1_985e1ff8-6709-4f15-a39f-28a5c282e780_1200x1200.jpg?v=1748023325",
+                context = context,
                 extraContent = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -82,6 +84,44 @@ fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDeta
 fun ExerciseDetailsPreview() {
     MicroHabitsTheme(dynamicColor = false) {
         Scaffold(
+            topBar = {
+                Header(
+                    title = "Go for a walk",
+                    titleStyle = Typography.titleMedium.copy(color = Color.White),
+//                    image = "https://www.transparentlabs.com/cdn/shop/articles/image1_1_985e1ff8-6709-4f15-a39f-28a5c282e780_1200x1200.jpg?v=1748023325",
+                    context = LocalContext.current,
+                    extraContent = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            GetTime(
+                                minutes = 30,
+                                textColor = Color.White,
+                                iconTint = C.Indigo,
+                                hours = 1
+                            )
+                            GetDifficulty(
+                                difficulty = 3,
+                                borderColor = C.Indigo,
+                                textColor = Color.White
+                            )
+//                            Text(
+//                                text = "Time: 45 min",
+//                                style = Typography.bodyMedium.copy(
+//                                    color = Color.White
+//                                )
+//                            )
+//                            Text(
+//                                text = "Difficulty: 45 min",
+//                                style = Typography.bodyMedium.copy(
+//                                    color = Color.White
+//                                )
+//                            )
+                        }
+                    }
+                )
+            },
             bottomBar = { Navigation(rememberNavController()) },
             modifier = Modifier
                 .fillMaxSize()

@@ -50,12 +50,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.CreateGoal
 import com.example.microhabits.FocusMap
 import com.example.microhabits.Home
-import com.example.microhabits.Navigation
 import com.example.microhabits.components.buttons.AddedBox
 import com.example.microhabits.components.buttons.ButtonPrimary
 import com.example.microhabits.components.buttons.Checkbox
 import com.example.microhabits.components.buttons.ContinueButton
 import com.example.microhabits.components.buttons.ReturnButton
+import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.models.classes.Behavior
 import com.example.microhabits.services.NewBehaviorService.exampleBehaviors
 import com.example.microhabits.services.NewBehaviorService.loadBehaviorsForCategory

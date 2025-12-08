@@ -19,8 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.microhabits.Navigation
 import com.example.microhabits.Profile
+import com.example.microhabits.components.navigation.Navigation
 import org.json.JSONObject
 
 @OptIn(ExperimentalLayoutApi::class)

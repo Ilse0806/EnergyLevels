@@ -51,13 +51,13 @@ import com.example.microhabits.CreateGoal
 import com.example.microhabits.DisplayGoal
 import com.example.microhabits.FocusMap
 import com.example.microhabits.Home
-import com.example.microhabits.Navigation
 import com.example.microhabits.components.BehaviorDetails
 import com.example.microhabits.components.buttons.Checkbox
 import com.example.microhabits.components.CollapseContent
 import com.example.microhabits.components.buttons.ContinueButton
 import com.example.microhabits.components.buttons.ReturnButton
-import com.example.microhabits.components.SuccessOverlay
+import com.example.microhabits.components.overlays.SuccessOverlay
+import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.models.enums.MeasuredInResult
 import com.example.microhabits.models.enums.NotificationFrequency

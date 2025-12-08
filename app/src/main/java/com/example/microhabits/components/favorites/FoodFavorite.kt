@@ -1,4 +1,4 @@
-package com.example.microhabits.components
+package com.example.microhabits.components.favorites
 
 import android.os.Build
 import androidx.annotation.RequiresApi

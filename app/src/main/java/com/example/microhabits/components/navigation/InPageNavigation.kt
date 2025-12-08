@@ -1,4 +1,4 @@
-package com.example.microhabits.components
+package com.example.microhabits.components.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

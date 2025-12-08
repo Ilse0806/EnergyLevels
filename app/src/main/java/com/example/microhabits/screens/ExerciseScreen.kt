@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.microhabits.Navigation
+import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.ui.theme.Typography
 
 @RequiresApi(Build.VERSION_CODES.O)

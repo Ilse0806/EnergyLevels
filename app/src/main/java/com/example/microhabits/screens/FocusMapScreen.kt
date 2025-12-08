@@ -49,12 +49,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.CreateGoal
 import com.example.microhabits.FocusMap
-import com.example.microhabits.Navigation
 import com.example.microhabits.SelectBehavior
 import com.example.microhabits.components.buttons.ButtonSecondary
 import com.example.microhabits.components.CollapseContent
 import com.example.microhabits.components.buttons.ContinueButton
 import com.example.microhabits.components.buttons.ReturnButton
+import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC

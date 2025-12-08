@@ -36,8 +36,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.DisplayBehavior
 import com.example.microhabits.DisplayGoal
-import com.example.microhabits.Navigation
 import com.example.microhabits.components.GoalDetails
+import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.services.GoalService
 import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import com.example.microhabits.data.state.VariableModel

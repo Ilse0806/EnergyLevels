@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.microhabits.DisplayBehavior
-import com.example.microhabits.Navigation
+import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.helpers.toUserBehaviorWithBehavior
 import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import com.example.microhabits.ui.theme.MicroHabitsTheme

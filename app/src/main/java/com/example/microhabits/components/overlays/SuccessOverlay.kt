@@ -1,4 +1,4 @@
-package com.example.microhabits.components
+package com.example.microhabits.components.overlays
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize

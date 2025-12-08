@@ -1,4 +1,4 @@
-package com.example.microhabits.components
+package com.example.microhabits.components.favorites
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.microhabits.components.navigation.InPageNavigation
 import com.example.microhabits.models.classes.NavigationOption
 import com.example.microhabits.ui.theme.Typography
 
