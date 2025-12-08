@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.microhabits.R
 import com.example.microhabits.ui.theme.Typography
@@ -18,7 +19,9 @@ import com.example.microhabits.ui.theme.Typography
 fun GetTime(
     minutes: Int,
     modifier: Modifier = Modifier,
-    textColor: Color = Color.Black,
+    textStyle: TextStyle = Typography.bodyLarge.copy(
+        color = Color.Black
+    ),
     iconTint: Color = Color.Black,
     hours: Int = 0,
 ) {
@@ -43,15 +46,14 @@ fun GetTime(
     ) {
         Text(
             text = "Time: $text",
-            style = Typography.bodyMedium.copy(
-                color = textColor
-            ),
+            style = textStyle,
             modifier = Modifier.padding(end = 12.dp)
         )
         Icon(
             painter = icon,
             contentDescription = null,
             tint = iconTint,
+            modifier = Modifier.size(18.dp)
         )
 
     }

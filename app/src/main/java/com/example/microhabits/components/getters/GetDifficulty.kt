@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.Color as C
@@ -27,7 +28,9 @@ fun GetDifficulty(
     difficulty: Int,
     modifier: Modifier = Modifier,
     borderColor: Color = C.Indigo,
-    textColor: Color = Color.Black
+    textStyle: TextStyle = Typography.bodyLarge.copy(
+        color = Color.Black
+    ),
 ) {
     var bubbles by remember { mutableStateOf(
             mapOf(
@@ -50,9 +53,7 @@ fun GetDifficulty(
     ) {
         Text(
             text = "Difficulty:",
-            style = Typography.bodyMedium.copy(
-                color = textColor,
-            ),
+            style = textStyle,
             modifier = Modifier.padding(end = 12.dp)
         )
         bubbles.forEach { bubble ->

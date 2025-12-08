@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,14 +57,18 @@ fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDeta
                     ) {
                         GetTime(
                             minutes = 30,
-                            textColor = Color.White,
+                            textStyle = Typography.bodyLarge.copy(
+                                color = Color.White
+                            ),
                             iconTint = C.Indigo,
                             hours = 1
                         )
                         GetDifficulty(
                             difficulty = 3,
                             borderColor = C.Indigo,
-                            textColor = Color.White
+                            textStyle = Typography.bodyLarge.copy(
+                                color = Color.White
+                            ),
                         )
                     }
                 }
@@ -84,7 +89,7 @@ fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDeta
                 .padding(horizontal = 16.dp)
                 .padding(innerPadding)
         ) {
-
+            Text("hi")
         }
     }
 }
@@ -108,14 +113,18 @@ fun ExerciseDetailsPreview() {
                         ) {
                             GetTime(
                                 minutes = 30,
-                                textColor = Color.White,
+                                textStyle = Typography.bodyLarge.copy(
+                                    color = Color.White
+                                ),
                                 iconTint = C.Indigo,
                                 hours = 1
                             )
                             GetDifficulty(
                                 difficulty = 3,
                                 borderColor = C.Indigo,
-                                textColor = Color.White
+                                textStyle = Typography.bodyLarge.copy(
+                                    color = Color.White
+                                ),
                             )
 //                            Text(
 //                                text = "Time: 45 min",
@@ -138,9 +147,12 @@ fun ExerciseDetailsPreview() {
                 .fillMaxSize()
                 .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
             Column(
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(innerPadding)
             ) {
-
+                Text("test")
             }
         }
     }

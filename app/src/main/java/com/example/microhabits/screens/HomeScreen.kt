@@ -35,11 +35,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.Exercise
 import com.example.microhabits.Food
+import com.example.microhabits.components.TodayGoalsDisplayed
+import com.example.microhabits.components.buttons.ButtonPrimary
 import com.example.microhabits.components.favorites.FavoritesContent
 import com.example.microhabits.components.favorites.FoodFavorite
 import com.example.microhabits.components.navigation.InPageNavigation
-import com.example.microhabits.components.TodayGoalsDisplayed
-import com.example.microhabits.components.buttons.ButtonPrimary
 import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.models.classes.NavigationOption
