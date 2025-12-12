@@ -13,31 +13,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.microhabits.components.buttons.Checkbox
-import com.example.microhabits.models.classes.Behavior
 import com.example.microhabits.data.state.VariableModel
+import com.example.microhabits.models.classes.UserGoal
 import com.example.microhabits.ui.theme.Color as C
 
 @Composable
 fun TodayGoalsDisplayed(
-    behaviors: MutableList<Behavior>,
-    onCheck: (Boolean, Int) -> Unit,
+    goals: MutableList<UserGoal>,
+    onCheck: (Int?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
     ) {
-        for (behavior in behaviors) {
-            key(behavior.id) {
-                var isChecked by remember { mutableStateOf(behavior.completedToday) }
+        for (goal in goals) {
+            key(goal.id) {
+                var isChecked by remember { mutableStateOf(VariableModel.completedGoals.any { it.goalId == goal.goalId }) }
                 Spacer(modifier = Modifier.padding(4.dp))
 
                 fun onCheckBehavior(newChecked: Boolean) {
+                    if (newChecked) {
+                        onCheck(goal.id)
+                    } else {
+                        VariableModel.completedGoals.remove(VariableModel.completedGoals.find { it.goalId == goal.goalId })
+                    }
                     isChecked = newChecked
-                    val index = VariableModel.todayBehaviors.indexOfFirst { it.id == behavior.id }
-                    onCheck(isChecked, index)
                 }
 
-                Checkbox(Color.White, C.Indigo, isChecked, ::onCheckBehavior, behavior.name as String)
+                Checkbox(Color.White, C.Indigo, isChecked, ::onCheckBehavior, goal.name)
 
             }
         }

@@ -42,10 +42,9 @@ import com.example.microhabits.components.favorites.FoodFavorite
 import com.example.microhabits.components.navigation.InPageNavigation
 import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.data.state.VariableModel
+import com.example.microhabits.models.classes.CompletedGoal
 import com.example.microhabits.models.classes.NavigationOption
-import com.example.microhabits.services.FavoritesService
-import com.example.microhabits.services.HomeService
-import com.example.microhabits.services.HomeService.saveGoals
+import com.example.microhabits.services.MainService
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import java.time.LocalDateTime
@@ -71,13 +70,12 @@ fun HomeScreen(navController: NavController) {
 //    }
     if (!hasLoaded) {
         hasLoaded = true
-        HomeService.loadUser(context)
+        MainService.loadUser(context)
     }
 
     if (VariableModel.userId != 0) {
         LaunchedEffect(VariableModel.userId) {
-            saveGoals(context)
-            FavoritesService.loadFavorites(context)
+//            saveGoals(context)
         }
     }
     val scrollState = rememberScrollState()
@@ -102,10 +100,10 @@ fun HomeScreen(navController: NavController) {
                 name = VariableModel.userName
             )
             TodayGoalsDisplayed(
-                behaviors = VariableModel.todayBehaviors,
+                goals = VariableModel.userGoals,
                 modifier = Modifier.padding(vertical = 8.dp),
-                onCheck = { bool, index ->
-                    VariableModel.todayBehaviors[index].completedToday = bool
+                onCheck = { id ->
+                    VariableModel.completedGoals.add(CompletedGoal(id, LocalDateTime.now()))
                 }
             )
             InPageNavigation(
@@ -134,9 +132,6 @@ fun HomeScreen(navController: NavController) {
                 iconColor = C.CoralRed
             )
             FoodFavorite(
-                items = VariableModel.favoriteFoods.map { item ->
-                    item.toNavigationOption()
-                },
                 buttonColor = ButtonC.GoldenAmberPrimary,
                 textColor = Color.White,
                 navController = navController,
@@ -243,6 +238,14 @@ fun HomeScreenPreview() {
                     modifier = Modifier
                         .size(150.dp),
                     iconColor = C.CoralRed
+                )
+                FoodFavorite(
+                    buttonColor = ButtonC.GoldenAmberPrimary,
+                    textColor = Color.White,
+                    navController = rememberNavController(),
+                    modifier = Modifier
+                        .size(150.dp),
+                    iconColor = Color.White
                 )
             }
         }

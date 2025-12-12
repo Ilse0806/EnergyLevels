@@ -3,6 +3,7 @@ package com.example.microhabits.helpers
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.microhabits.models.classes.Behavior
+import com.example.microhabits.models.classes.CompletedGoal
 import com.example.microhabits.models.classes.ExerciseProgram
 import com.example.microhabits.models.classes.FoodRecipe
 import com.example.microhabits.models.classes.SingleExercise
@@ -10,10 +11,14 @@ import com.example.microhabits.models.enums.MeasuredInResult
 import com.example.microhabits.models.enums.NotificationFrequency
 import com.example.microhabits.models.classes.UserBehavior
 import com.example.microhabits.models.classes.UserBehaviorWithBehavior
+import com.example.microhabits.models.classes.UserGoal
 import org.json.JSONObject
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun JSONObject.toUserBehavior(): UserBehavior {
@@ -68,6 +73,39 @@ fun JSONObject.toUserBehaviorWithBehavior(): UserBehaviorWithBehavior {
     val userBehavior = this.getJSONObject("user_behavior").toUserBehavior()
     val behavior = this.getJSONObject("behavior").toBehavior(userBehavior.completedToday)
     return UserBehaviorWithBehavior(id, userBehavior, behavior)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun JSONObject.toUserGoal(goalId: Int): UserGoal {
+    return UserGoal(
+        id = this.optInt("id"),
+        goalId = goalId,
+        name = this.optString("name"),
+        description = this.optString("description").takeUnless { it == "null" } ?: "",
+//        Long long line, to turn string in certain date format to LocalDateTime :)
+        deadline = if (this.optString("deadline") != "null") {
+            ZonedDateTime.parse(this.optString("deadline"), DateTimeFormatter.RFC_1123_DATE_TIME)
+                .toLocalDateTime()
+        } else {
+            null
+        },
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun JSONObject.toCompletedGoal(): CompletedGoal {
+    val time = this.optString("completion_time").split(":")
+
+    return CompletedGoal(
+        goalId = this.optInt("user_goal_id"),
+        dateCompleted = LocalDateTime.of(
+            this.optInt("year"),
+            this.optInt("month"),
+            this.optInt("day"),
+            time[0].toInt(),
+            time[1].toInt(),
+        ),
+    )
 }
 
 fun JSONObject.toExerciseProgram(singleExercises: List<SingleExercise>): ExerciseProgram {

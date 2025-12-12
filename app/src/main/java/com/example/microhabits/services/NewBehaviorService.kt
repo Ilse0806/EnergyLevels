@@ -26,7 +26,6 @@ object NewBehaviorService {
                 val behaviorRows = behaviorsByCategory.getJSONArray("rows")
                 for (i in 0 until behaviorRows.length()) {
                     val behavior = behaviorRows.getJSONObject(i)
-                    println(behavior.getInt("id"))
                     DatabaseService.getRow("user_behavior",mapOf("behavior_id" to behavior.getInt("id"), "fetch_one" to true),
                         context,
                         { userBehaviors ->

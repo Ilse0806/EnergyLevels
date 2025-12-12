@@ -10,9 +10,9 @@ import com.example.microhabits.helpers.toSingleExercise
 import com.example.microhabits.models.classes.SingleExercise
 
 object FavoritesService {
-    fun loadFavorites(context: Context) {
+    fun loadFavorites(context: Context, userId: Int) {
         DatabaseService.getRow(
-            "user_favorite", mapOf("user_id" to VariableModel.userId, "fetch_one" to true), context,
+            "user_favorite", mapOf("user_id" to userId, "fetch_one" to true), context,
             { favorites ->
                 saveFoodFavorites(context, favorites["favorite_food"].toString().toList().mapNotNull { it.toString().toIntOrNull() })
                 saveExerciseFavorites(context, favorites["favorite_exercise"].toString().toList().mapNotNull { it.toString().toIntOrNull() })
@@ -24,14 +24,23 @@ object FavoritesService {
     }
 
     fun saveFoodFavorites(context: Context, favorite: List<Int>) {
-        VariableModel.favoriteFoods.clear()
+        VariableModel.favoriteDinner.clear()
+        VariableModel.favoriteLunch.clear()
+        VariableModel.favoriteBreakfast.clear()
+        VariableModel.favoriteSnack.clear()
         DatabaseService.getRow(
             "food_recipe", mapOf("id" to favorite, "fetch_one" to false), context,
             { food ->
                 val rows = food.getJSONArray("rows")
                 for (i in 0 until rows.length()) {
                     val foodJson = rows.getJSONObject(i)
-                    VariableModel.favoriteFoods.add(foodJson.toFoodRecipe())
+                    when (foodJson.getString("type")) {
+                        "Dinner" -> VariableModel.favoriteDinner.add(foodJson.toFoodRecipe())
+                        "Lunch" -> VariableModel.favoriteLunch.add(foodJson.toFoodRecipe())
+                        "Breakfast" -> VariableModel.favoriteBreakfast.add(foodJson.toFoodRecipe())
+                        "Snack" -> VariableModel.favoriteSnack.add(foodJson.toFoodRecipe())
+                        else -> VariableModel.favoriteSnack.add(foodJson.toFoodRecipe())
+                    }
                 }
                 Log.d("GET_FOOD_SUCCESSFUL", food.toString())
             },
@@ -72,5 +81,4 @@ object FavoritesService {
             { error -> Log.e("GET_EXERCISE_ERROR", error.toString()) }
         )
     }
-
 }

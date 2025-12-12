@@ -3,6 +3,7 @@ package com.example.microhabits.components.navigation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,14 +13,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.microhabits.components.buttons.ButtonSecondary
 import com.example.microhabits.models.classes.NavigationOption
 import com.example.microhabits.ui.theme.Typography
@@ -42,6 +49,7 @@ fun InPageNavigation(
             onClickAction = {
                 navController.navigate(route = option.destination)
             },
+            contentPadding = PaddingValues(0.dp),
             content = {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -57,9 +65,24 @@ fun InPageNavigation(
                             tint = iconColor,
                         )
                     }
+                    option.image?.let {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(option.image)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+                    }
                     Text(
                         text = option.label,
-                        style = Typography.titleSmall,
+                        style = Typography.titleSmall.copy(
+                            color = if (!option.image.isNullOrEmpty()) Color.White else textColor
+                        ),
                         textAlign = TextAlign.Center,
                     )
                 }
