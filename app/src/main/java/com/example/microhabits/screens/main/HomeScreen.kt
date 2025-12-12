@@ -1,4 +1,4 @@
-package com.example.microhabits.screens
+package com.example.microhabits.screens.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi

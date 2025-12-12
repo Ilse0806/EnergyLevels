@@ -1,4 +1,4 @@
-package com.example.microhabits.screens
+package com.example.microhabits.screens.baseFunctionality
 
 import android.content.Context
 import android.os.Build

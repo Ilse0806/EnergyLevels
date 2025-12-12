@@ -1,4 +1,4 @@
-package com.example.microhabits.screens
+package com.example.microhabits.screens.details
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,16 +26,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.microhabits.FoodDetails
+import com.example.microhabits.ExerciseDetails
+import com.example.microhabits.components.getters.GetDifficulty
+import com.example.microhabits.components.getters.GetTime
 import com.example.microhabits.components.navigation.Header
 import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
+import com.example.microhabits.ui.theme.Color as C
 
-@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
+fun ExerciseDetailsScreen(navController: NavController, exerciseId: ExerciseDetails) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
@@ -48,10 +52,24 @@ fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
                 extraContent = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Time: 45 min")
-                        Text("Difficulty: 45 min")
+                        GetTime(
+                            minutes = 30,
+                            textStyle = Typography.bodyLarge.copy(
+                                color = Color.White
+                            ),
+                            iconTint = C.Indigo,
+                            hours = 1
+                        )
+                        GetDifficulty(
+                            difficulty = 3,
+                            borderColor = C.Indigo,
+                            textStyle = Typography.bodyLarge.copy(
+                                color = Color.White
+                            ),
+                        )
                     }
                 }
             )
@@ -71,7 +89,7 @@ fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
                 .padding(horizontal = 16.dp)
                 .padding(innerPadding)
         ) {
-
+            Text("hi")
         }
     }
 }
@@ -79,31 +97,50 @@ fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
-fun FoodDetailsPreview() {
+fun ExerciseDetailsPreview() {
     MicroHabitsTheme(dynamicColor = false) {
         Scaffold(
-            bottomBar = { Navigation(rememberNavController()) },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
-            Column(
-                modifier = Modifier.padding(innerPadding)
-            ) {
+            topBar = {
                 Header(
                     title = "Go for a walk",
-                    titleStyle = Typography.titleLarge.copy(color = Color.White),
-                    image = "https://www.transparentlabs.com/cdn/shop/articles/image1_1_985e1ff8-6709-4f15-a39f-28a5c282e780_1200x1200.jpg?v=1748023325",
+                    titleStyle = Typography.titleMedium.copy(color = Color.White),
+//                    image = "https://www.transparentlabs.com/cdn/shop/articles/image1_1_985e1ff8-6709-4f15-a39f-28a5c282e780_1200x1200.jpg?v=1748023325",
                     context = LocalContext.current,
                     extraContent = {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Time: 45 min")
-                            Text("Difficulty: 45 min")
+                            GetTime(
+                                minutes = 30,
+                                textStyle = Typography.bodyLarge.copy(
+                                    color = Color.White
+                                ),
+                                iconTint = C.Indigo,
+                                hours = 1
+                            )
+                            GetDifficulty(
+                                difficulty = 3,
+                                borderColor = C.Indigo,
+                                textStyle = Typography.bodyLarge.copy(
+                                    color = Color.White
+                                ),
+                            )
                         }
                     }
                 )
+            },
+            bottomBar = { Navigation(rememberNavController()) },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(innerPadding)
+            ) {
+                Text("test")
             }
         }
     }

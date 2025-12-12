@@ -1,7 +1,8 @@
-package com.example.microhabits.screens
+package com.example.microhabits.screens.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,19 +17,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.microhabits.components.navigation.Navigation
-import com.example.microhabits.ui.theme.Typography
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalLayoutApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun FoodScreen (navController: NavController) {
-    val context = LocalContext.current
+fun ProgressScreen (navController: NavController) {
     val scrollState = rememberScrollState()
-
     Scaffold(
         bottomBar = {
             if (!WindowInsets.isImeVisible) {
@@ -43,10 +40,8 @@ fun FoodScreen (navController: NavController) {
                 .padding(start = 16.dp, end = 16.dp)
                 .verticalScroll(scrollState)
         ) {
-            Text(
-                text = "Food screen",
-                style = Typography.titleLarge
-            )
+            Text("Create Goal")
+            Box(Modifier.padding(innerPadding))
         }
     }
 }
