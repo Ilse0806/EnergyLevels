@@ -10,9 +10,11 @@ class FoodRecipe(
     time: Int,
     difficulty: Int,
     attributes: List<String>,
+    var type: String,
     var image: String,
     var ingredients: List<Ingredient>,
-    var steps: List<String>
+    var steps: List<String>,
+    var recommended: Boolean
 ): UpperActivity(id, name, description, time, difficulty, attributes) {
     override fun toNavigationOption(): NavigationOption<*> {
         val baseOption = super.toNavigationOption()

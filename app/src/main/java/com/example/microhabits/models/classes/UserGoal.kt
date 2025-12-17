@@ -8,5 +8,6 @@ class UserGoal(
     var name: String,
     var description: String = "",
     var deadline: LocalDateTime? = null,
+    var category: String = "Exercise"
 ) {
 }

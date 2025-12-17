@@ -29,7 +29,7 @@ object MainService {
         VariableModel.userId = results["id"] as Int
 
         connectGoals(context, VariableModel.userId)
-        FavoritesService.loadFavorites(context, VariableModel.userId)
+        ItemsService.loadItems(context, VariableModel.userId)
     }
 
     private fun connectGoals(context: Context, userId: Int) {

@@ -1,5 +1,9 @@
 package com.example.microhabits.models.classes
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.microhabits.ExerciseDetails
 import com.example.microhabits.models.superclasses.UpperActivity
 
@@ -12,6 +16,7 @@ class ExerciseProgram (
     attributes: List<String>,
     var exercises: List<SingleExercise>,
     var icon: String,
+    var recommended: Boolean
 ): UpperActivity(id, name, description, time, difficulty, attributes) {
     override fun toNavigationOption(): NavigationOption<*> {
         val baseOption = super.toNavigationOption()
@@ -20,5 +25,13 @@ class ExerciseProgram (
             destination = ExerciseDetails(this.id),
             image = this.icon
         )
+    }
+
+    fun iconFromString(): ImageVector? {
+        return when (this.icon) {
+            "DirectionsWalk" -> Icons.AutoMirrored.Filled.DirectionsWalk
+            "FitnessCenter" -> Icons.Default.FitnessCenter
+            else -> null
+        }
     }
 }

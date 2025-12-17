@@ -1,6 +1,7 @@
 package com.example.microhabits.helpers
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.microhabits.models.classes.Behavior
 import com.example.microhabits.models.classes.CompletedGoal
@@ -12,6 +13,8 @@ import com.example.microhabits.models.enums.NotificationFrequency
 import com.example.microhabits.models.classes.UserBehavior
 import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import com.example.microhabits.models.classes.UserGoal
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -89,6 +92,7 @@ fun JSONObject.toUserGoal(goalId: Int): UserGoal {
         } else {
             null
         },
+        category = this.optString("category")
     )
 }
 
@@ -109,15 +113,26 @@ fun JSONObject.toCompletedGoal(): CompletedGoal {
 }
 
 fun JSONObject.toExerciseProgram(singleExercises: List<SingleExercise>): ExerciseProgram {
+    val attributesString = this.optString("attributes")
+    val attributes = try {
+        val asJson = JSONArray(attributesString)
+        List(asJson.length()) { index ->
+            asJson.getString(index)
+        }
+    } catch (e: JSONException) {
+        Log.e("JSON_ERROR", e.toString())
+        emptyList()
+    }
     return ExerciseProgram(
         id = this.optInt("id"),
         name = this.optString("name"),
         description = this.optString("description"),
         time = this.optInt("time"),
         difficulty = this.optInt("difficulty"),
-        attributes = this.optString("attributes").toList().map { it.toString() },
+        attributes = attributes,
         exercises = singleExercises,
         icon = this.optString("icon"),
+        recommended = this.optBoolean("recommended")
     )
 }
 
@@ -129,9 +144,11 @@ fun JSONObject.toFoodRecipe(): FoodRecipe {
         time = this.optInt("time"),
         difficulty = this.optInt("difficulty"),
         attributes = this.optString("attributes").toList().map { it.toString() },
+        type = this.optString("type"),
         image = this.optString("image"),
         ingredients = this.optString("ingredients").toList().map { it.toString().toIngredient() },
         steps = this.optString("image").toList().map { it.toString() },
+        recommended = this.optBoolean("recommended")
     )
 }
 
