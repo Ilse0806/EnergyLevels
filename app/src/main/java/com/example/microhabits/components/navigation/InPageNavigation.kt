@@ -47,7 +47,15 @@ fun InPageNavigation(
             buttonColor = buttonColors,
             color = textColor,
             onClickAction = {
-                navController.navigate(route = option.destination)
+                if (option.bottomNavItem) {
+                    navController.navigate(route = option.destination) {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                } else {
+                    navController.navigate(route = option.destination)
+                    }
             },
             contentPadding = PaddingValues(0.dp),
             content = {
@@ -60,7 +68,7 @@ fun InPageNavigation(
                             imageVector = option.icon,
                             contentDescription = null,
                             modifier = Modifier
-                                .fillMaxSize(1.0f)
+                                .fillMaxSize(0.75f)
                                 .align(Alignment.Center),
                             tint = iconColor,
                         )

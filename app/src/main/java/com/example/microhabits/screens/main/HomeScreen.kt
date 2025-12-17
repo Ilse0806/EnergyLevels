@@ -109,8 +109,8 @@ fun HomeScreen(navController: NavController) {
             InPageNavigation(
                 title = "What do you want to do?",
                 navigationOptions = listOf(
-                    NavigationOption("Exercise", Exercise),
-                    NavigationOption("Food", Food)
+                    NavigationOption(label = "Exercise", destination = Exercise, bottomNavItem = true),
+                    NavigationOption(label = "Food", destination = Food, bottomNavItem = true)
                 ),
                 buttonColors = ButtonC.CoralRedSecondary.copy(containerColor = Color.White),
                 textColor = C.CoralRed,
@@ -165,7 +165,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         Text(
             text = "$greeting $name",
             style = Typography.titleLarge,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = modifier.padding(bottom = 8.dp)
         )
         Text(
             text = "How is your day going?",

@@ -7,5 +7,6 @@ class NavigationOption<T: Any>(
     val destination: T,
     val icon: ImageVector? = null,
     val image: String? = null,
+    val bottomNavItem: Boolean = false,
 ) {
 }
