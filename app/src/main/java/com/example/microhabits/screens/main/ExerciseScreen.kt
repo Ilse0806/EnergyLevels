@@ -104,15 +104,15 @@ fun ExerciseScreen(navController: NavController) {
                 context = context,
                 iconProvider = { (it as ExerciseProgram).iconFromString() },
                 imageProvider = { null },
+                onClick = { item ->
+                    navController.navigate(ExerciseDetails(item.id))
+                },
                 modifier = Modifier
                     .border(
                         width = 1.dp,
                         color = C.CoralRed,
                         shape = RoundedCornerShape(8.dp)
                     )
-                    .clickable {
-                        navController.navigate(ExerciseDetails(1))
-                    }
             )
         }
     }

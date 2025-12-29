@@ -23,7 +23,7 @@ class ExerciseProgram (
         return NavigationOption(
             label = baseOption.label,
             destination = ExerciseDetails(this.id),
-            image = this.icon
+            icon = this.iconFromString()
         )
     }
 

@@ -84,6 +84,7 @@ object ItemsService {
                 else -> VariableModel.recommendedSnack.add(item)
             }
         }
+        VariableModel.allFoods.add(item)
     }
 
     private fun setExerciseItems(item: ExerciseProgram, userFavorites: List<Int>) {
@@ -92,5 +93,6 @@ object ItemsService {
         } else if (item.recommended) {
             VariableModel.recommendedExercise.add(item)
         }
+        VariableModel.allExercises.add(item)
     }
 }
