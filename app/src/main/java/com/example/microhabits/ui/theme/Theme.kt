@@ -19,7 +19,7 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = C.Indigo,
     surface = C.LightTheme,
     background = C.DarkTheme,
-    onSurface = C.CoralRed
+    onSurface = Color.White
 )
 
 private val LightColorScheme = lightColorScheme(

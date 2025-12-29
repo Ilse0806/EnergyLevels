@@ -32,7 +32,8 @@ fun GetAttributes(
             Text (
                 text = attribute,
                 style = Typography.labelSmall.copy(
-                    fontSize = 10.sp
+                    fontSize = 10.sp,
+                    color = Color.Black
                 )
             )
             if (attribute != lastItem && attributes.size > 1) {

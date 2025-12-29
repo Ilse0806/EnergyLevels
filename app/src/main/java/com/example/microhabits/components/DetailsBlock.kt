@@ -98,20 +98,26 @@ fun DetailsBlock(
                 Column {
                     Text(
                         text = title,
-                        style = Typography.bodyMedium,
+                        style = Typography.bodyMedium.copy(
+                            color = Color.Black
+                        ),
                         modifier = Modifier.padding(top = 2.dp)
                     )
                     GetTime(
                         minutes = minutes,
                         hours = hours,
                         iconTint = accentColor,
-                        textStyle = Typography.labelSmall,
+                        textStyle = Typography.labelSmall.copy(
+                            color = Color.Black
+                        ),
                         modifier = Modifier.padding(vertical = 2.dp)
                     )
                     GetDifficulty(
                         difficulty = difficulty,
                         borderColor = accentColor,
-                        textStyle = Typography.labelSmall,
+                        textStyle = Typography.labelSmall.copy(
+                            color = Color.Black
+                        ),
                         modifier = Modifier.padding(vertical = 2.dp)
                     )
                 }
