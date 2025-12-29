@@ -2,26 +2,20 @@ package com.example.microhabits.screens.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -91,6 +85,7 @@ fun HomeScreen(navController: NavController) {
                 name = VariableModel.userName
             )
             TodayGoalsDisplayed(
+                navController = navController,
                 goals = VariableModel.userGoals,
                 modifier = Modifier.padding(vertical = 8.dp),
                 onCheck = { id ->
@@ -164,28 +159,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun NewGoalButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    ButtonPrimary(
-        ButtonC.CoralRedPrimary,
-        C.LightBlue,
-        { onClick() },
-        modifier = modifier
-            .height(150.dp)
-            .width(150.dp)
-            .border(2.dp, C.CoralRed, RoundedCornerShape(8.dp)),
-        shape = RoundedCornerShape(8.dp),
-        content = {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Create new goal",
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
-            )
-        }
-    )
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
@@ -201,6 +174,14 @@ fun HomeScreenPreview() {
             ) {
                 Greeting(
                     name = "Bob"
+                )
+                TodayGoalsDisplayed(
+                    navController = rememberNavController(),
+                    goals = VariableModel.userGoals,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    onCheck = { id ->
+                        VariableModel.completedGoals.add(CompletedGoal(id, LocalDateTime.now()))
+                    }
                 )
                 InPageNavigation(
                     title = "What do you want to do?",

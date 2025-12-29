@@ -1,11 +1,11 @@
 package com.example.microhabits.screens.baseFunctionality
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,9 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -34,20 +38,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.CreateBehavior
+import com.example.microhabits.DisplayGoal
 import com.example.microhabits.Home
+import com.example.microhabits.components.DatePicker
+import com.example.microhabits.components.Description
 import com.example.microhabits.components.buttons.ContinueButton
 import com.example.microhabits.components.buttons.ReturnButton
 import com.example.microhabits.components.inputs.SingleDropdown
+import com.example.microhabits.components.navigation.Header
 import com.example.microhabits.components.navigation.Navigation
-import com.example.microhabits.services.CreateGoalService.loadCategory
-import com.example.microhabits.services.CreateGoalService.saveCategory
+import com.example.microhabits.components.overlays.SuccessOverlay
 import com.example.microhabits.data.state.VariableModel
+import com.example.microhabits.models.classes.Goal
+import com.example.microhabits.services.CreateGoalService.saveNewGoal
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.getTextFieldColor
@@ -59,9 +70,22 @@ import com.example.microhabits.ui.theme.Color as C
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateGoalScreen (navController: NavController) {
+    VariableModel.goal.value = null
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    var showSuccessOverlay by remember { mutableStateOf(false) }
+
     Scaffold(
+        topBar = {
+            if (!showSuccessOverlay) {
+                Header(
+                    title = "New goal",
+                    titleStyle = Typography.titleLarge.copy(color = Color.White),
+                    context = context,
+                    headerBackground = C.LightBlue
+                )
+            }
+        },
         bottomBar = {
             if (!WindowInsets.isImeVisible) {
                 Navigation(navController)
@@ -70,97 +94,176 @@ fun CreateGoalScreen (navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
+        if (showSuccessOverlay) {
+            var show by remember { mutableStateOf(false) }
+            val map = mapOf(
+                "name" to VariableModel.goal.value?.name,
+                "description" to VariableModel.goal.value?.description,
+                "deadline" to VariableModel.goal.value?.deadline,
+                "category" to VariableModel.goal.value?.category,
+                "new_item" to true
+            )
+            saveNewGoal(map, context)
+
+            LaunchedEffect(VariableModel.goal.value?.id) {
+                show = true
+            }
+
+            if (show) {
+                SuccessOverlay(
+                    onGoHome = { navController.navigate(route = Home) },
+                    onViewGoal = {
+                        val goalString =
+                            JSONObject(mapOf("id" to VariableModel.goal.value?.id)).toString()
+                        navController.navigate(route = DisplayGoal(goalString))
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .zIndex(1f),
+                    onDismiss = { navController.navigate(route = Home) },
+                )
+            }
+        }
         Column (
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp)
+                .fillMaxSize()
                 .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp)
+                .padding(innerPadding)
         ) {
-            ReturnButton(ButtonC.CoralRedPrimary, C.CoralRed, {
-                navController.navigate(route = Home)
-            })
-            Text(
-                text = "Creating a new goal",
-                style = Typography.titleLarge
-            )
+            Spacer(Modifier.padding(12.dp))
+
+//            ReturnButton(ButtonC.CoralRedPrimary, C.CoralRed, {
+//                navController.navigate(route = Home)
+//            })
             Text(
                 text = "What do you want to achieve?",
                 style = Typography.titleMedium
             )
-            GoalCreator(context, {
-                valid -> VariableModel.validGoal.value = valid
+            GoalCreator({ valid ->
+                VariableModel.validGoal.value = valid
             })
+            Spacer(Modifier.weight(1f))
             ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.validGoal.value,
                 {
-                    saveCategory(context)
-                    navController.navigate(route = CreateBehavior)
+                    showSuccessOverlay = true
                 }
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoalCreator(context: Context, onFormValidChanged: (Boolean) -> Unit, modifier: Modifier = Modifier) {
+fun GoalCreator(onFormValidChanged: (Boolean) -> Unit, modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
     var fieldSize by remember { mutableStateOf(Size.Zero)}
 
-    LaunchedEffect(Unit){ loadCategory(context) }
+    var viewCategory by remember { mutableStateOf(false) }
+    var viewOthers by remember { mutableStateOf(false) }
 
-    LaunchedEffect(VariableModel.goal.value, VariableModel.categoryValue.value) {
-        val isValid = VariableModel.goal.value.isNotBlank() && VariableModel.categoryValue.value.isNotBlank()
-        onFormValidChanged(isValid)
+    var name by remember { mutableStateOf("")}
+
+    LaunchedEffect(viewOthers, VariableModel.goal.value?.name, VariableModel.goal.value?.category) {
+        if (viewOthers) {
+            val isValid = !VariableModel.goal.value?.name.isNullOrEmpty() && !VariableModel.goal.value?.category.isNullOrEmpty()
+            onFormValidChanged(isValid)
+        } else {
+            onFormValidChanged(false)
+        }
     }
 
-    val keys = VariableModel.existingCategories.value.keys().asSequence().toList()
-
     Column(
-        modifier = modifier.padding(top = 48.dp, bottom = 48.dp)
+        modifier = modifier
     ) {
         OutlinedTextField(
-            value = VariableModel.goal.value,
+            value = name,
             label = { Text("Your goal") },
-            placeholder = { Text("Eat more fruit...") },
+            placeholder = { Text("Eat more fruit") },
             onValueChange = { newText ->
-                VariableModel.goal.value = newText
+                name = newText
+                VariableModel.goal.value?.let {
+                    it.name = newText
+                } ?: run {
+                    VariableModel.goal.value = Goal(
+                        name = newText,
+                        id = null,
+                        description = null,
+                        deadline = null,
+                        category = null
+                    )
+                }
             },
-            modifier = Modifier
-                .fillMaxWidth(),
             colors = getTextFieldColor(Color.White, C.LightBlue, Color.White),
-            textStyle = Typography.bodyMedium
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    if (!VariableModel.goal.value?.name.isNullOrBlank()) {
+                        viewCategory = true
+                    }
+                }
+            )
         )
 
-        OutlinedTextField(
-            value = VariableModel.categoryValue.value,
-            onValueChange = { VariableModel.categoryValue.value = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    fieldSize = coordinates.size.toSize()
+        if (viewCategory) {
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = {
+                    expanded = !expanded
                 },
-            label = { Text("Select a category") },
-            trailingIcon = {
-                Icon(
-                    Icons.Default.KeyboardArrowDown, "contentDescription",
-                    Modifier.clickable { expanded = !expanded }
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = VariableModel.goal.value?.category.orEmpty(),
+                    onValueChange = { VariableModel.goal.value?.category = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onGloballyPositioned { coordinates ->
+                            fieldSize = coordinates.size.toSize()
+                        },
+                    label = { Text("Select a category") },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.KeyboardArrowDown, "contentDescription",
+                            Modifier.clickable { expanded = !expanded }
+                        )
+                    },
+                    colors = getTextFieldColor(Color.White, C.LightBlue, Color.White),
+                    textStyle = Typography.bodyMedium,
+                    readOnly = true
                 )
-            },
-            colors = getTextFieldColor(Color.White, C.LightBlue, Color.White),
-            textStyle = Typography.bodyMedium
-        )
 
-        val values = keys.map { key ->
-            VariableModel.existingCategories.value.getString(key)
+                SingleDropdown(
+                    C.LightBlue,
+                    listOf("Food", "Exercise"),
+                    expanded,
+                    VariableModel.goal.value?.category.orEmpty(),
+                    { newSelection -> VariableModel.goal.value?.category = newSelection },
+                    { newVal ->
+                        expanded = newVal
+                        if (!VariableModel.goal.value?.category.isNullOrBlank()) {
+                            viewOthers = true
+                        }
+                    },
+                    modifier = Modifier.width(with(LocalDensity.current) { fieldSize.width.toDp() })
+                )
+            }
+            if (viewOthers) {
+                Description(
+                    VariableModel.goal.value?.description.orEmpty(),
+                    onChange = { newDesc ->
+                        VariableModel.goal.value?.description = newDesc
+                    },
+                    color = C.LightBlue
+                )
+
+                DatePicker(color = C.LightBlue)
+            }
         }
-
-        SingleDropdown(
-            C.LightBlue,
-            values,
-            expanded,
-            VariableModel.categoryValue.value,
-            { newSelection -> VariableModel.categoryValue.value = newSelection },
-            { newVal -> expanded = newVal },
-            modifier = Modifier.width(with(LocalDensity.current) { fieldSize.width.toDp() })
-        )
     }
 }
 
@@ -173,6 +276,14 @@ fun CreateGoalPreview() {
     val context = LocalContext.current
     MicroHabitsTheme(dynamicColor = false) {
         Scaffold(
+            topBar = {
+                Header(
+                    title = "New goal",
+                    titleStyle = Typography.titleLarge.copy(color = Color.White),
+                    context = context,
+                    headerBackground = C.LightBlue
+                )
+            },
             bottomBar = {
                 if (!WindowInsets.isImeVisible) {
                     Navigation(navController)
@@ -182,20 +293,27 @@ fun CreateGoalPreview() {
                 .fillMaxSize()
                 .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
             Column(
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(innerPadding)
             ) {
-                ReturnButton(ButtonC.CoralRedPrimary, C.CoralRed,{
-                    navController.navigate(route = Home)
-                })
-                Text(
-                    text = "Creating a new goal",
-                    style = Typography.titleLarge
-                )
+                Spacer(Modifier.padding(12.dp))
+//                ReturnButton(ButtonC.CoralRedPrimary, C.CoralRed,{
+//                    navController.navigate(route = Home)
+//                })
+//                Text(
+//                    text = "Creating a new goal",
+//                    style = Typography.titleLarge
+//                )
                 Text(
                     text = "What do you want to achieve?",
                     style = Typography.titleMedium
                 )
-//                GoalCreator(context)
+                GoalCreator({
+                        valid -> VariableModel.validGoal.value = valid
+                })
+                Spacer(Modifier.weight(1f))
                 ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, VariableModel.validGoal.value, {
                     val newGoalString = JSONObject("new goal").toString()
                     navController.navigate(route = CreateBehavior)

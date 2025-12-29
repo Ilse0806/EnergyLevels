@@ -44,7 +44,7 @@ import java.util.Locale
 
 
 @Composable
-fun DatePicker(date: Long? = null) {
+fun DatePicker(date: Long? = null, color: Color = C.CoralRed) {
     var selectedDate by remember { mutableStateOf(date) }
     var showModal by remember { mutableStateOf(false) }
 
@@ -56,7 +56,7 @@ fun DatePicker(date: Long? = null) {
         trailingIcon = {
             Icon(Icons.Default.DateRange, contentDescription = "Select date")
         },
-        colors = getTextFieldColor(C.CoralRed),
+        colors = getTextFieldColor(color),
         modifier = Modifier
             .fillMaxWidth()
             .pointerInput(selectedDate) {

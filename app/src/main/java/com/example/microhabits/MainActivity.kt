@@ -94,7 +94,7 @@ class MainActivity : ComponentActivity() {
                         FoodDetailsScreen(navController, foodDetails)
                     }
 
-//                    composable<CreateGoal> { CreateGoalScreen(navController) }
+                    composable<CreateGoal> { CreateGoalScreen(navController) }
                     composable<DisplayGoal> { backStackEntry ->
                         val goal: DisplayGoal = backStackEntry.toRoute()
                         DisplayGoalScreen(navController, goal)

@@ -6,8 +6,29 @@ import com.example.microhabits.api.DatabaseService
 import com.example.microhabits.data.state.VariableModel
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.toString
 
 object CreateGoalService {
+    fun saveNewGoal(newGoal: Map<String, Any?>, context : Context) {
+        DatabaseService.updateRow("goal", newGoal, context,
+            { goalResponse ->
+                val goalId = goalResponse.getInt("id")
+                VariableModel.goal.value?.id = goalId
+
+                DatabaseService.updateRow("user_goal", mapOf("user_id" to VariableModel.userId, "goal_id" to goalId), context,
+                    { goalConnected ->
+                        Log.d("API_SUCCESS_GOAL_CONNECTED", goalConnected.toString())
+                    },
+                    { error -> Log.e("API_ERROR", error.toString()) }
+                )
+
+                Log.d("API_SUCCESS_GOALS_UPDATED", goalResponse.toString())
+            },
+            { error -> Log.e("API_ERROR", error.toString()) }
+        )
+    }
+
+//    TODO(): possibly delete later
     fun loadCategory (context: Context){
         DatabaseService.fetchTable(
             "category", context,

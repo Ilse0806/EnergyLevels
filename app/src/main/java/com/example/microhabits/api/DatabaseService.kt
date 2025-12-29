@@ -24,7 +24,7 @@ object DatabaseService {
 
 //    Look at the following functions still, try to find a way to check whether a row already exists or not, if it does, then adjust it instead of adding a new row
 //    Same goes for the delete functions, first check if the row actually exists before trying to delete a row
-    fun updateRow(table: String, data: Map<String, Any>, context: Context, onSuccess: (JSONObject) -> Unit, onError: (VolleyError) -> Unit) {
+    fun updateRow(table: String, data: Map<String, Any?>, context: Context, onSuccess: (JSONObject) -> Unit, onError: (VolleyError) -> Unit) {
         val url = "${DatabaseConstants.UPDATE_URL}$table"
         val body = JSONObject(data)
 

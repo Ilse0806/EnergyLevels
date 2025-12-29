@@ -5,13 +5,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.microhabits.models.classes.Behavior
+import com.example.microhabits.models.deleteLater.Behavior
 import com.example.microhabits.models.classes.CompletedGoal
 import com.example.microhabits.models.classes.ExerciseProgram
 import com.example.microhabits.models.classes.FoodRecipe
-import com.example.microhabits.models.classes.UserBehavior
-import com.example.microhabits.models.classes.UserBehaviorWithBehavior
-import com.example.microhabits.models.classes.UserGoal
+import com.example.microhabits.models.classes.Goal
+import com.example.microhabits.models.deleteLater.UserBehavior
+import com.example.microhabits.models.deleteLater.UserBehaviorWithBehavior
+import com.example.microhabits.models.deleteLater.UserGoal
 import org.json.JSONObject
 
 object VariableModel {
@@ -44,7 +45,7 @@ object VariableModel {
     //    Goal / category data:
     var validGoal = mutableStateOf(false)
     var categoryValue = mutableStateOf("")
-    var goal = mutableStateOf("")
+    var goal = mutableStateOf<Goal?>(null)
     var goalCategory = mutableStateOf(JSONObject())
     var existingCategories = mutableStateOf(JSONObject())
 
