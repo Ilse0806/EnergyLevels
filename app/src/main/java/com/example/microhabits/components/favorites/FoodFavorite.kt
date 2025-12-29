@@ -15,38 +15,51 @@ import java.time.LocalDateTime
 @Composable
 fun FoodFavorite (
     buttonColor: ButtonColors,
-    textColor: Color,
     navController: NavController,
     modifier: Modifier = Modifier,
     iconColor: Color = Color.White,
+    title: String? = null,
+    items: List<NavigationOption<*>>? = null,
 ) {
-    val currentHour = LocalDateTime.now().hour
-    var title: String
-    var items: List<NavigationOption<*>>
-    when (currentHour) {
-        in 4 .. 10 -> {
-            title = "Breakfast favorites:"
-            items = VariableModel.favoriteBreakfast.map { item -> item.toNavigationOption() }
+    var newTitle = ""
+    var newItems: List<NavigationOption<*>> = listOf()
+    if (items.isNullOrEmpty() && title.isNullOrBlank()) {
+        val currentHour = LocalDateTime.now().hour
+        when (currentHour) {
+            in 4..10 -> {
+                newTitle = "Breakfast favorites:"
+                newItems = VariableModel.favoriteBreakfast.map { item -> item.toNavigationOption() }
+            }
+
+            in 11..14 -> {
+                newTitle = "Lunch favorites:"
+                newItems = VariableModel.favoriteLunch.map { item -> item.toNavigationOption() }
+            }
+
+            in 16..21 -> {
+                newTitle = "Dinner favorites:"
+                newItems = VariableModel.favoriteDinner.map { item -> item.toNavigationOption() }
+            }
+
+            else -> {
+                newTitle = "Snack favorites:"
+                newItems = VariableModel.favoriteSnack.map { item -> item.toNavigationOption() }
+            }
         }
-        in 11 .. 14 -> {
-            title = "Lunch favorites:"
-            items = VariableModel.favoriteLunch.map { item -> item.toNavigationOption() }
+    } else {
+        if (title != null) {
+            newTitle = title
         }
-        in 16 .. 21 -> {
-            title = "Dinner favorites:"
-            items = VariableModel.favoriteDinner.map { item -> item.toNavigationOption() }
-        }
-        else -> {
-            title = "Snack favorites:"
-            items = VariableModel.favoriteSnack.map { item -> item.toNavigationOption() }
+        if (items != null) {
+            newItems = items
         }
     }
 
     FavoritesContent(
-        title = title,
-        items = items,
+        title = newTitle,
+        items = newItems,
         buttonColor = buttonColor,
-        textColor = textColor,
+        textColor = Color.Black,
         navController = navController,
         modifier = modifier,
         iconColor = iconColor

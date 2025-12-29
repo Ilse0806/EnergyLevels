@@ -59,15 +59,6 @@ var hasLoaded = false
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
-
-//    if (!hasLoaded.value) {
-//        hasLoaded.value = true
-//        HomeService.loadUser(context)
-//        println("runs")
-//        LaunchedEffect(VariableModel.userId != 0) {
-//            FavoritesService.loadFavorites(context)
-//        }
-//    }
     if (!hasLoaded) {
         hasLoaded = true
         MainService.loadUser(context)
@@ -133,7 +124,6 @@ fun HomeScreen(navController: NavController) {
             )
             FoodFavorite(
                 buttonColor = ButtonC.GoldenAmberPrimary,
-                textColor = Color.White,
                 navController = navController,
                 modifier = Modifier
                     .size(150.dp),
@@ -241,7 +231,6 @@ fun HomeScreenPreview() {
                 )
                 FoodFavorite(
                     buttonColor = ButtonC.GoldenAmberPrimary,
-                    textColor = Color.White,
                     navController = rememberNavController(),
                     modifier = Modifier
                         .size(150.dp),
