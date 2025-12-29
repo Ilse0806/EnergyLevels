@@ -29,7 +29,9 @@ object VariableModel {
     val favoriteLunch = mutableStateListOf<FoodRecipe>()
     val favoriteBreakfast = mutableStateListOf<FoodRecipe>()
     val favoriteSnack = mutableStateListOf<FoodRecipe>()
+    val allFoods = mutableStateListOf<FoodRecipe>()
     val favoriteExercises = mutableStateListOf<ExerciseProgram>()
+    val allExercises = mutableStateListOf<ExerciseProgram>()
 
     val recommendedDinner = mutableStateListOf<FoodRecipe>()
     val recommendedLunch = mutableStateListOf<FoodRecipe>()

@@ -28,7 +28,8 @@ fun FavoritesContent(
     textColor: Color,
     navController: NavController,
     modifier: Modifier = Modifier,
-    iconColor: Color = Color.White
+    iconColor: Color = Color.White,
+    favoriteIconDisabled: Boolean = false
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -36,12 +37,14 @@ fun FavoritesContent(
         Row (
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = "Favorites icon",
-                tint = Color.Black
-            )
-            Spacer(Modifier.padding(4.dp))
+            if (!favoriteIconDisabled) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "Favorites icon",
+                    tint = Color.Black
+                )
+                Spacer(Modifier.padding(4.dp))
+            }
             Text(
                 text = title,
                 style = Typography.titleMedium,

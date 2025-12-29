@@ -34,7 +34,7 @@ fun String.toIngredient(): Ingredient {
 
     return Ingredient(
         name = name,
-        Amount = amount,
-        AmountExtra = amountExtra
+        amount = amount,
+        amountExtra = amountExtra,
     )
 }

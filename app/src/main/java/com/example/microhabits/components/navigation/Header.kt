@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,21 +63,12 @@ fun Header(
                     .align(Alignment.Center)
                     .size(150.dp)
                     .graphicsLayer {
-                        scaleX = 1.5f
-                        scaleY = 1.5f
+                        scaleX = 1.8f
+                        scaleY = 1.8f
                     }
             )
         }
         image?.let {
-//                val request = ImageRequest.Builder(LocalContext.current)
-//                    .data("https://picsum.photos/200")
-//                    .listener(
-//                        onError = { _, result ->
-//                            Log.e("Coil", "Error: ${result.throwable}")
-//                        },
-//                        onSuccess = { _, _ -> Log.d("Coil", "Loaded!") }
-//                    )
-//                    .build()
             extraPadding = PaddingValues(top = 120.dp)
             Box(
                 modifier = Modifier
@@ -109,7 +99,6 @@ fun Header(
                 modifier = Modifier
                     .fillMaxWidth()
             )
-            Spacer(Modifier.padding(bottom = 12.dp))
             extraContent()
         }
     }

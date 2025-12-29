@@ -137,17 +137,50 @@ fun JSONObject.toExerciseProgram(singleExercises: List<SingleExercise>): Exercis
 }
 
 fun JSONObject.toFoodRecipe(): FoodRecipe {
+    val attributesString = this.optString("attributes")
+    val attributes = try {
+        val asJson = JSONArray(attributesString)
+        List(asJson.length()) { index ->
+            asJson.getString(index)
+        }
+    } catch (e: JSONException) {
+        Log.e("JSON_ERROR", e.toString())
+        emptyList()
+    }
+
+    val ingredientsString = this.optString("ingredients")
+    val ingredients = try {
+        val asJson = JSONArray(ingredientsString)
+        List(asJson.length()) { index ->
+            asJson.getString(index)
+        }
+    } catch (e: JSONException) {
+        Log.e("JSON_ERROR", e.toString())
+        emptyList()
+    }
+
+    val stepsString = this.optString("steps")
+    val steps = try {
+        val asJson = JSONArray(stepsString)
+        List(asJson.length()) { index ->
+            asJson.getString(index)
+        }
+    } catch (e: JSONException) {
+        Log.e("JSON_ERROR", e.toString())
+        emptyList()
+    }
+
     return FoodRecipe(
         id = this.optInt("id"),
         name = this.optString("name"),
         description = this.optString("description"),
         time = this.optInt("time"),
         difficulty = this.optInt("difficulty"),
-        attributes = this.optString("attributes").toList().map { it.toString() },
+        attributes = attributes,
         type = this.optString("type"),
         image = this.optString("image"),
-        ingredients = this.optString("ingredients").toList().map { it.toString().toIngredient() },
-        steps = this.optString("image").toList().map { it.toString() },
+        ingredients = ingredients.map { it.toIngredient() },
+        steps = steps,
         recommended = this.optBoolean("recommended")
     )
 }
