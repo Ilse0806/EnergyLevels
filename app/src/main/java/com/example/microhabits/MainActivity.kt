@@ -11,8 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.microhabits.screens.baseFunctionality.CreateBehaviorScreen
-import com.example.microhabits.screens.baseFunctionality.DisplayBehaviorScreen
+import com.example.microhabits.screens.secondary.CreateGoalScreen
+//import com.example.microhabits.screens.baseFunctionality.CreateBehaviorScreen
 import com.example.microhabits.screens.baseFunctionality.DisplayGoalScreen
 import com.example.microhabits.screens.details.ExerciseDetailsScreen
 import com.example.microhabits.screens.main.ExerciseScreen
@@ -22,7 +22,8 @@ import com.example.microhabits.screens.main.FoodScreen
 import com.example.microhabits.screens.main.HomeScreen
 import com.example.microhabits.screens.main.ProfileScreen
 import com.example.microhabits.screens.main.ProgressScreen
-import com.example.microhabits.screens.baseFunctionality.SelectBehaviorScreen
+import com.example.microhabits.screens.secondary.SetEnergyLevelScreen
+//import com.example.microhabits.screens.baseFunctionality.SelectBehaviorScreen
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import kotlinx.serialization.Serializable
 
@@ -47,9 +48,13 @@ data class FoodDetails(val id: Int)
 @Serializable
 object CreateGoal
 @Serializable
-data class DisplayGoal(val goal: String)
+data class DisplayGoal(val goalId: Int)
+
 @Serializable
-data class DisplayBehavior(val behavior: String)
+object SetEnergy
+
+//@Serializable
+//data class DisplayBehavior(val behavior: String)
 @Serializable
 object CreateBehavior
 @Serializable
@@ -99,13 +104,15 @@ class MainActivity : ComponentActivity() {
                         val goal: DisplayGoal = backStackEntry.toRoute()
                         DisplayGoalScreen(navController, goal)
                     }
-                    composable<DisplayBehavior> { backStackEntry ->
-                        val behavior: DisplayBehavior = backStackEntry.toRoute()
-                        DisplayBehaviorScreen(navController, behavior)
-                    }
-                    composable<CreateBehavior> { CreateBehaviorScreen(navController) }
+                    composable<SetEnergy> { SetEnergyLevelScreen(navController)}
+
+//                    composable<DisplayBehavior> { backStackEntry ->
+//                        val behavior: DisplayBehavior = backStackEntry.toRoute()
+//                        DisplayBehaviorScreen(navController, behavior)
+//                    }
+//                    composable<CreateBehavior> { CreateBehaviorScreen(navController) }
                     composable<FocusMap> { FocusMapScreen(navController) }
-                    composable<SelectBehavior> { SelectBehaviorScreen(navController) }
+//                    composable<SelectBehavior> { SelectBehaviorScreen(navController) }
                 }
             }
 

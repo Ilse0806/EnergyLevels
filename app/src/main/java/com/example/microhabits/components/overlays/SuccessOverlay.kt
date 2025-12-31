@@ -158,33 +158,35 @@ fun SuccessOverlay(
             }
             Column (modifier = Modifier.height(56.dp)) {
 
-                AnimatedVisibility(
-                    visible = goalVisibility,
-                    enter = slideInVertically {
-                        with(density) { 40.dp.roundToPx() }
-                    } + fadeIn(
-                        initialAlpha = 0.2f
-                    ),
-                    exit = slideOutVertically() + fadeOut()
-                ) {
-                    ButtonPrimary(
-                        buttonColor = ButtonC.IndigoPrimary,
-                        color = Color.White,
-                        onClickAction = {
-                            displayVisible = false
-                            onViewGoal()
-                        },
-                        content = {
-                            Text(
-                                text = "View new goal",
-                                style = Typography.bodyMedium
-                            )
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                contentDescription = "View your new goal"
-                            )
-                        }
-                    )
+                if (onViewGoal != {}) {
+                    AnimatedVisibility(
+                        visible = goalVisibility,
+                        enter = slideInVertically {
+                            with(density) { 40.dp.roundToPx() }
+                        } + fadeIn(
+                            initialAlpha = 0.2f
+                        ),
+                        exit = slideOutVertically() + fadeOut()
+                    ) {
+                        ButtonPrimary(
+                            buttonColor = ButtonC.IndigoPrimary,
+                            color = Color.White,
+                            onClickAction = {
+                                displayVisible = false
+                                onViewGoal()
+                            },
+                            content = {
+                                Text(
+                                    text = "View new goal",
+                                    style = Typography.bodyMedium
+                                )
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                    contentDescription = "View your new goal"
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }

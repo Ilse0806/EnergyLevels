@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.microhabits.models.classes.Behavior
 import com.example.microhabits.models.classes.CompletedGoal
+import com.example.microhabits.models.classes.EnergyLevel
 import com.example.microhabits.models.classes.ExerciseProgram
 import com.example.microhabits.models.classes.FoodRecipe
 import com.example.microhabits.models.classes.SingleExercise
@@ -13,6 +14,7 @@ import com.example.microhabits.models.enums.NotificationFrequency
 import com.example.microhabits.models.classes.UserBehavior
 import com.example.microhabits.models.classes.UserBehaviorWithBehavior
 import com.example.microhabits.models.classes.UserGoal
+import com.example.microhabits.models.enums.EnergyLevels
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -193,5 +195,14 @@ fun JSONObject.toSingleExercise(): SingleExercise {
         time = this.optInt("time"),
         image = this.optString("image"),
         video = this.optString("video")
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun JSONObject.toEnergyLevel(): EnergyLevel {
+    return EnergyLevel(
+        date = LocalDate.parse(this.optString("date"), DateTimeFormatter.RFC_1123_DATE_TIME),
+        level = EnergyLevels.fromInput(this.optString("energy_level")),
+        reason = this.optString("reason")
     )
 }

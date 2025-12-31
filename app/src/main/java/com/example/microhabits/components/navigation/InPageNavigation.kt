@@ -103,13 +103,13 @@ fun InPageNavigation(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(vertical = 8.dp)
     ) {
         if (!title.isNullOrEmpty()){
             Text(
                 text = title,
                 style = Typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 20.dp)
             )
         }
         if (scrollable) {

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -29,8 +31,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.Exercise
 import com.example.microhabits.Food
+import com.example.microhabits.SetEnergy
 import com.example.microhabits.components.TodayGoalsDisplayed
-import com.example.microhabits.components.buttons.ButtonPrimary
 import com.example.microhabits.components.favorites.FavoritesContent
 import com.example.microhabits.components.favorites.FoodFavorite
 import com.example.microhabits.components.navigation.InPageNavigation
@@ -94,6 +96,18 @@ fun HomeScreen(navController: NavController) {
             )
             InPageNavigation(
                 title = "What do you want to do?",
+                navigationOptions = listOf(
+                    NavigationOption(label = "Set energy level for today", destination = SetEnergy, bottomNavItem = true),
+                ),
+                buttonColors = ButtonC.CoralRedPrimary,
+                textColor = Color.White,
+                navController = navController,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+            )
+            InPageNavigation(
+                title = null,
                 navigationOptions = listOf(
                     NavigationOption(label = "Exercise", destination = Exercise, bottomNavItem = true),
                     NavigationOption(label = "Food", destination = Food, bottomNavItem = true)
@@ -186,8 +200,20 @@ fun HomeScreenPreview() {
                 InPageNavigation(
                     title = "What do you want to do?",
                     navigationOptions = listOf(
-                        NavigationOption("Exercise", Exercise),
-                        NavigationOption("Food", Food)
+                        NavigationOption(label = "Set energy level for today", destination = SetEnergy, bottomNavItem = true),
+                    ),
+                    buttonColors = ButtonC.CoralRedPrimary,
+                    textColor = Color.White,
+                    navController = rememberNavController(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                )
+                InPageNavigation(
+                    title = null,
+                    navigationOptions = listOf(
+                        NavigationOption(label = "Exercise", destination = Exercise, bottomNavItem = true),
+                        NavigationOption(label = "Food", destination = Food, bottomNavItem = true)
                     ),
                     buttonColors = ButtonC.CoralRedSecondary.copy(containerColor = Color.White),
                     textColor = C.CoralRed,
@@ -195,7 +221,6 @@ fun HomeScreenPreview() {
                     modifier = Modifier
                         .weight(0.5f)
                         .aspectRatio(1f)
-                        .padding(vertical = 8.dp)
                 )
                 FavoritesContent(
                     title = "Favorite exercises:",

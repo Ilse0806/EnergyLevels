@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.microhabits.models.deleteLater.Behavior
 import com.example.microhabits.models.classes.CompletedGoal
+import com.example.microhabits.models.classes.EnergyLevel
 import com.example.microhabits.models.classes.ExerciseProgram
 import com.example.microhabits.models.classes.FoodRecipe
 import com.example.microhabits.models.classes.Goal
@@ -48,6 +49,8 @@ object VariableModel {
     var goal = mutableStateOf<Goal?>(null)
     var goalCategory = mutableStateOf(JSONObject())
     var existingCategories = mutableStateOf(JSONObject())
+
+    var todayEnergy = mutableStateOf<EnergyLevel?>(null)
 
 //    TODO(): Might remove
     val allBehaviors = mutableStateListOf<Map<String, Any?>>()
