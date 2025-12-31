@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.microhabits.CreateGoal
+import com.example.microhabits.DisplayGoal
 import com.example.microhabits.components.buttons.Checkbox
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.models.deleteLater.UserGoal
@@ -58,7 +60,18 @@ fun TodayGoalsDisplayed(
                     isChecked = newChecked
                 }
 
-                Checkbox(Color.White, C.Indigo, isChecked, ::onCheckBehavior, goal.name)
+                Checkbox(Color.White, C.Indigo, isChecked, ::onCheckBehavior, goal.name) {
+                    Spacer(Modifier.weight(1f))
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit goal",
+                        tint = if (isChecked) Color.White else C.Indigo,
+                        modifier = Modifier
+                            .clickable {
+                                navController.navigate(route = DisplayGoal(goal.goalId as Int))
+                            }
+                    )
+                }
 
             }
         }

@@ -28,6 +28,15 @@ object CreateGoalService {
         )
     }
 
+    fun updateGoal(updatedGoal: Map<String,Any?>, context: Context) {
+        DatabaseService.updateRow("goal", updatedGoal, context,
+            { response ->
+                Log.d("API_GOAL_UPDATED", response.toString())
+            },
+            { error -> Log.e("API_ERROR", error.toString())}
+        )
+    }
+
 //    TODO(): possibly delete later
     fun loadCategory (context: Context){
         DatabaseService.fetchTable(

@@ -83,6 +83,7 @@ fun ExerciseScreen(navController: NavController) {
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             TodayGoalsDisplayed(
+                navController = navController,
                 goals = VariableModel.userGoals.filter { it.category == "Exercise" } as MutableList<UserGoal>,
                 modifier = Modifier.padding(bottom = 16.dp),
                 onCheck = { id ->
@@ -153,6 +154,7 @@ fun PreviewExerciseScreen() {
         ) {
             Spacer(Modifier.padding(12.dp))
             TodayGoalsDisplayed(
+                navController = navController,
                 goals = VariableModel.userGoals.filter { it.category == "Exercise" } as MutableList<UserGoal>,
                 modifier = Modifier.padding(vertical = 8.dp),
                 onCheck = { id ->

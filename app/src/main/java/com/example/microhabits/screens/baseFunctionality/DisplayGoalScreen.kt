@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,23 +27,36 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButtonDefaults.borderStroke
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.DisplayBehavior
 import com.example.microhabits.DisplayGoal
-import com.example.microhabits.components.GoalDetails
+import com.example.microhabits.Home
+import com.example.microhabits.components.buttons.ContinueButton
+import com.example.microhabits.components.inputs.GoalEditor
+import com.example.microhabits.components.navigation.Header
 import com.example.microhabits.components.navigation.Navigation
-import com.example.microhabits.models.classes.UserBehaviorWithBehavior
+import com.example.microhabits.components.overlays.ErrorOverlay
+import com.example.microhabits.components.overlays.SuccessOverlay
+import com.example.microhabits.models.deleteLater.UserBehaviorWithBehavior
 import com.example.microhabits.data.state.VariableModel
+import com.example.microhabits.models.deleteLater.UserGoal
+import com.example.microhabits.screens.main.HomeScreen
+import com.example.microhabits.services.CreateGoalService.updateGoal
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
-import org.json.JSONObject
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
@@ -50,106 +64,86 @@ import com.example.microhabits.ui.theme.Color as C
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DisplayGoalScreen(navController: NavController, goalMap: DisplayGoal) {
-    val goal = JSONObject(goalMap.goal)
-    val goalId = goal.getInt("id")
+fun DisplayGoalScreen(navController: NavController, goal: DisplayGoal) {
+    val goalId = goal.goalId
+    val fullGoal = VariableModel.userGoals.find { goalId == it.goalId }
+    val goalIndex = VariableModel.userGoals.indexOfFirst { it.goalId == goalId }
     val context = LocalContext.current
 
-    VariableModel.connectedBehaviors.clear()
-    VariableModel.detailsBehaviors.clear()
-    VariableModel.combinedBehaviors.clear()
-
-//    GoalService.loadGoals(context, goalId)
+    var showSuccessOverlay by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
     Scaffold(
+        topBar = {
+            if (!showSuccessOverlay) {
+                Header(
+                    title = "Your goal",
+                    titleStyle = Typography.titleLarge.copy(color = Color.White),
+                    context = context,
+                    headerBackground = C.CoralRed
+                )
+            }
+        },
         bottomBar = {
-            if (!WindowInsets.isImeVisible) {
+            if (!showSuccessOverlay && !WindowInsets.isImeVisible) {
                 Navigation(navController)
             }
         },
         modifier = Modifier
             .fillMaxSize()
             .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
-        Column (
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp)
-                .verticalScroll(scrollState)
-        ) {
-            Intro(goal)
-            GoalDetails(goal)
-            BehaviorsDisplayed(navController, VariableModel.combinedBehaviors)
-            Box(Modifier.padding(innerPadding))
-        }
-    }
-}
-
-// Move this to a different file later if it's also used for the behaviorDetails
-@Composable
-fun Intro(goal: JSONObject) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(bottomEnd = 80.dp, bottomStart = 80.dp))
-            .background(C.CoralRed)
-            .padding(32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = goal.getString("name"),
-            style = Typography.titleLarge,
-        )
-    }
-}
-
-@Composable
-fun BehaviorsDisplayed(navController: NavController, behaviors: MutableList<UserBehaviorWithBehavior>, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(top = 16.dp, bottom = 16.dp)
-    ) {
-        for (behavior in behaviors) {
-            Button(
+        if (showSuccessOverlay) {
+            SuccessOverlay(
+                onGoHome = { navController.navigate(route = Home) },
+                onViewGoal = {},
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 4.dp),
-                shape = RoundedCornerShape(8.dp),
-                onClick = {
-                    val behaviorString = behavior.toJson().toString()
-                    navController.navigate(route = DisplayBehavior(behaviorString))
-                },
-                colors = ButtonC.GoldenAmberPrimary,
-                border = borderStroke(C.GoldenAmber),
+                    .fillMaxSize()
+                    .zIndex(1f),
+                onDismiss = { navController.navigate(route = Home) },
+            )
+        }
+        fullGoal?.let {
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 16.dp)
+                    .padding(innerPadding)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 8.dp)
-                    ) {
-                        Text(
-                            text = behavior.behavior.name,
-                            style = Typography.bodyLarge,
-                        )
-                        Text(
-                            text = behavior.behavior.description,
-                            style = Typography.labelSmall,
-                        )
+                Spacer(Modifier.padding(12.dp))
+                GoalEditor(
+                    onFormValidChanged = {},
+                    displayAll = true,
+                    onNameChange = { name ->
+                        fullGoal.name = name
+                        VariableModel.userGoals[goalIndex] = fullGoal
+                    },
+                    onDescriptionChange = { description ->
+                        fullGoal.description = description
+                        VariableModel.userGoals[goalIndex] = fullGoal
+                    },
+                    onCategoryChange = { category ->
+                        fullGoal.category = category
+                        VariableModel.userGoals[goalIndex] = fullGoal
+                    },
+                    onDeadlineChange = { deadline ->
+                        fullGoal.deadline = deadline
+                        VariableModel.userGoals[goalIndex] = fullGoal
+                    },
+                    goal = fullGoal.toGoal(),
+                )
+                ContinueButton(ButtonC.CoralRedPrimary, C.CoralRed, true,
+                    {
+                        updateGoal(VariableModel.userGoals[goalIndex].toMap(), context)
+                        showSuccessOverlay = true
                     }
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "Fav",
-                        tint = C.Indigo,
-                    )
-                }
+                )
             }
+        } ?: run {
+            ErrorOverlay()
         }
     }
 }
-
 
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -168,10 +162,12 @@ fun DisplayGoalPreview() {
                 .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
             Column(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp)
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(innerPadding)
             ) {
-                Intro(JSONObject("""{"deadline":null,"description":"Get healthier by training","id":1,"name":"Get healthier"}"""))
-                GoalDetails(JSONObject("""{"deadline":null,"description":"Get healthier by training","id":1,"name":"Get healthier"}"""))
+//                Intro(JSONObject("""{"deadline":null,"description":"Get healthier by training","id":1,"name":"Get healthier"}"""))
+//                GoalDetails(JSONObject("""{"deadline":null,"description":"Get healthier by training","id":1,"name":"Get healthier"}"""))
             }
         }
     }
