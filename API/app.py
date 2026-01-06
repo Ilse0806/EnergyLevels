@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import mysql.connector
 from mysql.connector import Error
+from datetime import timedelta
 
 app = Flask(__name__)
 
@@ -52,18 +53,37 @@ def get_row(table):
     cursor = connection.cursor(dictionary=True)
     if type(id) != tuple:
         cursor.execute(f"SELECT * FROM {table} WHERE id = {id}")
+    elif len(id) == 1:
+        cursor.execute(f"SELECT * FROM {table} WHERE id = {id[0]}")
     else:
-        cursor.execute(f"SELECT * FROM {table} WHERE id in {id}")
+        if not id:
+            return jsonify({'error': 'Row not found'}), 404
+        else:
+            cursor.execute(f"SELECT * FROM {table} WHERE id in {id}")
 
     if fetch_one:
         row = cursor.fetchone()
         cursor.close()
         connection.close()
+
+        if row is None:
+            return jsonify({'error': 'Row not found'}), 404
+        
+        for key, value in row.items():
+            if isinstance(value, timedelta):
+                row[key] = str(value)[:5]
+
         return jsonify(row)
     else:
         row = cursor.fetchall()
         cursor.close()
         connection.close()
+
+        for r in row:
+            for key, value in r.items():
+                if isinstance(value, timedelta):
+                    r[key] = str(value)[:5]
+
         return jsonify({"rows": row})
 
 @app.route('/update_row/<table>', methods=['POST'])
@@ -72,6 +92,7 @@ def update_row(table):
     if data is None:
         return jsonify({'error': 'No data given'}), 400
 
+    new_item = data.pop("new_item", False)
     id = get_id(table, data)
 
     connection = get_db_connection()
@@ -83,7 +104,7 @@ def update_row(table):
     # add error catching to make sure no errors break the program
     try:
         # If the row exists, update the row with the new values
-        if id:
+        if id and not new_item:
             columns = ', '.join([f"{k} = %s" for k in data.keys()])
             values = tuple(data.values()) + (id,)
             query = f"UPDATE {table} SET {columns} WHERE id = %s"
@@ -105,6 +126,7 @@ def update_row(table):
             connection.close()
             return jsonify({'message': 'Row created', 'id': new_id}), 201
     except Error as e:
+        print(e)
         return jsonify({'error': str(e)}), 400
     except Exception as e:
         return jsonify({'error': 'An unexpected error occurred', 'details': str(e)}), 500
