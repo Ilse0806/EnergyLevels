@@ -12,13 +12,13 @@ class CalculatePortionsTest {
 
     @Test
     fun calculation_isCorrect() {
-        assertEquals(600.0, testIngedrient1.CalculateAmount(6), 0.01)
-        assertEquals(1.0, testIngedrient2.CalculateAmount(2), 0.01)
-        assertEquals(0.25, testIngedrient3.CalculateAmount(1), 0.001)
-        assertEquals(6.0, testIngedrient4.CalculateAmount(8), 0.01)
-        assertEquals(300.0, testIngedrient1.CalculateAmount(3), 0.01)
-        assertEquals(2.5, testIngedrient2.CalculateAmount(5), 0.01)
-        assertEquals(0.75, testIngedrient3.CalculateAmount(3), 0.001)
-        assertEquals(5.25, testIngedrient4.CalculateAmount(7), 0.001)
+        assertEquals(600.0, testIngedrient1.calculateAmount(6), 0.01)
+        assertEquals(1.0, testIngedrient2.calculateAmount(2), 0.01)
+        assertEquals(0.25, testIngedrient3.calculateAmount(1), 0.001)
+        assertEquals(6.0, testIngedrient4.calculateAmount(8), 0.01)
+        assertEquals(300.0, testIngedrient1.calculateAmount(3), 0.01)
+        assertEquals(2.5, testIngedrient2.calculateAmount(5), 0.01)
+        assertEquals(0.75, testIngedrient3.calculateAmount(3), 0.001)
+        assertEquals(5.25, testIngedrient4.calculateAmount(7), 0.001)
     }
 }

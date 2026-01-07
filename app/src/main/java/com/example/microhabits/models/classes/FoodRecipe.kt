@@ -1,6 +1,6 @@
 package com.example.microhabits.models.classes
 
-import com.example.microhabits.ExerciseDetails
+import com.example.microhabits.FoodDetails
 import com.example.microhabits.models.superclasses.UpperActivity
 
 class FoodRecipe(
@@ -20,7 +20,7 @@ class FoodRecipe(
         val baseOption = super.toNavigationOption()
         return NavigationOption(
             label = baseOption.label,
-            destination = ExerciseDetails(this.id),
+            destination = FoodDetails(this.id),
             image = this.image
         )
     }

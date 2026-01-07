@@ -43,6 +43,7 @@ import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.helpers.splitTime
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
+import java.util.Locale
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
@@ -112,6 +113,7 @@ fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
                     style = Typography.bodyLarge
                 )
 
+                var portion by remember { mutableStateOf(4) }
                 Row (
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -129,16 +131,15 @@ fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
                             style = Typography.labelMedium
                         )
                         var expanded by remember { mutableStateOf(false) }
-                        var selected by remember { mutableStateOf("4") }
                         ButtonAndDropdown(
                             color = C.GoldenAmber,
                             list = listOf("1", "2", "4", "6", "8"),
                             buttonColors = ButtonC.GoldenAmberPrimary,
                             expandedParam = expanded,
                             enabled = true,
-                            selectedParam = selected,
+                            selectedParam = portion.toString(),
                             onClick = { newVal ->
-                                selected = newVal
+                                portion = newVal.toInt()
                             },
                             modifier = Modifier.width(50.dp)
                         )
@@ -153,11 +154,12 @@ fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
                             text = "•",
                             modifier = Modifier.padding(horizontal = 8.dp)
                         )
+                        val calculatedAmount = item.calculateAmount(portion, 4)
                         val formattedAmount =
-                            if (item.amount % 1.0 == 0.0)
-                                item.amount.toInt().toString()
+                            if (calculatedAmount % 1.0 == 0.0)
+                                calculatedAmount.toInt().toString()
                             else
-                                item.amount.toString()
+                                String.format(Locale.US, "%.2f", calculatedAmount)
                         Text(
                             text = "${formattedAmount}${if (!item.amountExtra.isEmpty()) " " + item.amountExtra + " " else " "}${item.name}"
                         )
