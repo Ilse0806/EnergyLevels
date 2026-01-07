@@ -38,40 +38,42 @@ The application follows a client-server architecture:
 
 - **Android Client (`/app`)**: A native Android application that provides the user interface and handles client-side logic. It communicates with the backend via a REST API to fetch and manage data.
 - Full tree view:
+```text
 C:.
-│   MainActivity.kt
+│   MainActivity.kt         # Contains logic to initiate the home screen when the app is opened, also sets up the base for the navigation items and bottom navigation
 │
-├───api ## Holds contstants and functions to set up a connection with the API
+├───api                     # Holds constants and functions to set up a connection with the API
 │
-├───archive ## Content which was used in previous versions
+├───archive                 # Content which was used in previous versions
 │
-├───components ## Jetpack Compose components which can be used in different situations and on different pages
+├───components              # Jetpack Compose components which can be used in different situations and on different pages
 │
-├───data ## Holds a variable object which contains all the global variables to be accessed more easily
+├───data                    # Holds a variable object which contains all the global variables to be accessed more easily
 │
-├───helpers ## Helper functions which help to achieve certain goals (like turning a class into a Map or JSONObject)
+├───helpers                 # Helper functions which help to achieve certain goals (like turning a class into a Map or JSONObject)
 │
 ├───models
-│   ├───classes ## Contains newly made classes
+│   ├───classes             # Contains newly made classes
 │   │
-│   ├───deleteLater ## Classes which are no longer in use and could possibly be deleted later
+│   ├───deleteLater         # Classes which are no longer in use and could possibly be deleted later
 │   │
-│   ├───enums ## Enums made for certain situations, for example to help measure user's energy levels
+│   ├───enums               # Enums made for certain situations, for example to help measure user's energy levels
 │   │
-│   └───superclasses ## Contains super classes which the normal classes can use to be set up more easily
+│   └───superclasses        # Contains super classes which the normal classes can use to be set up more easily
 │
 ├───screens
-│   ├───baseFunctionality ## Contains the screens made for the basic functionality before the main functionality was created
+│   ├───baseFunctionality   # Contains the screens made for the basic functionality before the main functionality was created
 │   │
-│   ├───details ## Specific details screen to display more content for certain activities
+│   ├───details             # Specific details screen to display more content for certain activities
 │   │
-│   ├───main ## Screens which are expected to be used the most, these screens are also the items displayed in the bottom navigation bar
+│   ├───main                # Screens which are expected to be used the most, these screens are also the items displayed in the bottom navigation bar
 │   │
-│   └───secondary ## Remaining screens which are not in the bottom navigation bar, but still hold important content and functionalities
+│   └───secondary           # Remaining screens which are not in the bottom navigation bar, but still hold important content and functionalities
 │
-├───services ## Services to help execute certain back-end functionalities
+├───services                # Services to help execute certain back-end functionalities
 │
-└───ui ## Contains settings to help set the styling and look of the app
+└───ui                      # Contains settings to help set the styling and look of the app
+```
 
 - **Flask API (`/API`)**: A lightweight Python server that exposes RESTful endpoints for the Android app. It handles all CRUD (Create, Read, Update, Delete) operations by interacting directly with the MySQL database.
 
