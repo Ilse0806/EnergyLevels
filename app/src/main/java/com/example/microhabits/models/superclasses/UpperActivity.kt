@@ -3,7 +3,7 @@ package com.example.microhabits.models.superclasses
 import com.example.microhabits.models.classes.NavigationOption
 
 open class UpperActivity (
-    id: Int,
+    id: Int?,
     name: String,
     description: String,
     time: Int,

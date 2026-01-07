@@ -52,6 +52,7 @@ fun SingleDropdown(
     onDismiss: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     textAlign: (TextAlign) = TextAlign.Start,
+    leadingIcon: @Composable (() -> Unit)? = null
 ) {
     val verticalScroll = rememberScrollState()
 
@@ -74,6 +75,7 @@ fun SingleDropdown(
     ) {
         items.forEach { item ->
             DropdownMenuItem(
+                leadingIcon = leadingIcon,
                 text = {
                     Text(
                         text = item.toString(),

@@ -2,11 +2,14 @@ package com.example.microhabits.components.favorites
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import com.example.microhabits.CreateFood
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.models.classes.NavigationOption
 import java.time.LocalDateTime
@@ -57,7 +60,7 @@ fun FoodFavorite (
 
     FavoritesContent(
         title = newTitle,
-        items = newItems,
+        items = newItems + NavigationOption(label = "", icon = Icons.Default.Add, destination = CreateFood, bottomNavItem = true),
         buttonColor = buttonColor,
         textColor = Color.Black,
         navController = navController,

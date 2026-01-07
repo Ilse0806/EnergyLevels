@@ -39,7 +39,7 @@ import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.components.overlays.SuccessOverlay
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.models.classes.Goal
-import com.example.microhabits.services.CreateGoalService.saveNewGoal
+import com.example.microhabits.services.CreatorService.saveNewGoal
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import org.json.JSONObject

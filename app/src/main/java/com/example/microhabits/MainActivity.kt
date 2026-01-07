@@ -22,6 +22,8 @@ import com.example.microhabits.screens.main.FoodScreen
 import com.example.microhabits.screens.main.HomeScreen
 import com.example.microhabits.screens.main.ProfileScreen
 import com.example.microhabits.screens.main.ProgressScreen
+import com.example.microhabits.screens.secondary.CreateExerciseScreen
+import com.example.microhabits.screens.secondary.CreateFoodScreen
 import com.example.microhabits.screens.secondary.SetEnergyLevelScreen
 //import com.example.microhabits.screens.baseFunctionality.SelectBehaviorScreen
 import com.example.microhabits.ui.theme.MicroHabitsTheme
@@ -41,14 +43,19 @@ object Exercise
 object Food
 
 @Serializable
-data class ExerciseDetails(val id: Int)
+data class ExerciseDetails(val id: Int?)
 @Serializable
-data class FoodDetails(val id: Int)
+data class FoodDetails(val id: Int?)
 
 @Serializable
 object CreateGoal
 @Serializable
 data class DisplayGoal(val goalId: Int)
+
+@Serializable
+object CreateExercise
+@Serializable
+object CreateFood
 
 @Serializable
 object SetEnergy
@@ -104,6 +111,8 @@ class MainActivity : ComponentActivity() {
                         val goal: DisplayGoal = backStackEntry.toRoute()
                         DisplayGoalScreen(navController, goal)
                     }
+                    composable<CreateExercise> { CreateExerciseScreen(navController) }
+                    composable<CreateFood> { CreateFoodScreen(navController) }
                     composable<SetEnergy> { SetEnergyLevelScreen(navController)}
 
 //                    composable<DisplayBehavior> { backStackEntry ->

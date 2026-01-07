@@ -15,11 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,8 +35,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -42,53 +47,54 @@ import com.example.microhabits.components.inputs.ButtonAndDropdown
 import com.example.microhabits.components.inputs.MultipleDropdown
 import com.example.microhabits.components.inputs.OutlinedInputField
 import com.example.microhabits.components.inputs.SingleDropdown
-import com.example.microhabits.models.classes.UserBehaviorWithBehavior
+import com.example.microhabits.helpers.getName
+import com.example.microhabits.helpers.toImageVector
+import com.example.microhabits.models.deleteLater.UserBehaviorWithBehavior
 import com.example.microhabits.ui.theme.Typography
 import com.example.microhabits.ui.theme.getSwitchColors
-import org.json.JSONObject
+import com.example.microhabits.ui.theme.getTextFieldColor
 import java.time.LocalTime
-import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun GoalDetails(goal: JSONObject, modifier: Modifier = Modifier, color: Color = C.LightBlue) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-    ) {
-        Description(goal.getString("description"), color = color)
-
-        Text(
-            text = "End date"
-        )
-        DatePicker()
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun BehaviorDetails(
-    fullBehavior: UserBehaviorWithBehavior,
-    descriptionChanged: (String) -> Unit,
-    notificationChanged: (checked: Boolean, interval: String, frequency: String, pattern: String, time: LocalTime) -> Unit,
-    anchorActionChanged: (String) -> Unit,
-    frequencyChanged: (String, Int) -> Unit,
-    modifier: Modifier = Modifier,
-    color: Color = C.LightBlue,
-    buttonColor: ButtonColors = ButtonC.LightBluePrimary,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Description(fullBehavior.behavior.description, Modifier.padding(vertical = 0.dp), color, descriptionChanged)
-        NotificationSelector(fullBehavior, color, buttonColor, fullBehavior.userBehavior.notification, onChange = notificationChanged)
-        AnchorActionInput(color, Modifier.padding(vertical = 24.dp), anchorActionChanged)
-        FrequencyInput(fullBehavior, color, buttonColor, onChange = frequencyChanged)
-    }
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun GoalDetails(goal: UserGoal, modifier: Modifier = Modifier, color: Color = C.LightBlue) {
+//    Column(
+//        modifier = modifier
+//            .fillMaxWidth()
+//            .padding(top = 16.dp)
+//    ) {
+//        Description(goal.description, color = color)
+//
+//        Text(
+//            text = "End date"
+//        )
+//        DatePicker()
+//    }
+//}
+//
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Composable
+//fun BehaviorDetails(
+//    fullBehavior: UserBehaviorWithBehavior,
+//    descriptionChanged: (String) -> Unit,
+//    notificationChanged: (checked: Boolean, interval: String, frequency: String, pattern: String, time: LocalTime) -> Unit,
+//    anchorActionChanged: (String) -> Unit,
+//    frequencyChanged: (String, Int) -> Unit,
+//    modifier: Modifier = Modifier,
+//    color: Color = C.LightBlue,
+//    buttonColor: ButtonColors = ButtonC.LightBluePrimary,
+//) {
+//    Column(
+//        modifier = modifier
+//            .fillMaxWidth()
+//    ) {
+//        Description(fullBehavior.behavior.description, Modifier.padding(vertical = 0.dp), color, descriptionChanged)
+//        NotificationSelector(fullBehavior, color, buttonColor, fullBehavior.userBehavior.notification, onChange = notificationChanged)
+//        AnchorActionInput(color, Modifier.padding(vertical = 24.dp), anchorActionChanged)
+//        FrequencyInput(fullBehavior, color, buttonColor, onChange = frequencyChanged)
+//    }
+//}
 
 @Composable
 fun Description(description: String, modifier: Modifier = Modifier, color: Color = C.LightBlue, onChange: (String) -> Unit = {}) {
@@ -114,6 +120,219 @@ fun Description(description: String, modifier: Modifier = Modifier, color: Color
         )
     }
 }
+
+@Composable
+fun DefaultInput(
+    name: String,
+    title: String,
+    placeholder: String,
+    modifier: Modifier = Modifier,
+    color: Color = C.LightBlue,
+    onChange: (String) -> Unit = {},
+    onlyInt: Boolean = false
+) {
+    var n by remember { mutableStateOf(name) }
+
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = title,
+            style = Typography.bodyMedium.copy(
+                color = Color.Black
+            ),
+        )
+        OutlinedTextField(
+            value = n,
+            colors = getTextFieldColor(color),
+            placeholder = { Text(placeholder)},
+            onValueChange = { newName ->
+                n = newName
+                if (onlyInt) {
+                    if (newName.isEmpty() || newName.all { it.isDigit() }) {
+                        onChange(newName)
+                    }
+                } else {
+                    onChange(newName)
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 12.dp),
+            keyboardOptions = if (onlyInt) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
+        )
+    }
+}
+
+@Composable
+fun TimeInput(
+    time: String,
+    modifier: Modifier = Modifier,
+    color: Color = C.LightBlue,
+    onChange: (String) -> Unit = {}
+) {
+    var t by remember { mutableStateOf(time) }
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = "Time",
+            style = Typography.bodyMedium
+        )
+        OutlinedTextField(
+            value = t,
+            placeholder = { Text("00:00") },
+            onValueChange = { newTime ->
+                t = newTime
+                if (newTime.isEmpty() || newTime.all { it.isDigit() }) {
+                    onChange(newTime)
+                }
+            },
+            colors = getTextFieldColor(color, Color.White, Color.Black),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 12.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        )
+    }
+}
+
+@Composable
+fun DifficultyInput(
+    difficulty: Int,
+    modifier: Modifier = Modifier,
+    color: Color = C.LightBlue,
+    onChange: (String) -> Unit = {}
+) {
+    var diff by remember { mutableIntStateOf(difficulty) }
+    var diffExpanded by remember { mutableStateOf(false) }
+    var fieldSize by remember { mutableStateOf(Size.Zero)}
+
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = "Difficulty",
+            style = Typography.bodyMedium
+        )
+        OutlinedTextField(
+            value = diff.toString(),
+            placeholder = { Text("00:00") },
+            onValueChange = { newDifficulty ->
+                onChange(newDifficulty)
+            },
+            colors = getTextFieldColor(color, Color.White, Color.Black),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 12.dp)
+                .onGloballyPositioned { coordinates ->
+                    fieldSize = coordinates.size.toSize()
+                },
+            trailingIcon = {
+                Icon(
+                    imageVector = if (diffExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Select difficulty",
+                    modifier = Modifier.clickable {
+                        diffExpanded = !diffExpanded
+                    }
+                )
+            },
+            enabled = false
+        )
+        SingleDropdown(
+            color = C.LightBlue,
+            items = listOf(1, 2, 3, 4, 5),
+            expanded = diffExpanded,
+            selected = diff.toString(),
+            onItemSelected = {
+                diff = it.toInt()
+            },
+            onDismiss = {
+                diffExpanded = false
+            },
+            modifier = Modifier.width(with(LocalDensity.current) { fieldSize.width.toDp() }),
+        )
+    }
+}
+
+@Composable
+fun IconInput(
+    selectedIcon: ImageVector,
+    modifier: Modifier = Modifier,
+    color: Color = C.LightBlue,
+    onChange: (String) -> Unit = {}
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var fieldSize by remember { mutableStateOf(Size.Zero)}
+    var icon by remember { mutableStateOf(selectedIcon)}
+
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = "Icon",
+            style = Typography.bodyMedium.copy(
+                color = Color.Black
+            ),
+        )
+        OutlinedTextField(
+            value = icon.getName(),
+            colors = getTextFieldColor(color),
+            placeholder = { Text("Select icon...")},
+            onValueChange = { newIcon ->
+                onChange(newIcon)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 12.dp)
+                .onGloballyPositioned { coordinates ->
+                    fieldSize = coordinates.size.toSize()
+                }
+                .clickable {
+                    expanded = !expanded
+                },
+            leadingIcon = {
+                Icon (
+                    imageVector = icon,
+                    contentDescription = "Selected icon",
+                    tint = color
+                )
+            },
+            trailingIcon = {
+                Icon (
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Open dropdown",
+                    tint = color,
+                    modifier = Modifier.clickable {
+                        expanded = !expanded
+                    }
+                )
+            },
+            enabled = false
+        )
+        SingleDropdown(
+            color = color,
+            items = listOf(),
+            expanded = expanded,
+            selected = icon.getName(),
+            onItemSelected = { newIcon ->
+                icon = newIcon.toImageVector()
+            },
+            onDismiss = {
+                expanded = false
+            },
+            modifier = Modifier.width(with(LocalDensity.current) { fieldSize.width.toDp() }),
+            leadingIcon = {
+                Icon(
+                    imageVector = selectedIcon,
+                    contentDescription = "Select icon",
+                    tint = color
+                )
+            }
+        )
+    }
+}
+
 
 
 @RequiresApi(Build.VERSION_CODES.O)

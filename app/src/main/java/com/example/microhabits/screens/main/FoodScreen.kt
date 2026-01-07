@@ -53,7 +53,6 @@ import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.models.classes.FilterItem
 import com.example.microhabits.models.classes.FoodRecipe
 import com.example.microhabits.models.classes.NavigationOption
-import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import java.time.LocalDateTime
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC

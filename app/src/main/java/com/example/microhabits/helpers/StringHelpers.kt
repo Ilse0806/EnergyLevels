@@ -1,5 +1,9 @@
 package com.example.microhabits.helpers
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.microhabits.models.classes.Ingredient
 
 fun String.toIngredient(): Ingredient {
@@ -37,4 +41,12 @@ fun String.toIngredient(): Ingredient {
         amount = amount,
         amountExtra = amountExtra,
     )
+}
+
+fun String.toImageVector(): ImageVector {
+    return when (this) {
+        "DirectionsWalk" -> Icons.AutoMirrored.Filled.DirectionsWalk
+        "FitnessCenter" -> Icons.Default.FitnessCenter
+        else -> Icons.AutoMirrored.Filled.DirectionsWalk
+    }
 }

@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.Log
 import com.example.microhabits.api.DatabaseService
 import com.example.microhabits.data.state.VariableModel
+import com.example.microhabits.models.classes.ExerciseProgram
+import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.toString
 
-object CreateGoalService {
+object CreatorService {
     fun saveNewGoal(newGoal: Map<String, Any?>, context : Context) {
         DatabaseService.updateRow("goal", newGoal, context,
             { goalResponse ->
@@ -32,6 +34,59 @@ object CreateGoalService {
         DatabaseService.updateRow("goal", updatedGoal, context,
             { response ->
                 Log.d("API_GOAL_UPDATED", response.toString())
+            },
+            { error -> Log.e("API_ERROR", error.toString())}
+        )
+    }
+
+    fun saveNewExercise (newExercise: ExerciseProgram, context: Context) {
+        val allExercise = mutableListOf<Int>()
+        val lastItem = newExercise.exercises.lastOrNull()
+        if (lastItem != null) {
+            for (item in newExercise.exercises) {
+                DatabaseService.updateRow(
+                    "exercise", item.toMap(), context,
+                    { response ->
+                        allExercise.add(response.getInt("id"))
+                        if (item == lastItem) {
+                            saveFullExercise(newExercise, allExercise, context)
+                        }
+                        Log.d("API_SINGLE_EXERCISES_CREATED", response.toString())
+                    },
+                    { error -> Log.e("API_ERROR", error.toString()) }
+                )
+            }
+        } else {
+            saveFullExercise(newExercise, allExercise, context)
+        }
+    }
+
+    fun saveFullExercise(newExercise: ExerciseProgram, singleExerciseIds: List<Int>, context: Context) {
+        val fullMap = newExercise.toMap().toMutableMap().apply {
+            this["attributes"] = Json.encodeToString(VariableModel.newExercise.value.attributes)
+            this["exercise"] = Json.encodeToString(singleExerciseIds)
+        }
+        DatabaseService.updateRow("exercise_program", fullMap, context,
+            { response ->
+                VariableModel.newExercise.value.id = response.getInt("id")
+                VariableModel.allExercises.add(VariableModel.newExercise.value)
+                Log.d("API_GOAL_UPDATED", response.toString())
+            },
+            { error -> Log.e("API_ERROR", error.toString())}
+        )
+    }
+
+    fun saveNewRecipe (newRecipe: Map<String, Any?>, context: Context) {
+        newRecipe.toMutableMap().apply {
+            this["attributes"] = Json.encodeToString(VariableModel.newRecipe.value.attributes)
+            this["steps"] = Json.encodeToString(VariableModel.newRecipe.value.steps)
+            this["ingredients"] = Json.encodeToString(this["ingredients"])
+        }
+        DatabaseService.updateRow("food_recipe", newRecipe, context,
+            { response ->
+                VariableModel.newRecipe.value.id = response.getInt("id")
+                VariableModel.allFoods.add(VariableModel.newRecipe.value)
+                Log.d("API_RECIPE_CREATED", response.toString())
             },
             { error -> Log.e("API_ERROR", error.toString())}
         )

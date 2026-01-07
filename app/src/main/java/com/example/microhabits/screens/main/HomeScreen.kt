@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.microhabits.CreateExercise
 import com.example.microhabits.Exercise
 import com.example.microhabits.Food
 import com.example.microhabits.SetEnergy
@@ -45,6 +47,7 @@ import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.collections.plus
 import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
@@ -123,13 +126,13 @@ fun HomeScreen(navController: NavController) {
                 title = "Favorite exercises:",
                 items = VariableModel.favoriteExercises.map { item ->
                     item.toNavigationOption()
-                },
+                } + NavigationOption(label = "", icon = Icons.Default.Add, destination = CreateExercise, bottomNavItem = true),
                 buttonColor = ButtonC.RedPrimary,
                 textColor = Color.White,
                 navController = navController,
                 modifier = Modifier
                     .size(150.dp),
-                iconColor = C.CoralRed
+                iconColor = C.CoralRed,
             )
             FoodFavorite(
                 buttonColor = ButtonC.GoldenAmberPrimary,
@@ -226,8 +229,7 @@ fun HomeScreenPreview() {
                     title = "Favorite exercises:",
                     items = listOf(
                         NavigationOption("Go for a walk", Exercise, Icons.AutoMirrored.Filled.DirectionsWalk),
-                        NavigationOption("Go for a walk", Exercise, Icons.AutoMirrored.Filled.DirectionsWalk)
-                    ),
+                    ) + NavigationOption(label = "", icon = Icons.Default.Add, destination = CreateExercise, bottomNavItem = true),
                     buttonColor = ButtonC.RedPrimary,
                     textColor = Color.White,
                     navController = rememberNavController(),

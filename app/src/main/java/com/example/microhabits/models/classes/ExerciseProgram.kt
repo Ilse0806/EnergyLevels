@@ -8,7 +8,7 @@ import com.example.microhabits.ExerciseDetails
 import com.example.microhabits.models.superclasses.UpperActivity
 
 class ExerciseProgram (
-    id: Int,
+    id: Int?,
     name: String,
     description: String,
     time: Int,
@@ -33,5 +33,20 @@ class ExerciseProgram (
             "FitnessCenter" -> Icons.Default.FitnessCenter
             else -> null
         }
+    }
+
+
+    fun toMap(): Map<String, Any?> {
+        return mapOf(
+            "id" to id,
+            "name" to name,
+            "description" to description,
+            "time" to time,
+            "difficulty" to difficulty,
+            "attributes" to attributes,
+            "exercise" to exercises.map { it.toMap() },
+            "icon" to icon,
+            "recommended" to recommended
+        )
     }
 }

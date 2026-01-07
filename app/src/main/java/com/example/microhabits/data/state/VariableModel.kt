@@ -11,9 +11,11 @@ import com.example.microhabits.models.classes.EnergyLevel
 import com.example.microhabits.models.classes.ExerciseProgram
 import com.example.microhabits.models.classes.FoodRecipe
 import com.example.microhabits.models.classes.Goal
+import com.example.microhabits.models.classes.Ingredient
+import com.example.microhabits.models.classes.SingleExercise
 import com.example.microhabits.models.deleteLater.UserBehavior
 import com.example.microhabits.models.deleteLater.UserBehaviorWithBehavior
-import com.example.microhabits.models.deleteLater.UserGoal
+import com.example.microhabits.models.classes.UserGoal
 import org.json.JSONObject
 
 object VariableModel {
@@ -26,22 +28,53 @@ object VariableModel {
     val userGoals = mutableStateListOf<UserGoal>()
     val completedGoals = mutableStateListOf<CompletedGoal>()
 
-//    Activity data:
+//    Food data:
     val favoriteDinner = mutableStateListOf<FoodRecipe>()
     val favoriteLunch = mutableStateListOf<FoodRecipe>()
     val favoriteBreakfast = mutableStateListOf<FoodRecipe>()
     val favoriteSnack = mutableStateListOf<FoodRecipe>()
-    val allFoods = mutableStateListOf<FoodRecipe>()
-    val favoriteExercises = mutableStateListOf<ExerciseProgram>()
-    val allExercises = mutableStateListOf<ExerciseProgram>()
-
     val recommendedDinner = mutableStateListOf<FoodRecipe>()
     val recommendedLunch = mutableStateListOf<FoodRecipe>()
     val recommendedBreakfast = mutableStateListOf<FoodRecipe>()
     val recommendedSnack = mutableStateListOf<FoodRecipe>()
+    val allFoods = mutableStateListOf<FoodRecipe>()
 
+//    Exercise data:
+    val favoriteExercises = mutableStateListOf<ExerciseProgram>()
+    val allExercises = mutableStateListOf<ExerciseProgram>()
     val recommendedExercise = mutableStateListOf<ExerciseProgram>()
 
+//    new activity data:
+    val allIngredients = mutableStateListOf(Ingredient("Test", 3.0, "test"))
+    val newIngredients = mutableStateListOf<Ingredient>()
+    val newSingleExercises = mutableStateListOf<SingleExercise>()
+
+    val newRecipe = mutableStateOf(FoodRecipe(
+        id = null,
+        name = "",
+        description = "",
+        time = 0,
+        difficulty = 1,
+        attributes = listOf(),
+        type = "Dinner",
+        image = "https://",
+        ingredients = listOf(),
+        steps = listOf(),
+        recommended = false,
+    ))
+
+    val newExercise = mutableStateOf(ExerciseProgram(
+        id = null,
+        name = "",
+        description = "",
+        time = 0,
+        difficulty = 1,
+        attributes = listOf(),
+        exercises = listOf(),
+        icon = "DirectionsWalk",
+        recommended = false
+    ))
+    val existingAttributes = mutableStateListOf<String>("Cardio", "Weights", "Strength", "Endurance", "Stretches")
 
     //    Goal / category data:
     var validGoal = mutableStateOf(false)

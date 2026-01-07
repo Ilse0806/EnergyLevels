@@ -14,7 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ContinueButton(colorB: ButtonColors, color: Color, enabled: Boolean, onClickAction: () -> Unit, modifier: Modifier = Modifier) {
+fun ContinueButton(
+    colorB: ButtonColors,
+    color: Color,
+    enabled: Boolean,
+    onClickAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable (() -> Unit)? = null
+) {
     Row (
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
@@ -26,10 +33,14 @@ fun ContinueButton(colorB: ButtonColors, color: Color, enabled: Boolean, onClick
             shape = RoundedCornerShape(24.dp),
             enabled = enabled,
             content = {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowForward,
-                    "Continue"
-                )
+                if (content != null) {
+                    content()
+                } else {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowForward,
+                        "Continue"
+                    )
+                }
             }
         )
     }
