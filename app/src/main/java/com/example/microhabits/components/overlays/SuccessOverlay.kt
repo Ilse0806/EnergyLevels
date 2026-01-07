@@ -53,9 +53,9 @@ import com.example.microhabits.ui.theme.Color as C
 @Composable
 fun SuccessOverlay(
     onGoHome: () -> Unit,
-    onViewGoal: () -> Unit,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit = {},
+    onViewGoal: (() -> Unit)? = null,
 ) {
     val scale = remember { Animatable(0.0001f) }
     var homeVisibility by remember { mutableStateOf(false) }
@@ -158,7 +158,7 @@ fun SuccessOverlay(
             }
             Column (modifier = Modifier.height(56.dp)) {
 
-                if (onViewGoal != {}) {
+                if (onViewGoal != null) {
                     AnimatedVisibility(
                         visible = goalVisibility,
                         enter = slideInVertically {
@@ -177,12 +177,12 @@ fun SuccessOverlay(
                             },
                             content = {
                                 Text(
-                                    text = "View new goal",
+                                    text = "View new item",
                                     style = Typography.bodyMedium
                                 )
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                    contentDescription = "View your new goal"
+                                    contentDescription = "View new item"
                                 )
                             }
                         )
@@ -199,7 +199,7 @@ fun CreateGoalPreview() {
     val navController = rememberNavController()
     SuccessOverlay(
         onGoHome = { navController.navigate(route = Home) },
-        onViewGoal = { navController.navigate(route = SelectBehavior) },
+        onViewGoal = null,
         modifier = Modifier.animateContentSize(),
         onDismiss = {
             navController.navigate(route = Home)

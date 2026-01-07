@@ -65,6 +65,7 @@ fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
                     titleStyle = Typography.titleMedium.copy(color = Color.White),
                     image = foodItem.image,
                     context = context,
+                    headerBackground = C.GoldenAmber,
                     extraContent = {
                         Spacer(Modifier.padding(bottom = 12.dp))
                         Row(

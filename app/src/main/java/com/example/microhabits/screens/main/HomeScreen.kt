@@ -42,9 +42,11 @@ import com.example.microhabits.components.navigation.Navigation
 import com.example.microhabits.data.state.VariableModel
 import com.example.microhabits.models.classes.CompletedGoal
 import com.example.microhabits.models.classes.NavigationOption
+import com.example.microhabits.services.EnergyService.getEnergyLevel
 import com.example.microhabits.services.MainService
 import com.example.microhabits.ui.theme.MicroHabitsTheme
 import com.example.microhabits.ui.theme.Typography
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.collections.plus
@@ -65,7 +67,7 @@ fun HomeScreen(navController: NavController) {
 
     if (VariableModel.userId != 0) {
         LaunchedEffect(VariableModel.userId) {
-//            saveGoals(context)
+            getEnergyLevel(LocalDate.now(), context)
         }
     }
     val scrollState = rememberScrollState()

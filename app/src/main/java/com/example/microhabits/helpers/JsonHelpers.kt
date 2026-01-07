@@ -203,6 +203,7 @@ fun JSONObject.toEnergyLevel(): EnergyLevel {
     return EnergyLevel(
         date = LocalDate.parse(this.optString("date"), DateTimeFormatter.RFC_1123_DATE_TIME),
         level = EnergyLevels.fromInput(this.optString("energy_level")),
+        percentage = this.optInt("energy_level_percentage").toFloat(),
         reason = this.optString("reason")
     )
 }

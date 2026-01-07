@@ -32,7 +32,7 @@ import com.example.microhabits.CreateGoal
 import com.example.microhabits.DisplayGoal
 import com.example.microhabits.components.buttons.Checkbox
 import com.example.microhabits.data.state.VariableModel
-import com.example.microhabits.models.deleteLater.UserGoal
+import com.example.microhabits.models.classes.UserGoal
 import com.example.microhabits.ui.theme.Color as C
 
 @RequiresApi(Build.VERSION_CODES.O)
