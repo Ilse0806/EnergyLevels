@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.FoodDetails
+import com.example.microhabits.Home
 import com.example.microhabits.components.getters.GetDifficulty
 import com.example.microhabits.components.getters.GetTime
 import com.example.microhabits.components.inputs.ButtonAndDropdown
@@ -190,7 +191,11 @@ fun FoodDetailsScreen(navController: NavController, foodId: FoodDetails) {
             }
         }
     } ?: run {
-        ErrorOverlay()
+        ErrorOverlay(
+            onReturn = {
+                navController.navigate(route = Home)
+            }
+        )
     }
 }
 

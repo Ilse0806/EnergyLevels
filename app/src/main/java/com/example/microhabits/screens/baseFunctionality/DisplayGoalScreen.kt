@@ -77,7 +77,7 @@ fun DisplayGoalScreen(navController: NavController, goal: DisplayGoal) {
         if (showSuccessOverlay) {
             SuccessOverlay(
                 onGoHome = { navController.navigate(route = Home) },
-                onViewGoal = {},
+                onViewGoal = null,
                 modifier = Modifier
                     .fillMaxSize()
                     .zIndex(1f),
@@ -122,7 +122,11 @@ fun DisplayGoalScreen(navController: NavController, goal: DisplayGoal) {
                 )
             }
         } ?: run {
-            ErrorOverlay()
+            ErrorOverlay(
+                onReturn = {
+                    navController.navigate(route = Home)
+                }
+            )
         }
     }
 }
