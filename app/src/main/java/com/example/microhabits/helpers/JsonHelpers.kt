@@ -125,6 +125,7 @@ fun JSONObject.toExerciseProgram(singleExercises: List<SingleExercise>): Exercis
         Log.e("JSON_ERROR", e.toString())
         emptyList()
     }
+    val recommended = this.optInt("recommended")
     return ExerciseProgram(
         id = this.optInt("id"),
         name = this.optString("name"),
@@ -134,7 +135,7 @@ fun JSONObject.toExerciseProgram(singleExercises: List<SingleExercise>): Exercis
         attributes = attributes,
         exercises = singleExercises,
         icon = this.optString("icon"),
-        recommended = this.optBoolean("recommended")
+        recommended = recommended == 1
     )
 }
 
@@ -171,6 +172,7 @@ fun JSONObject.toFoodRecipe(): FoodRecipe {
         Log.e("JSON_ERROR", e.toString())
         emptyList()
     }
+    val recommended = this.optInt("recommended")
 
     return FoodRecipe(
         id = this.optInt("id"),
@@ -183,7 +185,7 @@ fun JSONObject.toFoodRecipe(): FoodRecipe {
         image = this.optString("image"),
         ingredients = ingredients.map { it.toIngredient() },
         steps = steps,
-        recommended = this.optBoolean("recommended")
+        recommended = recommended == 1
     )
 }
 
@@ -201,6 +203,7 @@ fun JSONObject.toSingleExercise(): SingleExercise {
 @RequiresApi(Build.VERSION_CODES.O)
 fun JSONObject.toEnergyLevel(): EnergyLevel {
     return EnergyLevel(
+        id = this.optInt("id"),
         date = LocalDate.parse(this.optString("date"), DateTimeFormatter.RFC_1123_DATE_TIME),
         level = EnergyLevels.fromInput(this.optString("energy_level")),
         percentage = this.optInt("energy_level_percentage").toFloat(),

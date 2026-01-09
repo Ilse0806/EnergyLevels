@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,10 +40,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.microhabits.Home
+import com.example.microhabits.Progress
 import com.example.microhabits.components.buttons.ButtonPrimary
 import com.example.microhabits.ui.theme.Typography
 import kotlinx.coroutines.delay
@@ -50,11 +53,11 @@ import com.example.microhabits.ui.theme.ButtonColors as ButtonC
 import com.example.microhabits.ui.theme.Color as C
 
 @Composable
-fun SuccessOverlay(
+fun CompletedActivityOverlay(
     onGoHome: () -> Unit,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit = {},
-    onViewGoal: (() -> Unit)? = null,
+    onViewProgress: (() -> Unit)? = null,
 ) {
     val scale = remember { Animatable(0.0001f) }
     var homeVisibility by remember { mutableStateOf(false) }
@@ -78,7 +81,7 @@ fun SuccessOverlay(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(C.GoldenAmber)
+            .background(C.Green)
             .clickable {
                 displayVisible = false
                 onDismiss()
@@ -104,19 +107,31 @@ fun SuccessOverlay(
                 tint = Color.White
             )
         }
-        Icon(
-            imageVector = Icons.Filled.Verified,
-            contentDescription = "Success",
+        Column (
             modifier = Modifier
-                .graphicsLayer(
-                    scaleX = scale.value,
-                    scaleY = scale.value
-                )
                 .align(Alignment.Center)
-                .fillMaxWidth(0.75f)
-                .aspectRatio(1f),
-            tint = Color.White
-        )
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Well done!",
+                style = Typography.titleSmall.copy(color = Color.White),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+            )
+            Icon(
+                imageVector = Icons.Filled.DoneAll,
+                contentDescription = "Success",
+                modifier = Modifier
+                    .graphicsLayer(
+                        scaleX = scale.value,
+                        scaleY = scale.value
+                    )
+                    .fillMaxWidth(0.75f)
+                    .aspectRatio(1f),
+                tint = Color.White
+            )
+        }
 
 
         Column(
@@ -157,7 +172,7 @@ fun SuccessOverlay(
             }
             Column (modifier = Modifier.height(56.dp)) {
 
-                if (onViewGoal != null) {
+                if (onViewProgress != null) {
                     AnimatedVisibility(
                         visible = goalVisibility,
                         enter = slideInVertically {
@@ -172,16 +187,16 @@ fun SuccessOverlay(
                             color = Color.White,
                             onClickAction = {
                                 displayVisible = false
-                                onViewGoal()
+                                onViewProgress()
                             },
                             content = {
                                 Text(
-                                    text = "View new item",
+                                    text = "See your progress",
                                     style = Typography.bodyMedium
                                 )
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                    contentDescription = "View new item"
+                                    contentDescription = "Show progress"
                                 )
                             }
                         )
@@ -194,11 +209,13 @@ fun SuccessOverlay(
 
 @Preview(showBackground = true)
 @Composable
-fun CreateGoalPreview() {
+fun CompletedActivityPreview() {
     val navController = rememberNavController()
-    SuccessOverlay(
+    CompletedActivityOverlay(
         onGoHome = { navController.navigate(route = Home) },
-        onViewGoal = null,
+        onViewProgress = {
+            navController.navigate(route = Progress)
+        },
         modifier = Modifier.animateContentSize(),
         onDismiss = {
             navController.navigate(route = Home)

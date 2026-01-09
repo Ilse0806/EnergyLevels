@@ -7,8 +7,8 @@ class SingleExercise(
     name: String,
     description: String,
     time: Int,
-    var image: String,
-    var video: String,
+    var image: String?,
+    var video: String?,
 ): Activity(id, name, description, time) {
     fun toMap(): Map<String, Any?> {
         return mapOf(

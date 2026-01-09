@@ -67,7 +67,7 @@ fun CreateGoalScreen (navController: NavController) {
             }
         },
         bottomBar = {
-            if (!WindowInsets.isImeVisible) {
+            if (!WindowInsets.isImeVisible && !showSuccessOverlay) {
                 Navigation(navController)
             }
         },

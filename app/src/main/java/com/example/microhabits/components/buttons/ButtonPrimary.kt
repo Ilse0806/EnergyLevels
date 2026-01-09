@@ -20,7 +20,7 @@ fun ButtonPrimary(
     shape: Shape = ButtonDefaults.shape,
     enabled: Boolean = true,
     contentPadding : PaddingValues = ButtonDefaults.ContentPadding
-    ) {
+) {
     Button (
         onClick = onClickAction,
         colors = buttonColor,

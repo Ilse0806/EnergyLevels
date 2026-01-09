@@ -10,6 +10,8 @@ object Color {
     val CoralRed = Color(0xFFFF7768)
     val Red = Color(0xFFB9342D)
 
+    val Green = Color(0xFF008000)
+
     val LightTheme = Color(0xFFE8E0EE)
     val DarkTheme = Color(0xFF1E1A22)
 }

@@ -21,7 +21,7 @@ object EnergyService {
         )
     }
 
-    fun saveEnergyLevel(energyLevel: Map<String, Any>, context: Context) {
+    fun saveEnergyLevel(energyLevel: Map<String, Any?>, context: Context) {
         val newMap = energyLevel + mapOf("user_id" to VariableModel.userId)
         DatabaseService.updateRow("energy_level", newMap, context,
             { response ->

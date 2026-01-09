@@ -90,7 +90,8 @@ object ItemsService {
     private fun setExerciseItems(item: ExerciseProgram, userFavorites: List<Int>) {
         if (item.id in userFavorites) {
             VariableModel.favoriteExercises.add(item)
-        } else if (item.recommended) {
+        }
+        if (item.recommended) {
             VariableModel.recommendedExercise.add(item)
         }
         VariableModel.allExercises.add(item)

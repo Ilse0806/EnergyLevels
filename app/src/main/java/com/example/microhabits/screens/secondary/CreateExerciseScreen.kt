@@ -59,7 +59,7 @@ fun CreateExerciseScreen(navController: NavController) {
             }
         },
         bottomBar = {
-            if (!WindowInsets.isImeVisible) {
+            if (!WindowInsets.isImeVisible && !showSuccessOverlay) {
                 Navigation(navController)
             }
         },

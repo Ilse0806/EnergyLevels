@@ -75,6 +75,7 @@ fun TodayGoalsDisplayed(
 
             }
         }
+        Spacer(Modifier.padding(4.dp))
         Box (
             modifier = modifier
                 .fillMaxWidth()

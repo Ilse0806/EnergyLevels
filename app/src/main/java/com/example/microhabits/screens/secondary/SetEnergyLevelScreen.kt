@@ -247,6 +247,7 @@ fun SetLevel(
             enabled = true,
             onClickAction = {
                 VariableModel.todayEnergy.value = EnergyLevel(
+                    id = null,
                     date = LocalDate.now(),
                     level = EnergyLevels.fromValue(sliderValue.value),
                     percentage = sliderValue.value,
@@ -276,7 +277,8 @@ fun SetLevel(
                     )
                 }
             }
-        )    }
+        )
+    }
 }
 
 
@@ -299,8 +301,12 @@ fun EnergyLevelPreview() {
                 .fillMaxSize()
                 .padding(WindowInsets.safeDrawing.asPaddingValues())) { innerPadding ->
             Column(
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .padding(innerPadding)
             ) {
+                Spacer(Modifier.padding(12.dp))
                 SetLevel(LocalContext.current)
             }
         }

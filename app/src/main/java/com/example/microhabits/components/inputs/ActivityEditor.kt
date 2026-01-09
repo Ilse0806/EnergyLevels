@@ -548,7 +548,7 @@ fun Connector(
                 shape = RoundedCornerShape(8.dp),
                 content = {
                     Text (
-                        text = "Extra ingredient field",
+                        text = "Extra field",
                         style = Typography.bodyMedium,
                     )
                     Icon(
@@ -692,7 +692,7 @@ fun Connector(
                 shape = RoundedCornerShape(8.dp),
                 content = {
                     Text (
-                        text = "Extra ingredient field",
+                        text = "Extra field",
                         style = Typography.bodyMedium,
                     )
                     Icon(
